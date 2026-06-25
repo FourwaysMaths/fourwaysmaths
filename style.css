@@ -146,3 +146,24 @@ font-size:16px;
     font-weight:bold;
     margin:20px 0;
 }
+/* Logo animation */
+
+.hero-logo{
+    opacity:0;
+    transform:translateY(25px);
+    animation:logoFade 1.2s ease forwards;
+}
+
+@keyframes logoFade{
+
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
