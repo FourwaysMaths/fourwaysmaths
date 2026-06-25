@@ -195,3 +195,12 @@ font-size:16px;
     }
 
 }
+.hero-buttons{
+    opacity:0;
+    animation:fadeUp 1s ease forwards;
+    animation-delay:.9s;
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
