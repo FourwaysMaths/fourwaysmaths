@@ -214,3 +214,46 @@ font-size:16px;
     display: inline-block;
     margin: 0 10px; /* Adds 10px of space to the left and right of each button */
 }
+/* Container to center and space the buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* Base styles for both buttons to keep sizing consistent */
+.btn-quote, .btn-whatsapp {
+    display: inline-block;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px; /* Matches the slight curve in your original screenshot */
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+/* 🟡 PRIMARY BUTTON: Gold with white text */
+.btn-quote {
+    background-color: #D4A311; /* Gold tone matched from your logo */
+    color: #ffffff;
+    border: 2px solid #D4A311;
+}
+
+.btn-quote:hover {
+    background-color: #b88d0e; /* Slightly darker gold on hover */
+    border-color: #b88d0e;
+}
+
+/* ⚪ SECONDARY BUTTON: White with navy border and navy text */
+.btn-whatsapp {
+    background-color: #ffffff;
+    color: #0A192F; /* Navy tone matched from your top nav bar */
+    border: 2px solid #0A192F;
+}
+
+.btn-whatsapp:hover {
+    background-color: #0A192F; /* Flips to solid navy on hover */
+    color: #ffffff;
+}
