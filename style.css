@@ -204,3 +204,13 @@ font-size:16px;
     margin-top:20px;
     flex-wrap:wrap;
 }
+.button-container {
+    text-align: center; /* Centers all inline/inline-block elements inside */
+}
+
+/* Make sure your buttons are inline-block so they sit next to each other */
+.button-container a, 
+.button-container button {
+    display: inline-block;
+    margin: 0 10px; /* Adds 10px of space to the left and right of each button */
+}
