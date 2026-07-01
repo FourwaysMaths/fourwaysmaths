@@ -63,12 +63,12 @@ body {
 }
 
 .nav-links a:hover {
-    color: #F59E0B; /* Highlights gold on hover */
+    color: #FFDD00; /* Highlights gold on hover */
 }
 
 /* Golden Call-To-Action nested on the right side of the nav bar */
 .nav-cta-btn {
-    background: #F59E0B; /* Gold */
+    background: #FFDD00; /* Gold */
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -99,7 +99,7 @@ body {
 .gold-accent-line {
     width: 60px;
     height: 5px;
-    background-color: #F59E0B; /* Gold element from screenshot blueprint */
+    background-color: #FFDD00; /* Gold element from screenshot blueprint */
     margin-bottom: 20px;
 }
 
@@ -115,7 +115,7 @@ body {
     font-weight: 800;
 }
 
-.gold-text { color: #F59E0B; }
+.gold-text { color: #FFDD00; }
 .black-text { color: #0F172A; }
 
 .hero-subtitle {
