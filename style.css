@@ -27,7 +27,7 @@ body {
 }
 
 .site-logo {
-    max-height: 90px;
+    max-height: 180px;
     width: auto;
     /* Keeping your nice logo fade-in animation */
     opacity: 0;
@@ -59,7 +59,7 @@ body {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
     transition: color 0.3s ease;
 }
 
