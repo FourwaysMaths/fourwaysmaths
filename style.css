@@ -43,12 +43,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 90%;
-    max-width: 1100px;
-    background: #0F172A; /* Your clean slate dark color */
-    border-radius: 50px; /* Gives it that modern rounded pod look */
-    overflow: hidden; /* Clips the inner button corners to match the border-radius */
-    padding-left: 40px; /* Spacing for the links */
+    width: 95%; /* Increased from 90% to span wider */
+    max-width: 1400px; /* Increased from 1100px */
+    background: #0F172A; 
+    border-radius: 50px; 
+    overflow: hidden; 
+    padding-left: 40px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
@@ -91,11 +91,11 @@ body {
 /* --- NEW TWO-COLUMN HERO SECTION --- */
 .hero-container {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* Gives the text side slightly more breathing room */
-    gap: 50px;
-    width: 90%;
-    max-width: 1100px;
-    margin: 60px auto;
+    grid-template-columns: 1.12fr 0.88fr; 
+    gap: 60px; /* Increased gap for better breathing room */
+    width: 95%; /* Stretches closer to the screen edges */
+    max-width: 1400px; /* Increased from 1100px */
+    margin: 80px auto; /* Slightly more vertical separation from header */
     align-items: center;
     padding: 20px 0;
 }
@@ -108,14 +108,14 @@ body {
 }
 
 .hero-text-content {
-    max-width: 550px;
-    text-align: left; /* Shifted from center to left alignment */
+    max-width: 700px; /* Increased from 550px so text can sprawl across its column */
+    text-align: left;
 }
 
 .hero-title {
-    font-size: 3.2rem;
-    line-height: 1.15;
-    margin-bottom: 15px;
+    font-size: 3.8rem; /* Increased from 3.2rem to match the massive "zoomed in" feel */
+    line-height: 1.1;
+    margin-bottom: 20px;
     font-weight: 800;
 }
 
@@ -181,11 +181,10 @@ body {
 
 /* --- SECTIONS, CARDS & FORMS (Preserved & Cleaned) --- */
 section {
-    padding: 60px 20px;
-    max-width: 1000px;
+    padding: 80px 20px; /* Bushed up vertical padding */
+    max-width: 1300px; /* Increased from 1000px so inner grids expand outwards */
     margin: auto;
 }
-
 .card {
     background: white;
     padding: 20px;
