@@ -9,57 +9,65 @@
 </head>
 <body>
 
-<header>
-    <nav>
-        <h2>Fourways Maths</h2>
-        <ul>
+<header class="main-header">
+    <!-- 1. Logo shifted to the very top center -->
+    <div class="logo-container">
+        <img src="images/logo.png" alt="Fourways Maths Logo" class="site-logo">
+    </div>
+
+    <!-- 2. Nav block holding links and the nested Quote button -->
+    <nav class="nav-bar-block">
+        <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
+        
+        <!-- Moved from below to sit on the right side of the nav block -->
+        <a class="nav-cta-btn" href="quote.html">Start My Quote</a>
     </nav>
 </header>
 
-<section class="hero">
+<!-- 3. Cleaned up two-column Hero Section -->
+<section class="hero-container">
+    
+    <!-- Left column: Text content -->
+    <div class="hero-text-content">
+        <div class="gold-accent-line"></div>
+        <h1 class="hero-title">
+            <span class="gold-text">Building Confidence.</span><br>
+            <span class="black-text">Improving Marks.</span>
+        </h1>
+        
+        <h3 class="hero-subtitle">Online Or In-Person</h3>
+        
+        <p class="hero-description">
+            Specialised Mathematics (Grades 8–12) and
+            Mathematical Literacy (Grades 10–12) support
+            tailored to each learner's needs.
+        </p>
+        
+        <p class="hero-badge">
+            <strong>Qualified Educator • Online Academic Support</strong>
+        </p>
 
-   <div class="hero-image">
-    <img src="images/logo.png"
-         alt="Fourways Maths Logo"
-         class="hero-logo">
-</div>
+        <!-- Keeping WhatsApp as your main primary text action button -->
+        <div class="hero-buttons">
+            <a class="button whatsapp-btn" href="https://wa.me/27816147602">
+                WhatsApp Now
+            </a>
+        </div>
+    </div>
 
-   <div class="hero-content">
-
-    <h1>Building Confidence.<br>Improving Marks.</h1>
-
-    <p>
-        Specialised Mathematics (Grades 8–12) and
-        Mathematical Literacy (Grades 10–12) support
-        tailored to each learner's needs.
-    </p>
-
-    <p class="hero-badge">
-        Qualified Educator • Online Academic Support
-    </p>
-
-    <div class="hero-buttons">
-
-    <a class="button whatsapp-btn"
-       href="https://wa.me/27816147602">
-        WhatsApp Now
-    </a>
-
-    <a class="button quote-btn"
-       href="quote.html">
-        Start My Quote
-    </a>
-
-</div>
-
-</div>
+    <!-- Right column: Where your graphic / arched images will go -->
+    <div class="hero-images-content">
+        <!-- Put your student images or graphics here to match the screenshot -->
+    </div>
 
 </section>
-<section id="about">
+
+</body>
+</html><section id="about">
     <h2>About Fourways Maths</h2>
 
     <p>
