@@ -1,243 +1,308 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* --- GLOBAL RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    font-family:Arial, sans-serif;
-    line-height:1.6;
-    color:#333;
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #ffffff;
 }
 
-header{
-    background:#0F172A;
-    color:white;
-    padding:15px 40px;
+/* --- NEW STACKED HEADER SYSTEM --- */
+.main-header {
+    background: #ffffff; /* Clean white canvas background like screenshot */
+    padding: 30px 20px 15px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
-nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.logo-container {
+    margin-bottom: 25px;
 }
 
-nav ul{
-    display:flex;
-    list-style:none;
+.site-logo {
+    max-height: 90px;
+    width: auto;
+    /* Keeping your nice logo fade-in animation */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: logoFade 1.2s ease forwards;
 }
 
-nav li{
-    margin-left:20px;
+/* The distinct colored block holding your links & button */
+.nav-bar-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1100px;
+    background: #0F172A; /* Your clean slate dark color */
+    border-radius: 50px; /* Gives it that modern rounded pod look */
+    overflow: hidden; /* Clips the inner button corners to match the border-radius */
+    padding-left: 40px; /* Spacing for the links */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
 }
 
-.hero{
-    text-align:center;
-    padding:100px 20px;
-    background:#f5f5f5;
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
 }
 
-.hero h1{
-    font-size:3rem;
-    margin-bottom:20px;
+.nav-links a:hover {
+    color: #F59E0B; /* Highlights gold on hover */
 }
 
-.hero p{
-    max-width:600px;
-    margin:auto;
+/* Golden Call-To-Action nested on the right side of the nav bar */
+.nav-cta-btn {
+    background: #F59E0B; /* Gold */
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 18px 35px;
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.button{
-    display:inline-block;
-    margin-top:20px;
-    background:#F59E0B;
-    color:white;
-    padding:12px 24px;
-    text-decoration:none;
-    border-radius:5px;
+.nav-cta-btn:hover {
+    background: #d98206; /* Slightly darker gold on hover */
 }
 
-section{
-    padding:60px 20px;
-    max-width:1000px;
-    margin:auto;
+
+/* --- NEW TWO-COLUMN HERO SECTION --- */
+.hero-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Gives the text side slightly more breathing room */
+    gap: 50px;
+    width: 90%;
+    max-width: 1100px;
+    margin: 60px auto;
+    align-items: center;
+    padding: 20px 0;
 }
 
-.card{
-    background:white;
-    padding:20px;
-    margin:20px;
-    border-radius:10px;
+.gold-accent-line {
+    width: 60px;
+    height: 5px;
+    background-color: #F59E0B; /* Gold element from screenshot blueprint */
+    margin-bottom: 20px;
+}
 
+.hero-text-content {
+    max-width: 550px;
+    text-align: left; /* Shifted from center to left alignment */
+}
+
+.hero-title {
+    font-size: 3.2rem;
+    line-height: 1.15;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.gold-text { color: #F59E0B; }
+.black-text { color: #0F172A; }
+
+.hero-subtitle {
+    color: #0F172A;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: #4b5563;
+    margin-bottom: 15px;
+}
+
+.hero-badge {
+    font-weight: bold;
+    color: #0F172A;
+    margin-bottom: 25px;
+}
+
+/* WhatsApp Action Alignment */
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start; /* Aligns buttons to the left matching the text style */
+}
+
+/* Main standalone standard button settings */
+.button {
+    display: inline-block;
+    padding: 12px 28px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn {
+    background: white;
+    color: #0F172A;
+    border: 2px solid #0F172A;
+}
+
+.whatsapp-btn:hover {
+    background: #0F172A;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Container for your future arched photos/graphics */
+.hero-images-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* --- SECTIONS, CARDS & FORMS (Preserved & Cleaned) --- */
+section {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
 }
-.card:hover{
+
+.card:hover {
     transform: translateY(-8px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-footer{
-    background:#0F172A;
-    color:white;
-    text-align:center;
-    padding:20px;
-}
-#quote{
-text-align:center;
+#about {
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
 }
 
-#quote form{
-max-width:500px;
-margin:30px auto;
+.profile-pic {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 20px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-#quote input{
-width:100%;
-padding:15px;
-margin-bottom:15px;
-border:1px solid #ddd;
-border-radius:6px;
-font-size:16px;
-}
-#about{
-    text-align:center;
-    max-width:800px;
-    margin:auto;
+#quote {
+    text-align: center;
 }
 
-.profile-pic{
-    width:250px;
-    height:250px;
-    object-fit:cover;
-    border-radius:50%;
-    margin:20px 0;
-    box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-.hero{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:50px;
-    padding:60px 20px;
-    flex-wrap:wrap;
+#quote form {
+    max-width: 500px;
+    margin: 30px auto;
 }
 
-.hero-image img{
-    max-width:420px;
-    width:100%;
-    height:auto;
-}
-}
-}
-
-.hero-content{
-    max-width:500px;
+#quote input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
 }
 
-.hero-content h1{
-    font-size:3rem;
-    margin-bottom:20px;
+footer {
+    background: #0F172A;
+    color: white;
+    text-align: center;
+    padding: 20px;
 }
 
-.hero-content p{
-    font-size:1.1rem;
+
+/* --- ANIMATION SEQUENCING --- */
+.hero-text-content > * {
+    opacity: 0;
+    animation: fadeUp 1s ease forwards;
 }
 
-.hero-badge{
-    font-weight:bold;
-    margin:20px 0;
+.gold-accent-line { animation-delay: 0.2s; }
+.hero-title        { animation-delay: 0.4s; }
+.hero-subtitle     { animation-delay: 0.6s; }
+.hero-description  { animation-delay: 0.7s; }
+.hero-badge        { animation-delay: 0.8s; }
+.hero-buttons      { animation-delay: 0.9s; }
+
+@keyframes logoFade {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-/* Logo animation */
 
-.hero-logo{
-    opacity:0;
-    transform:translateY(25px);
-    animation:logoFade 1.2s ease forwards;
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes logoFade{
 
-    from{
-        opacity:0;
-        transform:translateY(25px);
+/* --- MOBILE RESPONSIVENESS BREAKPOINT --- */
+@media (max-width: 768px) {
+    .nav-bar-block {
+        flex-direction: column;
+        padding: 20px 0 0 0;
+        border-radius: 15px;
+        width: 95%;
     }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 20px;
     }
-
-}
-.hero-content h1{
-    opacity:0;
-    animation:fadeUp 1s ease forwards;
-    animation-delay:.3s;
-}
-.hero-content p{
-    opacity:0;
-    animation:fadeUp 1s ease forwards;
-    animation-delay:.6s;
-}
-.button{
-    opacity:0;
-    animation:fadeUp 1s ease forwards;
-    animation-delay:.9s;
-}
-@keyframes fadeUp{
-
-    from{
-        opacity:0;
-        transform:translateY(20px);
+    
+    .nav-cta-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 15px;
     }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
+    
+    .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        margin: 30px auto;
     }
-
-}
-.hero-buttons{
-    opacity:0;
-    animation:fadeUp 1s ease forwards;
-    animation-delay:.9s;
-    display:flex;
-    gap:15px;
-    margin-top:20px;
-    flex-wrap:wrap;
-}
-.hero-buttons{
-    opacity:0;
-    animation:fadeUp 1s ease forwards;
-    animation-delay:.9s;
-
-    display:flex;
-    gap:15px;
-    margin-top:20px;
-    flex-wrap:wrap;
-
-    justify-content:center;
-}
-.quote-btn{
-    background:#F59E0B;
-    color:white;
-}
-
-.quote-btn:hover{
-    transform:translateY(-2px);
-}
-
-.whatsapp-btn{
-    background:white;
-    color:#0F172A;
-    border:2px solid #0F172A;
-}
-
-.whatsapp-btn:hover{
-    transform:translateY(-2px);
+    
+    .gold-accent-line {
+        margin: 0 auto 20px auto;
+    }
+    
+    .hero-text-content {
+        max-width: 100%;
+    }
+    
+    .hero-title {
+        font-size: 2.3rem;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
 }
