@@ -309,3 +309,16 @@ footer {
         justify-content: center;
     }
 }
+.hero-image-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-img {
+    width: 100%;
+    max-width: 550px; /* Limits the maximum width so it stays crisp */
+    height: auto;
+    border-radius: 12px; /* Smooth corners to match the premium look */
+    object-fit: cover;
+}
