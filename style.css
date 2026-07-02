@@ -495,6 +495,118 @@ footer {
     transform: translateY(-2px);
 }
 
+/* --- NEW PREMIUM TESTIMONIALS SECTION STYLES --- */
+#testimonials {
+    max-width: 1400px;
+    width: 95%;
+    margin: 80px auto;
+    padding: 40px 20px;
+}
+
+#testimonials h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #0F172A;
+    margin-bottom: 50px;
+    font-weight: 800;
+}
+
+/* 2-Column Flex-Grid matching the core system layout */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: stretch; /* Forces both cards to match heights perfectly */
+}
+
+.testimonial-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.08);
+    border-color: #FFDD00;
+}
+
+/* Family Box Highlight */
+.family-badge {
+    position: absolute;
+    top: -12px;
+    left: 30px;
+    background: #0F172A;
+    color: #FFDD00;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* Internals spacing */
+.quote-sub-block {
+    position: relative;
+}
+
+.quote-icon {
+    font-family: Georgia, serif;
+    font-size: 4rem;
+    color: #FFDD00;
+    line-height: 1;
+    position: absolute;
+    top: -20px;
+    left: -10px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.quote-text {
+    font-size: 1.1rem;
+    color: #374151;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.reviewer-name {
+    font-weight: bold;
+    color: #0F172A;
+    font-size: 0.95rem;
+}
+
+.reviewer-grade {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+/* Divider line between parent and learner quotes inside the box */
+.block-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 25px 0;
+    width: 100%;
+}
+
+.standard-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 /* Animation alignment updates */
 .hero-action-ctas { animation-delay: 0.9s; display: flex; }
 
@@ -609,5 +721,15 @@ footer {
 
     .tutor-content {
         text-align: center; /* Centered bio text on mobile */
+    }
+
+    /* Add these layout overrides inside your existing mobile media query */
+    .testimonials-grid {
+        grid-template-columns: 1fr; /* Stacks the two testimonial cards vertically on mobile */
+        gap: 30px;
+    }
+    
+    .testimonial-card {
+        padding: 30px 20px;
     }
 }
