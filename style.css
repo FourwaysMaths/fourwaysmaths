@@ -225,10 +225,82 @@ section {
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-#about, #tutor {
+/* --- NEW MODERN ABOUT SECTION STYLES --- */
+#about {
+    max-width: 1400px; /* Aligns container layout to match your navbar and hero width */
+    width: 95%;
+    margin: 80px auto;
+    padding: 40px 20px;
+}
+
+.about-header {
     text-align: center;
-    max-width: 800px;
-    margin: auto;
+    max-width: 750px;
+    margin: 0 auto 50px auto;
+}
+
+.about-header h2 {
+    font-size: 2.5rem;
+    color: #0F172A;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.about-intro {
+    font-size: 1.15rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/* 3-Column Grid Layout */
+.about-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal side-by-side columns */
+    gap: 30px;
+}
+
+/* Individual Feature Cards */
+.feature-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0; /* Subtle premium border border */
+    border-radius: 16px;
+    padding: 35px 25px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.08);
+    border-color: #FFDD00; /* Subtle highlight border on hover */
+}
+
+/* Rounded circular emblem badge for your icons */
+.feature-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: #f8fafc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 20px auto;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.feature-card h3 {
+    font-size: 1.4rem;
+    color: #0F172A;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.feature-card p {
+    font-size: 1rem;
+    color: #64748b;
+    line-height: 1.5;
 }
 
 .profile-pic {
@@ -395,5 +467,15 @@ footer {
     .hero-action-ctas .button {
         width: 100%;
         text-align: center;
+    }
+
+    /* Add this inside your existing @media (max-width: 768px) block */
+    .about-features-grid {
+        grid-template-columns: 1fr; /* Force the 3 columns to safely stack into 1 column on mobile */
+        gap: 20px;
+    }
+    
+    .about-header h2 {
+        font-size: 2rem;
     }
 }
