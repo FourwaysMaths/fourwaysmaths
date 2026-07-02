@@ -233,17 +233,48 @@ section {
     padding: 40px 20px;
 }
 
+/* --- UPDATED ABOUT CORES --- */
+#about h2 {
+    text-align: center; /* Explicitly forces the main heading to stay centered */
+    font-size: 2.5rem;
+    color: #0F172A;
+    margin-bottom: 50px;
+    font-weight: 800;
+}
+
+/* New Split Grid Layer matching the width of your navbar (95% width, 1400px max) */
+.about-split-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Gives the text side slightly more room than the image */
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
 .about-content {
-    text-align: left; /* Text reads better left-aligned when it's longer */
-    max-width: 900px; /* Constrains the width so lines aren't too long to read */
-    margin: 0 auto 40px auto;
+    text-align: left; /* Flushes sentences leftward */
     font-size: 1.1rem;
-    line-height: 1.8; /* Increased line-height for better readability */
+    line-height: 1.8;
     color: #374151;
 }
 
 .about-content p {
-    margin-bottom: 20px; /* Adds space between your new paragraphs */
+    margin-bottom: 20px;
+}
+
+/* Right-side image formatting */
+.about-graphic-side {
+    display: flex;
+    justify-content: flex-end; /* Pushes the graphic flush with the right edge of the nav bar */
+    width: 100%;
+}
+
+.about-calculus-img {
+    width: 100%;
+    max-width: 450px; /* Caps size so it doesn't distort */
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
 }
 
 .about-header {
@@ -490,5 +521,20 @@ footer {
     
     .about-header h2 {
         font-size: 2rem;
+    }
+
+    /* Add these layout overrides inside your existing mobile media query */
+    .about-split-container {
+        grid-template-columns: 1fr; /* Stack text and image vertically on phones */
+        gap: 30px;
+        text-align: center;
+    }
+
+    .about-content {
+        text-align: center; /* Center-align the text layout cleanly on phones */
+    }
+
+    .about-graphic-side {
+        justify-content: center;
     }
 }
