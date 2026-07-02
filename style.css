@@ -92,7 +92,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px; 
-    /* Changed width to 95% and max-width to 1400px to exactly match your .nav-bar-block settings */
+    /* Changed width to 95% and max-width to 1400px to exactly match your .nav-bar-block setting */
     width: 95%; 
     max-width: 1400px; 
     margin: 30px auto 60px auto; /* Decreased top margin to pull the whole section slightly upwards */
@@ -233,12 +233,6 @@ section {
     padding: 40px 20px;
 }
 
-.about-header {
-    text-align: center;
-    max-width: 750px;
-    margin: 0 auto 50px auto;
-}
-
 .about-content {
     text-align: left; /* Text reads better left-aligned when it's longer */
     max-width: 900px; /* Constrains the width so lines aren't too long to read */
@@ -250,6 +244,12 @@ section {
 
 .about-content p {
     margin-bottom: 20px; /* Adds space between your new paragraphs */
+}
+
+.about-header {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 50px auto;
 }
 
 .about-header h2 {
