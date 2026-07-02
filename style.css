@@ -87,21 +87,23 @@ body {
     background: #e6c600;
 }
 
-/* --- NEW TWO-COLUMN HERO SECTION --- */
+/* --- UPDATED HERO SECTION CONTAINER --- */
 .hero-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px; 
-    width: 90%; 
-    max-width: 1200px; 
-    margin: 60px auto; 
+    /* Changed width to 95% and max-width to 1400px to exactly match your .nav-bar-block settings */
+    width: 95%; 
+    max-width: 1400px; 
+    margin: 30px auto 60px auto; /* Decreased top margin to pull the whole section slightly upwards */
     align-items: center;
 }
 
+/* --- LEFT COLUMN ALIGNMENT --- */
 .hero-image-content {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Forces the image container flush against the far-left grid line */
 }
 
 .hero-img {
@@ -113,18 +115,34 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
+/* --- RIGHT COLUMN ALIGNMENT & UPWARD MOVE --- */
 .hero-text-content {
     text-align: right;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    margin-top: -20px; /* Slight negative margin pulls text upward to tighten white space */
+}
+
+/* --- ADD THIS NEW BLOCK HERE --- */
+.accent-line-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* Keeps anchor on the right */
+    margin-bottom: 10px;
 }
 
 .gold-accent-line {
-    width: 60px;
+    width: 85%; 
+    max-width: 500px; 
     height: 5px;
     background-color: #FFDD00;
-    margin-bottom: 20px;
+}
+.gold-accent-line {
+    width: 85%; /* Extended line length to reach out close across to the image column */
+    max-width: 500px; 
+    height: 5px;
+    background-color: #FFDD00;
 }
 
 .hero-title {
@@ -271,8 +289,47 @@ footer {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- NEW COMPLEMENTARY BUTTON ACTIONS --- */
+.hero-action-ctas {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.enrol-btn {
+    background: #0F172A;
+    color: white;
+    border: 2px solid #0F172A;
+}
+
+.enrol-btn:hover {
+    background: #FFDD00;
+    color: #0F172A;
+    border-color: #FFDD00;
+    transform: translateY(-2px);
+}
+
+.inquire-btn {
+    background: #FFDD00;
+    color: #0F172A;
+    border: 2px solid #FFDD00;
+}
+
+.inquire-btn:hover {
+    background: #0F172A;
+    color: white;
+    border-color: #0F172A;
+    transform: translateY(-2px);
+}
+
+/* Animation alignment updates */
+.hero-action-ctas { animation-delay: 0.9s; display: flex; }
+
 /* --- MOBILE RESPONSIVENESS BREAKPOINT --- */
 @media (max-width: 768px) {
+    /* Kept from your original code to save your nav styles */
     .nav-bar-block {
         flex-direction: column;
         padding: 20px 0 0 0;
@@ -293,9 +350,11 @@ footer {
         padding: 15px;
     }
     
+    /* Updated hero layout rules */
     .hero-container {
         grid-template-columns: 1fr;
         text-align: center;
+        width: 95%;
         margin: 30px auto;
         gap: 30px;
     }
@@ -306,7 +365,17 @@ footer {
         align-items: center;
     }
 
+    .hero-image-content {
+        justify-content: center;
+    }
+
+    /* Updated extended line settings for mobile views */
+    .accent-line-wrapper {
+        justify-content: center;
+    }
+    
     .gold-accent-line {
+        width: 60px; /* Snaps back to a clean decorative dash on mobile layouts */
         margin: 0 auto 20px auto;
     }
     
@@ -314,7 +383,16 @@ footer {
         font-size: 2.3rem;
     }
     
-    .hero-buttons {
-        justify-content: center;
+    /* New stacked styles for your twin CTA buttons */
+    .hero-action-ctas {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .hero-action-ctas .button {
+        width: 100%;
+        text-align: center;
     }
 }
