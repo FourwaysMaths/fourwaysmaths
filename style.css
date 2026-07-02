@@ -139,13 +139,6 @@ body {
     background-color: #FFDD00;
 }
 
-.gold-accent-line {
-    width: 85%; /* Extended line length to reach out close across to the image column */
-    max-width: 500px; 
-    height: 5px;
-    background-color: #FFDD00;
-}
-
 .hero-title {
     font-size: 3.8rem; 
     line-height: 1.1;
