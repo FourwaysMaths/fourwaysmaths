@@ -514,8 +514,8 @@ footer {
 /* 2-Column Flex-Grid matching the core system layout */
 .testimonials-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
     align-items: stretch; /* Forces both cards to match heights perfectly */
 }
 
