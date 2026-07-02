@@ -128,16 +128,17 @@ body {
 .accent-line-wrapper {
     width: 100%;
     display: flex;
-    justify-content: flex-end; /* Keeps anchor on the right */
+    justify-content: flex-end; /* Keeps the line pushed tight against the right edge */
     margin-bottom: 10px;
 }
 
 .gold-accent-line {
-    width: 85%; 
-    max-width: 500px; 
+    width: 100%;               /* Changed from 85% to 100% */
+    max-width: 180px;          /* Changed from 500px to 180px so it perfectly caps its length */
     height: 5px;
     background-color: #FFDD00;
 }
+
 .gold-accent-line {
     width: 85%; /* Extended line length to reach out close across to the image column */
     max-width: 500px; 
