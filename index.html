@@ -30,20 +30,24 @@
     </nav>
 </header>
 
-<!-- 3. Cleaned up two-column Hero Section -->
+<!-- Updated Hero Section with new button wrappers -->
 <section class="hero-container">
     
-    <!-- LEFT COLUMN: Your single image will sit here -->
+    <!-- LEFT COLUMN: Image aligns cleanly with the left edge of the nav bar -->
     <div class="hero-image-content">
         <img src="images/Cool_norings.png" alt="Fourways Maths Learner" class="hero-img">
     </div>
 
-    <!-- RIGHT COLUMN: This will now push completely to the right side of the screen -->
+    <!-- RIGHT COLUMN: Text aligns cleanly with the right edge of the nav bar -->
     <div class="hero-text-content">
-        <div class="gold-accent-line"></div>
+        <!-- The gold accent line now sits inside its own wrapper to stretch long leftwards -->
+        <div class="accent-line-wrapper">
+            <div class="gold-accent-line"></div>
+        </div>
+        
         <h1 class="hero-title">
-            <span class="gold-text">Building Confidence.</span><br>
-            <span class="black-text">Improving Marks.</span>
+            <span class="gold-text">Building Confidence</span><br>
+            <span class="black-text">Improving Marks</span>
         </h1>
         
         <h3 class="hero-subtitle">Online Or In-Person</h3>
@@ -55,11 +59,18 @@
         </p>
         
         <p class="hero-badge">
-            <strong>Qualified Educator • Online Academic Support</strong>
+            <strong>Qualified Educators • Online Academic Support</strong>
         </p>
-    </div>
-</section> <!-- FIXED: Removed rogue body/html tags from here -->
 
+        <!-- New Action Buttons moving upwards into the workspace -->
+        <div class="hero-action-ctas">
+            <a class="button enrol-btn" href="quote.html">Enrol Now</a>
+            <a class="button inquire-btn" href="quote.html">Inquire about my grade</a>
+        </div>
+    </div>
+
+</section>
+    
 <section id="about">
     <h2>About Fourways Maths</h2>
     <p>
