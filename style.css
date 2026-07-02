@@ -347,13 +347,67 @@ section {
     line-height: 1.5;
 }
 
+/* --- UPDATED MEET YOUR TUTOR STYLES --- */
+#tutor {
+    max-width: 1400px; 
+    width: 95%;
+    margin: 80px auto;
+    padding: 40px 20px;
+}
+
+#tutor h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #0F172A;
+    margin-bottom: 50px;
+    font-weight: 800;
+}
+
+/* Two-column layout matching the About page grid structure */
+.tutor-split-container {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr; /* Gives the text slightly more room than the circle picture */
+    gap: 60px;
+    align-items: center;
+}
+
+.tutor-image-side {
+    display: flex;
+    justify-content: flex-start; /* Keeps the circle hugging the left boundary line */
+    width: 100%;
+}
+
 .profile-pic {
-    width: 250px;
-    height: 250px;
+    width: 320px; /* Sized up slightly from 250px so it balances out the text block */
+    height: 320px;
     object-fit: cover;
     border-radius: 50%;
-    margin: 20px 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 4px solid #ffffff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12); /* Clean, softer shadow */
+}
+
+.tutor-content {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #374151;
+}
+
+.tutor-greeting {
+    font-size: 1.8rem;
+    color: #0F172A;
+    font-weight: 700;
+}
+
+.tutor-subtitle-role {
+    color: #d98206; /* Nice gold subtitle tag */
+    font-weight: bold;
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+}
+
+.tutor-content p {
+    margin-bottom: 20px;
 }
 
 #quote {
@@ -536,5 +590,24 @@ footer {
 
     .about-graphic-side {
         justify-content: center;
+    }
+
+    /* Add these layout overrides inside your existing mobile media query */
+    .tutor-split-container {
+        grid-template-columns: 1fr; /* Drop to vertical stacked layout on mobile */
+        gap: 30px;
+    }
+
+    .tutor-image-side {
+        justify-content: center; /* Center the profile circle on mobile */
+    }
+
+    .profile-pic {
+        width: 240px; /* Slightly smaller size so it sits comfortably on mobile screens */
+        height: 240px;
+    }
+
+    .tutor-content {
+        text-align: center; /* Centered bio text on mobile */
     }
 }
