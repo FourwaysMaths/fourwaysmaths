@@ -18,12 +18,12 @@
     <!-- 2. Nav block holding links and the nested Quote button -->
     <nav class="nav-bar-block">
         <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#about">Meet Your Tutor</a></li>
-    <li><a href="#testimonials">Testimonials</a></li>
-    <li><a href="#services">Our Services</a></li>
-    <li><a href="#contact">Contact Us</a></li>
-</ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#tutor">Meet Your Tutor</a></li> <!-- FIXED: Point to unique ID -->
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#services">Our Services</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+        </ul>
         
         <!-- Moved from below to sit on the right side of the nav block -->
         <a class="nav-cta-btn" href="quote.html">Start My Quote</a>
@@ -58,115 +58,78 @@
             <strong>Qualified Educator • Online Academic Support</strong>
         </p>
     </div>
+</section> <!-- FIXED: Removed rogue body/html tags from here -->
 
-</section>
-</body>
-</html><section id="about">
+<section id="about">
     <h2>About Fourways Maths</h2>
-
     <p>
         Fourways Maths provides personalised tutoring designed to help learners
         understand concepts, improve confidence, and achieve stronger academic results:
     </p>
-    <p>
-        📈 Improve Results
-    </p>
-    <p>
-        🎯 Personalised Support
-    </p>
-    <p>
-        💻 Convenient, flexible Lessons
-    </p>
-
+    <p>📈 Improve Results</p>
+    <p>🎯 Personalised Support</p>
+    <p>💻 Convenient, flexible Lessons</p>
 </section>
-<section id="about">
 
+<section id="tutor"> <!-- FIXED: Changed ID to "tutor" so it doesn't duplicate "about" -->
     <h2>Meet Your Tutor</h2>
-
-    <img src="images/gcina-tutor.jpg"
-         alt="Gcina Sithole"
-         class="profile-pic">
-
+    <img src="images/gcina-tutor.jpg" alt="Gcina Sithole" class="profile-pic">
+    <p>Hi, I'm Gcina Sithole, founder of Fourways Maths.</p>
     <p>
-    Hi, I'm Gcina Sithole, founder of Fourways Maths.
+        Fourways Maths was established to provide learners with personalised academic support that builds confidence, strengthens understanding and improves results. As the business grows, our commitment remains the same: connecting learners with quality educational support tailored to their individual needs.
     </p>
-
     <p>
-    Fourways Maths was established to provide learners with personalised academic support that builds confidence, strengthens understanding and improves results. As the business grows, our commitment remains the same: connecting learners with quality educational support tailored to their individual needs.
+        I currently specialise in Mathematics (Grades 8–12) and Mathematical Literacy (Grades 10–12), helping learners overcome challenges through patient guidance, structured lessons and clear explanations.
     </p>
-
     <p>
-    I currently specialise in Mathematics (Grades 8–12) and Mathematical Literacy (Grades 10–12), helping learners overcome challenges through patient guidance, structured lessons and clear explanations.
+        Whether a learner is aiming to improve their marks, prepare for exams, or build confidence in the subject, our goal is to make Mathematics more accessible and less intimidating.
     </p>
-
-    <p>
-    Whether a learner is aiming to improve their marks, prepare for exams, or build confidence in the subject, our goal is to make Mathematics more accessible and less intimidating.
-    </p>
-
 </section>
-    <section id="testimonials">
 
+<section id="testimonials">
     <h2>What Parents & Learners Say</h2>
-
     <div class="testimonial">
         <p>
             "Mr.G helped my daughter improve her confidence and understanding in Mathematics. Her marks improved significantly."
         </p>
         <strong>- Parent</strong>
     </div>
-
     <div class="testimonial">
         <p>
             "Lessons were always clear, patient and well structured. I felt much more prepared for exams."
         </p>
         <strong>- Grade 12 Learner</strong>
     </div>
-
 </section>
+
 <section id="services">
     <h2>Our Services</h2>
-
     <div class="card">
         <h3>Mathematics</h3>
         <p>Grade 8–12 Mathematics support.</p>
     </div>
-
     <div class="card">
         <h3>Mathematical Literacy</h3>
         <p>Grade 10–12 Mathematical Literacy support.</p>
     </div>
-
     <div class="card">
         <h3>Exam Preparation</h3>
         <p>Focused revision and exam readiness.</p>
     </div>
 </section>
-<section id="quote">
 
-```
-<h2>Get Your Personalised Quote</h2>
-
-<p>
-    Before we prepare your personalised quote, we'll need a few details.
-</p>
-
-<a class="button" href="quote.html">
-    Start My Quote
-</a>
-```
-
+<section id="quote"> <!-- FIXED: Removed stray backtick symbols -->
+    <h2>Get Your Personalised Quote</h2>
+    <p>Before we prepare your personalised quote, we'll need a few details.</p>
+    <a class="button" href="quote.html">Start My Quote</a>
 </section>
 
 <section id="contact">
     <h2>Contact Us</h2>
-
     <p>Ready to improve your results?</p>
-
-<div class="hero-buttons">
-            <a class="button whatsapp-btn" href="https://wa.me/27816147602">
-                WhatsApp Now
-            </a>
-</div>
+    <div class="hero-buttons">
+        <a class="button whatsapp-btn" href="[https://wa.me/27816147602](https://wa.me/27816147602)">WhatsApp Now</a>
+    </div>
 </section>
 
 <footer>
