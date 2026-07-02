@@ -91,14 +91,12 @@ body {
 /* --- NEW TWO-COLUMN HERO SECTION --- */
 .hero-container {
     display: grid;
-    /* Swapped: 0.88fr for the images on the left, 1.12fr for the text on the right */
-    grid-template-columns: 0.88fr 1.12fr; 
+    grid-template-columns: 1fr 1fr; /* Strictly sets up exactly 2 equal columns */
     gap: 60px; 
-    width: 95%; 
-    max-width: 1400px; 
-    margin: 80px auto; 
+    width: 90%; 
+    max-width: 1200px; 
+    margin: 60px auto; 
     align-items: center;
-    padding: 20px 0;
 }
 
 .gold-accent-line {
@@ -109,9 +107,10 @@ body {
 }
 
 .hero-text-content {
-    max-width: 700px; 
-    text-align: right; /* Forces the text to align to the right edge */
-    justify-self: end;  /* Keeps the text container anchored to the right side of its grid column */
+    text-align: right;          /* Aligns text sentences to the right */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;     /* Shoves the yellow line and blocks to the right edge */
 }
 .hero-title {
     font-size: 3.8rem; 
@@ -121,7 +120,7 @@ body {
 }
 
 .gold-text { color: #FFDD00; }
-.black-text { color: #0F172A; }
+.black-text { color: #0B132B; }
 
 .hero-subtitle {
     color: #0F172A;
@@ -169,14 +168,6 @@ body {
     background: #0F172A;
     color: white;
     transform: translateY(-2px);
-}
-
-/* Container for your future arched photos/graphics */
-.hero-images-content {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 
