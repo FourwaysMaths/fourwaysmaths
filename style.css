@@ -403,22 +403,135 @@ section {
     margin-bottom: 20px;
 }
 
+/* --- PREMIUM QUOTE SECTION --- */
 #quote {
+    max-width: 1400px;
+    width: 95%;
+    margin: 60px auto;
+    padding: 60px 40px;
+    background: #f8fafc; /* Ultra-light premium background frame */
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
     text-align: center;
 }
 
-#quote form {
-    max-width: 500px;
-    margin: 30px auto;
+#quote h2 {
+    font-size: 2.2rem;
+    color: #0F172A;
+    font-weight: 800;
+    margin-bottom: 12px;
 }
 
-#quote input {
-    width: 100%;
-    padding: 15px;
+#quote p {
+    font-size: 1.1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+}
+
+/* Styled real interactive button to replace that loose purple link */
+.quote-action-btn {
+    display: inline-block;
+    background: #FFDD00;
+    color: #0F172A;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 16px 40px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(255, 221, 0, 0.2);
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quote-action-btn:hover {
+    background: #e6c600;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 221, 0, 0.3);
+}
+
+/* --- PREMIUM CONTACT US SPLIT SECTION --- */
+#contact {
+    max-width: 1400px;
+    width: 95%;
+    margin: 40px auto 80px auto;
+    padding: 40px 20px;
+}
+
+.contact-split-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.contact-text-side {
+    text-align: left;
+}
+
+.contact-text-side h2 {
+    font-size: 2.5rem;
+    color: #0F172A;
+    font-weight: 800;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
+}
+
+.contact-text-side p {
+    font-size: 1.15rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/* Floating Action Card for WhatsApp on the Right Side */
+.contact-card-side {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.whatsapp-action-card {
+    background: #0F172A; /* Match the dark premium navbar block */
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.whatsapp-card-title {
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.whatsapp-card-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+/* Re-styled your button to be prominent, centered, and premium inside the card */
+.contact-whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #0F172A;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 15px 35px;
+    border-radius: 8px;
+    width: 100%;
+    transition: all 0.3s ease;
+    border: 2px solid #ffffff;
+}
+
+.contact-whatsapp-btn:hover {
+    background: transparent;
+    color: #FFDD00;
+    border-color: #FFDD00;
+    transform: translateY(-2px);
 }
 
 footer {
@@ -811,4 +924,36 @@ footer {
     .service-card {
         padding: 0 0 10px 0; /* Reduces padding to support inner left-aligned card text constraints */
     }
+
+    /* Add this right at the bottom inside your max-width: 768px brackets */
+    #quote {
+        padding: 40px 20px;
+    }
+
+    #quote h2 {
+        font-size: 1.8rem;
+    }
+
+    .contact-split-container {
+        grid-template-columns: 1fr; /* Stack vertically on small screens */
+        gap: 35px;
+        text-align: center;
+    }
+
+    .contact-text-side {
+        text-align: center;
+    }
+
+    .contact-text-side h2 {
+        font-size: 2rem;
+    }
+
+    .contact-card-side {
+        justify-content: center;
+    }
+    
+    .whatsapp-action-card {
+        padding: 30px 20px;
+    }
+}
 }
