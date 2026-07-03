@@ -17,9 +17,10 @@ body {
 }
 
 /* --- NEW STACKED HEADER SYSTEM --- */
+/* --- CLEAN STACKED HEADER SYSTEM --- */
 .main-header {
     background: #ffffff;
-    padding: 5px 20px;
+    padding: 20px 20px 5px 20px; /* Restored breathing room at the top */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,32 +29,18 @@ body {
 
 .logo-container {
     width: 100%;
-    
-    /* Explicitly separate the gradient tint and the image asset */
-    background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
-                  url('https://fourwaysmall.com/images/fourways-mall.png');
-    
-    /* Individual control rules to prevent browser parsing errors */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center 35%;
-    
-    /* Layout styling to keep everything perfectly centered */
+    background: #ffffff; /* Clean, minimal white background */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px 0; /* Balanced padding for the logo */
 }
 
 .site-logo {
-    max-width: 240px; /* Perfectly scales your main brand logo over the backdrop */
+    max-width: 220px; /* Clean scale for the logo */
     height: auto;
     display: block;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5)); /* Adds a crisp shadow layer behind your logo for absolute legibility */
-    z-index: 2; /* Ensures it floats safely above the background textures */
 }
-
 /* The distinct colored block holding your links & button */
 .nav-bar-block {
     display: flex;
