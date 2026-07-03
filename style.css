@@ -139,13 +139,6 @@ body {
     background-color: #FFDD00;
 }
 
-.gold-accent-line {
-    width: 85%; /* Extended line length to reach out close across to the image column */
-    max-width: 500px; 
-    height: 5px;
-    background-color: #FFDD00;
-}
-
 .hero-title {
     font-size: 3.8rem; 
     line-height: 1.1;
@@ -610,7 +603,7 @@ footer {
 /* Animation alignment updates */
 .hero-action-ctas { animation-delay: 0.9s; display: flex; }
 
-/* --- NEW PREMIUM SERVICES SECTION STYLES --- */
+/* --- FIXED AND UPDATED SERVICES SECTION STYLES --- */
 #services {
     max-width: 1400px;
     width: 95%;
@@ -626,21 +619,22 @@ footer {
     font-weight: 800;
 }
 
-/* 3-Column Services Layout Grid */
+/* 3-Column Desktop Grid Layout Container */
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important; /* Force layout injection over existing styles */
     gap: 30px;
     align-items: stretch; /* Keeps all cards exactly the same height */
 }
 
-/* Individual Service Presentation Cards */
+/* Individual Premium Presentation Cards */
 .service-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 40px 30px;
-    text-align: center;
+    overflow: hidden; /* Clips the image cleanly to the card's rounded corners */
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
@@ -651,39 +645,38 @@ footer {
     border-color: #FFDD00; /* Gold highlight pop on hover */
 }
 
-/* Circular Container for your Pictures */
+/* Rectangular Image Banner Frame */
 .service-icon-box {
-    width: 90px; /* Sized beautifully to let your graphics shine */
-    height: 90px;
-    background: #f8fafc; /* Clean, light off-white background so your pics pop */
-    border: 2px solid #e2e8f0;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 25px auto;
-    overflow: hidden; /* Keeps the picture inside the clean circle boundary */
-    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+    width: 100%;
+    height: 240px; /* Perfect uniform banner height proportions */
+    background: #f8fafc;
+    margin: 0; /* Clears old circle-specific offsets */
+    border-radius: 0; /* Changes structure from circle badge to full-width card banner */
+    border: none;
+    overflow: hidden;
 }
 
-/* Image Formatting inside the Circle */
+/* Heavy Stock Photo Sizing & Format Rules */
 .service-img {
-    width: 65%; /* Scales the graphic so it has nice padding/breathing room */
-    height: 65%;
-    object-fit: contain; /* Keeps your image proportions perfectly crisp */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover; /* Crops graphics into perfect responsive frames without distortion */
 }
 
 .service-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: #0F172A;
-    margin-bottom: 15px;
+    margin: 25px 20px 12px 20px;
     font-weight: 700;
+    text-align: left; /* Flushes titles perfectly to the left margins */
 }
 
 .service-card p {
-    font-size: 1rem;
+    font-size: 0.98rem;
     color: #64748b;
     line-height: 1.6;
+    margin: 0 20px 25px 20px;
+    text-align: left; /* Aligns paragraph text to match the header copy */
 }
 
 /* --- MOBILE RESPONSIVENESS BREAKPOINT --- */
@@ -809,13 +802,13 @@ footer {
         padding: 30px 20px;
     }
 
-    /* Add these layout overrides inside your existing mobile media query */
+    /* Stacks the three service panels vertically on mobile layouts safely */
     .services-grid {
-        grid-template-columns: 1fr; /* Stacks the three service panels vertically on mobile */
+        grid-template-columns: 1fr !important; /* Overrides forced desktop multi-column injections */
         gap: 25px;
     }
     
     .service-card {
-        padding: 30px 20px;
+        padding: 0 0 10px 0; /* Reduces padding to support inner left-aligned card text constraints */
     }
 }
