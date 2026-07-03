@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fourways Maths</title>
-    <!-- Insert this inside your <head> block -->
+    <!-- Animate On Scroll Library Stylesheet -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
@@ -12,37 +12,29 @@
 <body>
 
 <header class="main-header">
-    <!-- 1. Logo shifted to the very top center -->
     <div class="logo-container">
         <img src="images/logo.png" alt="Fourways Maths Logo" class="site-logo">
     </div>
 
-    <!-- 2. Nav block holding links and the nested Quote button -->
     <nav class="nav-bar-block">
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
-            <li><a href="#tutor">Meet Your Tutor</a></li> <!-- FIXED: Point to unique ID -->
+            <li><a href="#tutor">Meet Your Tutor</a></li> 
             <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="#services">Our Services</a></li>
             <li><a href="#contact">Contact Us</a></li>
         </ul>
-        
-        <!-- Moved from below to sit on the right side of the nav block -->
         <a class="nav-cta-btn" href="quote.html">Start My Quote</a>
     </nav>
 </header>
 
-<!-- Updated Hero Section with new button wrappers -->
+<!-- Hero Section Container -->
 <section class="hero-container">
-    
-    <!-- LEFT COLUMN: Image aligns cleanly with the left edge of the nav bar -->
     <div class="hero-image-content">
         <img src="images/Cool_norings.png" alt="Fourways Maths Learner" class="hero-img">
     </div>
 
-    <!-- RIGHT COLUMN: Text aligns cleanly with the right edge of the nav bar -->
     <div class="hero-text-content">
-        <!-- The gold accent line now sits inside its own wrapper to stretch long leftwards -->
         <div class="accent-line-wrapper">
             <div class="gold-accent-line"></div>
         </div>
@@ -55,8 +47,7 @@
         <h3 class="hero-subtitle">Online Or In-Person</h3>
         
         <p class="hero-description">
-            Specialised Mathematics and
-            Mathematical Literacy (Grades 8–12) support
+            Specialised Mathematics and Mathematical Literacy (Grades 8–12) support
             tailored to each learner's needs. The lessons are interactive, and not just videos.
             Learner support e.g., asking math questions, is 24/7.
         </p>
@@ -65,133 +56,86 @@
             <strong>Qualified Educators • Online Academic Support</strong>
         </p>
 
-        <!-- New Action Buttons moving upwards into the workspace -->
         <div class="hero-action-ctas">
             <a class="button enrol-btn" href="quote.html">Enrol Now</a>
             <a class="button inquire-btn" href="quote.html">Inquire about my grade</a>
         </div>
     </div>
-
 </section>
     
-<!-- UPDATED ABOUT SECTION: Split layout with text on left, image on right -->
+<!-- About Section -->
 <section id="about">
-    <!-- 1. Heading stays completely centered at the top -->
     <h2>About Fourways Maths</h2>
 
+    <!-- FIXED: Cleared out the duplicate empty template block and placed data-aos directly onto active content rows -->
     <div class="about-split-container">
-    <!-- Text comes in from the left -->
-    <div class="about-content" data-aos="fade-right">
-        <h2>About Us</h2>
-        ...
-    </div>
-    <!-- Graphic graphic slides in from the right -->
-    <div class="about-graphic-side" data-aos="fade-left">
-        <img src="..." class="about-calculus-img" alt="...">
-    </div>
-    </div>
-
-    <!-- 2. Two-column layout container -->
-    <div class="about-split-container">
-        
-        <!-- LEFT COLUMN: Your text blocks aligning with the left edge of the nav bar -->
-        <div class="about-content">
+        <div class="about-content" data-aos="fade-right">
             <p>Fourways Maths was founded in the heart of Fourways with a simple mission: to help learners unlock their mathematical potential through high-quality, personalised support. What began as a local tutoring service has since expanded beyond Fourways, with learners joining our online lessons from across South Africa.</p>
-            
             <p>We believe that every learner can succeed in Mathematics and Mathematical Literacy when given the right guidance, encouragement, and practice. Our lessons focus on building strong foundations, improving confidence, and developing the problem-solving skills needed for long-term academic success.</p>
-            
             <p>Fourways Maths supports learners across multiple curricula, including CAPS and IEB (Grades 8–12), and Cambridge (Grades 8–11). This allows us to provide targeted, curriculum-specific guidance while maintaining the personalised approach that has become the foundation of our teaching philosophy.</p>
-            
             <p>Whether a learner is aiming to pass, improve their marks, or achieve distinctions, Fourways Maths is committed to providing professional, affordable tutoring that delivers real results.</p>
         </div>
 
-        <!-- RIGHT COLUMN: New Calculus Image -->
-        <div class="about-graphic-side">
+        <div class="about-graphic-side" data-aos="fade-left">
             <img src="images/Calculus.png" alt="Mathematics Graphics" class="about-calculus-img">
         </div>
-
     </div>
-    <!-- The new grid container holding 3 separate cards -->
+
+    <!-- Features Stagger Grid -->
     <div class="about-features-grid">
-        
-        <div class="feature-card">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
             <div class="feature-icon-wrapper">📈</div>
             <h3>Improve Results</h3>
             <p>Tailored strategies focused on mastering core topics and boosting final report card marks.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
             <div class="feature-icon-wrapper">🎯</div>
             <h3>Personalised Support</h3>
             <p>Patient guidance that adapts entirely to each student's unique learning speed and roadblocks.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
             <div class="feature-icon-wrapper">💻</div>
             <h3>Flexible Lessons</h3>
             <p>Convenient online or in-person schedules designed to fit smoothly around busy school terms.</p>
         </div>
-
     </div>
 </section>
 
-<!-- UPDATED TUTOR SECTION: Split layout with image on left, bio on right -->
+<!-- Tutor Section -->
 <section id="tutor">
-    
-    <!-- Heading stays cleanly aligned at the top -->
     <h2>Meet Your Tutor</h2>
 
+    <!-- FIXED: Removed the empty duplicate template block -->
     <div class="tutor-split-container">
-    <!-- Profile picture glides in from the left -->
-    <div class="tutor-image-side" data-aos="fade-right">
-        <img src="..." class="profile-pic" alt="...">
-    </div>
-    <!-- Bio description slides in from the right -->
-    <div class="tutor-content" data-aos="fade-left">
-        <div class="tutor-greeting">Meet your Tutor</div>
-        ...
-    </div>
-    </div>
-
-    <!-- Two-column split container -->
-    <div class="tutor-split-container">
-        
-        <!-- LEFT COLUMN: Profile picture aligned with left side of the layout -->
-        <div class="tutor-image-side">
+        <div class="tutor-image-side" data-aos="fade-right">
             <img src="images/gcina-tutor.jpg" alt="Gcina Sithole" class="profile-pic">
         </div>
 
-        <!-- RIGHT COLUMN: Bio text blocks stretching seamlessly to the right edge -->
-        <div class="tutor-content">
+        <div class="tutor-content" data-aos="fade-left">
             <h3 class="tutor-greeting">Hi, I'm Gcina Sithole</h3>
             <p class="tutor-subtitle-role">Founder & Head Educator</p>
             
             <p>Fourways Maths was established to provide learners with personalised academic support that builds confidence, strengthens understanding and improves results. As the business grows, our commitment remains the same: connecting learners with quality educational support tailored to their individual needs.</p>
-            
             <p>We currently specialise in Mathematics (Grades 8–12) and Mathematical Literacy (Grades 10–12), helping learners overcome challenges through patient guidance, structured lessons and clear explanations.</p>
-            
             <p>Whether a learner is aiming to improve their marks, prepare for exams, or build confidence in the subject, our goal is to make Mathematics more accessible and less intimidating.</p>
         </div>
-
     </div>
 </section>
 
-<!-- CORRECTED: 3-Column Responsive Card Grid Layout -->
+<!-- Testimonials Section -->
 <section id="testimonials">
     <h2>What Parents & Learners Say</h2>
     
+    <!-- Added stagger entry points for your parent panels -->
     <div class="testimonials-grid">
-        
-        <!-- CARD 1: The Combined Family Box (Parent + Learner) -->
-        <div class="testimonial-card family-card">
+        <div class="testimonial-card family-card" data-aos="fade-up" data-aos-delay="100">
             <span class="family-badge">Family Feedback</span>
             
             <div class="quote-sub-block">
                 <div class="quote-icon">“</div>
-                <p class="quote-text">"Fourways Maths Tutors changed everything for our daughter’s Matric Maths re-write. In just 4 months they patiently rebuilt her from Grade 8 to Grade 12, with marks that kept climbing. 
-I never had to track them down — they were consistent, dedicated, and always available when she needed them. 
-They are truly goal-orientated with a passion for Maths, even staying up late to make sure she understood. 
-We’re beyond grateful and recommend them 100%."</p>
+                <p class="quote-text">"Fourways Maths Tutors changed everything for our daughter’s Matric Maths re-write. In just 4 months they patiently rebuilt her from Grade 8 to Grade 12, with marks that kept climbing. I never had to track them down — they were consistent, dedicated, and always available when she needed them. They are truly goal-orientated with a passion for Maths, even staying up late to make sure she understood. We’re beyond grateful and recommend them 100%."</p>
                 <p class="reviewer-name">— Grade 12 Parent</p>
             </div>
             
@@ -204,8 +148,7 @@ We’re beyond grateful and recommend them 100%."</p>
             </div>
         </div>
 
-        <!-- CARD 2: Your Existing Testimonial (Or your 2nd new one) -->
-        <div class="testimonial-card">
+        <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
             <div class="quote-sub-block standard-layout">
                 <div class="quote-icon">“</div>
                 <p class="quote-text">"Fourways Maths helped my sons from being average students to A+ students. They are very patient and professional, I am very very happy with their services."</p>
@@ -216,8 +159,7 @@ We’re beyond grateful and recommend them 100%."</p>
             </div>
         </div>
 
-        <!-- CARD 3: Your Brand New Testimonial -->
-        <div class="testimonial-card">
+        <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
             <div class="quote-sub-block standard-layout">
                 <div class="quote-icon">“</div>
                 <p class="quote-text">"Mr.G helped my daughter improve her confidence and understanding in Mathematics. Her marks improved significantly."</p>
@@ -227,18 +169,14 @@ We’re beyond grateful and recommend them 100%."</p>
                 </div>
             </div>
         </div>
-
     </div>
 </section>
 
-<!-- UPDATED: Our Services Section with Custom Images -->
+<!-- Our Services Section -->
 <section id="services">
     <h2>Our Services</h2>
     
-    <!-- This is your existing grid container -->
     <div class="services-grid">
-        
-        <!-- CARD 1: Mathematics -->
         <div class="service-card" data-aos="fade-up" data-aos-delay="100">
             <div class="service-icon-box">
                 <img src="images/Mathematics.png" class="service-img" alt="Mathematics Support">
@@ -247,7 +185,6 @@ We’re beyond grateful and recommend them 100%."</p>
             <p>Comprehensive Grade 8–12 support mapped to CAPS, IEB, and Cambridge frameworks, focusing on core concepts and algebraic mastery.</p>
         </div>
 
-        <!-- CARD 2: Mathematical Literacy -->
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
             <div class="service-icon-box">
                 <img src="images/MLit.png" class="service-img" alt="Mathematical Literacy">
@@ -256,7 +193,6 @@ We’re beyond grateful and recommend them 100%."</p>
             <p>Targeted Grade 10–12 assistance designed to build strong foundations in real-world numerical analysis, finance, and data handling.</p>
         </div>
 
-        <!-- CARD 3: Exam Preparation -->
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
             <div class="service-icon-box">
                 <img src="images/Exam.png" class="service-img" alt="Exam Preparation">
@@ -264,38 +200,25 @@ We’re beyond grateful and recommend them 100%."</p>
             <h3>Exam Preparation</h3>
             <p>Focused revision bootcamps, past-paper walkthroughs, and time-management strategies engineered to ensure full exam readiness.</p>
         </div>
-
     </div>
 </section>
-<section id="quote">
+
+<!-- Quote Section -->
+<section id="quote" data-aos="fade-up">
     <h2>Get Your Personalised Quote</h2>
     <p>Before we prepare your personalised quote, we'll need a few details.</p>
-    <!-- FIXED: Links directly to your dedicated quote page -->
     <a href="https://fourwaysmaths.github.io/fourwaysmaths/quote.html" class="quote-action-btn">Start My Quote</a>
 </section>
 
+<!-- Contact Section -->
 <section id="contact">
+    <!-- FIXED: Removed the broken nested layout loop completely -->
     <div class="contact-split-container">
-        <div class="contact-text-side">
+        
+        <div class="contact-text-side" data-aos="fade-right">
             <h2>Contact Us</h2>
-
-            <div class="contact-split-container">
-            <!-- Contact lines slide in from the left -->
-            <div class="contact-text-side" data-aos="fade-right">
-            <h2>Contact Us</h2>
-            ...
-            </div>
-            <!-- Dark action box floats up gracefully from the right -->
-            <div class="contact-card-side" data-aos="fade-left">
-            <div class="whatsapp-action-card">
-            ...
-            </div>
-            </div>
-            </div>
-            
             <p>Ready to improve your results? Get in touch with us today and let's map out your academic success plan.</p>
             
-            <!-- ADDED: Premium text block for physical address and email -->
             <div class="contact-details-block">
                 <div class="contact-detail-item">
                     <span class="detail-icon">📍</span>
@@ -308,14 +231,14 @@ We’re beyond grateful and recommend them 100%."</p>
             </div>
         </div>
         
-        <div class="contact-card-side">
+        <div class="contact-card-side" data-aos="fade-left">
             <div class="whatsapp-action-card">
                 <div class="whatsapp-card-title">Chat Directly with Us</div>
                 <div class="whatsapp-card-desc">Click below to message us instantly on WhatsApp for quick support.</div>
-                <!-- FIXED: Links directly to launch WhatsApp using the official API formatting -->
                 <a href="https://wa.me/27816147602" target="_blank" class="contact-whatsapp-btn">WhatsApp Now</a>
             </div>
         </div>
+
     </div>
 </section>
     
@@ -323,13 +246,13 @@ We’re beyond grateful and recommend them 100%."</p>
     <p>© 2026 Fourways Maths. All rights reserved.</p>
 </footer>
 
-<!-- Insert this right before your closing </body> tag -->
+<!-- Animate On Scroll Scripts Initialization Injection -->
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
     AOS.init({
-        duration: 1000, /* Makes the slide transition last exactly 1 second */
-        once: true,     /* Ensures the animation only plays once as you scroll down */
-        offset: 120     /* Triggers the movement slightly before the element fully enters view */
+        duration: 1000, 
+        once: true,     
+        offset: 120     
     });
 </script>
     
