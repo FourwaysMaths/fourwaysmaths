@@ -610,6 +610,82 @@ footer {
 /* Animation alignment updates */
 .hero-action-ctas { animation-delay: 0.9s; display: flex; }
 
+/* --- NEW PREMIUM SERVICES SECTION STYLES --- */
+#services {
+    max-width: 1400px;
+    width: 95%;
+    margin: 80px auto;
+    padding: 40px 20px;
+}
+
+#services h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #0F172A;
+    margin-bottom: 50px;
+    font-weight: 800;
+}
+
+/* 3-Column Services Layout Grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    align-items: stretch; /* Keeps all cards exactly the same height */
+}
+
+/* Individual Service Presentation Cards */
+.service-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.08);
+    border-color: #FFDD00; /* Gold highlight pop on hover */
+}
+
+/* Circular Container for your Pictures */
+.service-icon-box {
+    width: 90px; /* Sized beautifully to let your graphics shine */
+    height: 90px;
+    background: #f8fafc; /* Clean, light off-white background so your pics pop */
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px auto;
+    overflow: hidden; /* Keeps the picture inside the clean circle boundary */
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+}
+
+/* Image Formatting inside the Circle */
+.service-img {
+    width: 65%; /* Scales the graphic so it has nice padding/breathing room */
+    height: 65%;
+    object-fit: contain; /* Keeps your image proportions perfectly crisp */
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    color: #0F172A;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.service-card p {
+    font-size: 1rem;
+    color: #64748b;
+    line-height: 1.6;
+}
+
 /* --- MOBILE RESPONSIVENESS BREAKPOINT --- */
 @media (max-width: 768px) {
     /* Kept from your original code to save your nav styles */
@@ -730,6 +806,16 @@ footer {
     }
     
     .testimonial-card {
+        padding: 30px 20px;
+    }
+
+    /* Add these layout overrides inside your existing mobile media query */
+    .services-grid {
+        grid-template-columns: 1fr; /* Stacks the three service panels vertically on mobile */
+        gap: 25px;
+    }
+    
+    .service-card {
         padding: 30px 20px;
     }
 }
