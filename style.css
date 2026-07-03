@@ -27,15 +27,29 @@ body {
 }
 
 .logo-container {
-    margin-bottom: 25px;
+    width: 100%;
+    /* Layer 1: A premium dark navy tint gradient (85% opacity) */
+    /* Layer 2: Your verified local asset 4waysmall.jpg */
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                url('images/4waysmall.jpg') no-repeat center center;
+    background-size: cover; /* Forces the image to fill the container width perfectly */
+    background-position: center 35%; /* Vertically shifts the photo to frame the iconic "FOURWAYS MALL" sign beautifully */
+    
+    /* Layout structure to center your transparent logo overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 50px 0; /* Increased padding slightly to give the beautiful background space to breathe */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Clean separator line */
 }
 
 .site-logo {
-    max-height: 300px;
-    width: auto;
-    opacity: 0;
-    transform: translateY(25px);
-    animation: logoFade 1.2s ease forwards;
+    max-width: 240px; /* Perfectly scales your main brand logo over the backdrop */
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5)); /* Adds a crisp shadow layer behind your logo for absolute legibility */
+    z-index: 2; /* Ensures it floats safely above the background textures */
 }
 
 /* The distinct colored block holding your links & button */
