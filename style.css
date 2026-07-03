@@ -481,6 +481,49 @@ section {
     line-height: 1.6;
 }
 
+/* --- EXTRA STYLING FOR ADDRESS & EMAIL ITEMS --- */
+.contact-details-block {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    color: #374151;
+}
+
+.detail-icon {
+    font-size: 1.3rem;
+}
+
+.detail-text {
+    font-weight: 500;
+}
+
+.detail-link {
+    color: #0F172A;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.detail-link:hover {
+    color: #FFDD00; /* Subtle golden highlight on hover */
+}
+
+/* Ensure icons align centrally on mobile viewport stack */
+@media (max-width: 768px) {
+    .contact-details-block {
+        align-items: center;
+        margin-bottom: 10px;
+    }
+}
+
 /* Floating Action Card for WhatsApp on the Right Side */
 .contact-card-side {
     display: flex;
