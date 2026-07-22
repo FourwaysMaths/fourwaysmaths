@@ -178,6 +178,43 @@
             <label><input type="checkbox" name="Goals[]" value="Exam Preparation"> Exam Preparation</label>
         </div>
 
+        <h2>Schedule & Preferences</h2>
+        
+        <label for="frequency">Session Frequency</label>
+        <select id="frequency" name="Frequency" required>
+            <option value="">Select Frequency</option>
+            <option>More than once a week</option>
+            <option>Once a week</option>
+            <option>Once or twice a month</option>
+            <option>I'm not sure yet</option>
+        </select>
+
+        <p class="contact-info" style="margin-top: 15px; margin-bottom: 0;">Which day(s) is the learner available? (Select all that apply):</p>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="Available Days[]" value="Any"> Any</label>
+            <label><input type="checkbox" name="Available Days[]" value="During the week"> During the week</label>
+            <label><input type="checkbox" name="Available Days[]" value="Saturday"> Saturday</label>
+            <label><input type="checkbox" name="Available Days[]" value="Sunday"> Sunday</label>
+            <label><input type="checkbox" name="Available Days[]" value="Other"> Other</label>
+        </div>
+
+        <label for="time-slot">Preferred Time Slot</label>
+        <select id="time-slot" name="Preferred Time Slot">
+            <option value="">Select Preferred Time</option>
+            <option>Early morning (before 9am)</option>
+            <option>Morning (9am-noon)</option>
+            <option>Early afternoon (noon-3pm)</option>
+            <option>Late afternoon (3-6pm)</option>
+            <option>Evening (after 6pm)</option>
+        </select>
+
+        <label for="online-pref">Would you consider online interactive lessons?</label>
+        <select id="online-pref" name="Consider Online Lessons">
+            <option>Yes</option>
+            <option>Prefer In-Person Only</option>
+            <option>Open to Both In-Person and Online</option>
+        </select>
+
         <h2>Additional Information</h2>
         <textarea name="Additional Information" rows="6" placeholder="Tell us anything else that may help us support the learner..."></textarea>
         
