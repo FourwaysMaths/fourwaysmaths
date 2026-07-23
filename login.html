@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fourways Maths | Portal Login</title>
-  <!-- Supabase JS CDN loaded in head -->
+  <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -48,14 +48,14 @@
     <p class="brand-subtitle">Learner & Parent Portal</p>
 
     <div class="tabs">
-      <button type="button" class="tab-btn active" id="tab-login" onclick="toggleForm('login')">Sign In</button>
-      <button type="button" class="tab-btn" id="tab-signup" onclick="toggleForm('signup')">Register</button>
+      <button type="button" class="tab-btn active" id="tab-login">Sign In</button>
+      <button type="button" class="tab-btn" id="tab-signup">Register</button>
     </div>
 
     <div id="msg" class="message-box"></div>
 
     <!-- LOGIN FORM -->
-    <form id="login-form" onsubmit="handleLogin(event)">
+    <form id="login-form">
       <div class="input-group">
         <label for="login-email">Email Address</label>
         <input type="email" id="login-email" required placeholder="student@example.com">
@@ -68,7 +68,7 @@
     </form>
 
     <!-- SIGNUP FORM -->
-    <form id="signup-form" style="display: none;" onsubmit="handleSignup(event)">
+    <form id="signup-form" style="display: none;">
       <div class="input-group">
         <label for="signup-name">Full Name</label>
         <input type="text" id="signup-name" required placeholder="John Doe">
@@ -97,55 +97,51 @@
   </div>
 
   <script>
+    // Initialize Supabase Client (Only ONCE)
     const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    let supabase = null;
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      } else {
-        showMsg("Could not load connection library. Please check your internet connection.", true);
-      }
-    });
+    const msgBox = document.getElementById('msg');
+    const loginBtn = document.getElementById('tab-login');
+    const signupBtn = document.getElementById('tab-signup');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
 
     function showMsg(text, isError = false) {
-      const msgBox = document.getElementById('msg');
       msgBox.textContent = text;
       msgBox.className = `message-box ${isError ? 'error' : 'success'}`;
       msgBox.style.display = 'block';
     }
 
-    function toggleForm(type) {
-      document.getElementById('msg').style.display = 'none';
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const loginBtn = document.getElementById('tab-login');
-      const signupBtn = document.getElementById('tab-signup');
+    // Switch Tabs
+    loginBtn.addEventListener('click', () => {
+      msgBox.style.display = 'none';
+      loginForm.style.display = 'flex';
+      signupForm.style.display = 'none';
+      loginBtn.classList.add('active');
+      signupBtn.classList.remove('active');
+    });
 
-      if (type === 'login') {
-        loginForm.style.display = 'flex';
-        signupForm.style.display = 'none';
-        loginBtn.classList.add('active');
-        signupBtn.classList.remove('active');
-      } else {
-        loginForm.style.display = 'none';
-        signupForm.style.display = 'flex';
-        signupBtn.classList.add('active');
-        loginBtn.classList.remove('active');
-      }
-    }
+    signupBtn.addEventListener('click', () => {
+      msgBox.style.display = 'none';
+      loginForm.style.display = 'none';
+      signupForm.style.display = 'flex';
+      signupBtn.classList.add('active');
+      loginBtn.classList.remove('active');
+    });
 
-    async function handleLogin(e) {
+    // Handle Login Submit
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!supabase) return showMsg("Supabase client not initialized.", true);
+      if (!supabaseClient) return showMsg("Supabase client failed to load.", true);
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
       showMsg("Signing in...", false);
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         showMsg(error.message, true);
@@ -153,11 +149,12 @@
         showMsg("Login successful! Redirecting...", false);
         setTimeout(() => window.location.href = 'dashboard.html', 800);
       }
-    }
+    });
 
-    async function handleSignup(e) {
+    // Handle Signup Submit
+    signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!supabase) return showMsg("Supabase client not initialized.", true);
+      if (!supabaseClient) return showMsg("Supabase client failed to load.", true);
 
       const name = document.getElementById('signup-name').value;
       const grade = document.getElementById('signup-grade').value;
@@ -166,7 +163,7 @@
 
       showMsg("Creating account...", false);
 
-      const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+      const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password });
 
       if (authError) {
         showMsg(authError.message, true);
@@ -174,7 +171,7 @@
       }
 
       if (authData.user) {
-        const { error: dbError } = await supabase.from('students').insert([
+        const { error: dbError } = await supabaseClient.from('students').insert([
           { user_id: authData.user.id, full_name: name, grade: grade }
         ]);
 
@@ -185,7 +182,7 @@
           setTimeout(() => window.location.href = 'dashboard.html', 1000);
         }
       }
-    }
+    });
   </script>
 </body>
 </html>
