@@ -228,165 +228,172 @@
     </div>
   </div>
 
-  <script>
-    // Initialize Supabase Client
-    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+<script>
+  // Initialize Supabase Client
+  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    let isRegisterMode = false;
+  let isRegisterMode = false;
 
-    const authForm = document.getElementById('auth-form');
-    const alertMsg = document.getElementById('alert-msg');
-    const btnSubmit = document.getElementById('btn-submit');
-    const btnToggleMode = document.getElementById('btn-toggle-mode');
-    
-    const formTitle = document.getElementById('form-title');
-    const formSubtitle = document.getElementById('form-subtitle');
-    const togglePrompt = document.getElementById('toggle-prompt');
-    
-    const registerFields = document.querySelectorAll('.register-only');
-    const parentNameInput = document.getElementById('parent-name');
-    const gradeInput = document.getElementById('grade');
+  const authForm = document.getElementById('auth-form');
+  const alertMsg = document.getElementById('alert-msg');
+  const btnSubmit = document.getElementById('btn-submit');
+  const btnToggleMode = document.getElementById('btn-toggle-mode');
+  
+  const formTitle = document.getElementById('form-title');
+  const formSubtitle = document.getElementById('form-subtitle');
+  const togglePrompt = document.getElementById('toggle-prompt');
+  
+  const registerFields = document.querySelectorAll('.register-only');
+  const parentNameInput = document.getElementById('parent-name');
+  const gradeInput = document.getElementById('grade');
 
-    // Auto-redirect if already logged in
-    document.addEventListener("DOMContentLoaded", async () => {
-      if (supabaseClient) {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) {
-          window.location.href = "dashboard.html";
-        }
+  // Auto-redirect if already logged in + handle URL URL parameters
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (supabaseClient) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        window.location.href = "dashboard.html";
+        return;
       }
-    });
+    }
 
-    // Toggle between Login & Registration view
-    btnToggleMode.addEventListener('click', () => {
-      isRegisterMode = !isRegisterMode;
-      hideAlert();
+    // Auto-switch to Register mode if URL contains ?mode=register
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'register') {
+      btnToggleMode.click();
+    }
+  });
 
-      if (isRegisterMode) {
-        formTitle.textContent = "Create Student Account";
-        formSubtitle.textContent = "Fill in the details below to register for the portal.";
+  // Toggle between Login & Registration view
+  btnToggleMode.addEventListener('click', () => {
+    isRegisterMode = !isRegisterMode;
+    hideAlert();
+
+    if (isRegisterMode) {
+      formTitle.textContent = "Create Student Account";
+      formSubtitle.textContent = "Fill in the details below to register for the portal.";
+      btnSubmit.textContent = "Register Account";
+      togglePrompt.textContent = "Already registered?";
+      btnToggleMode.textContent = "Sign in here";
+
+      registerFields.forEach(el => el.style.display = 'block');
+      parentNameInput.required = true;
+      gradeInput.required = true;
+    } else {
+      formTitle.textContent = "Student Login";
+      formSubtitle.textContent = "Welcome back! Enter your details to continue.";
+      btnSubmit.textContent = "Sign In";
+      togglePrompt.textContent = "Don't have an account?";
+      btnToggleMode.textContent = "Register here";
+
+      registerFields.forEach(el => el.style.display = 'none');
+      parentNameInput.required = false;
+      gradeInput.required = false;
+    }
+  });
+
+  // Handle Form Submission (Login or Register)
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!supabaseClient) {
+      showAlert("Database client not connected.", "error");
+      return;
+    }
+
+    btnSubmit.disabled = true;
+
+    if (isRegisterMode) {
+      // --- REGISTRATION LOGIC ---
+      btnSubmit.textContent = "Creating Account...";
+      const parentName = parentNameInput.value.trim();
+      const grade = gradeInput.value;
+
+      if (!grade) {
+        showAlert("Please select a grade.", "error");
+        btnSubmit.disabled = false;
         btnSubmit.textContent = "Register Account";
-        togglePrompt.textContent = "Already registered?";
-        btnToggleMode.textContent = "Sign in here";
-
-        registerFields.forEach(el => el.style.display = 'block');
-        parentNameInput.required = true;
-        gradeInput.required = true;
-      } else {
-        formTitle.textContent = "Student Login";
-        formSubtitle.textContent = "Welcome back! Enter your details to continue.";
-        btnSubmit.textContent = "Sign In";
-        togglePrompt.textContent = "Don't have an account?";
-        btnToggleMode.textContent = "Register here";
-
-        registerFields.forEach(el => el.style.display = 'none');
-        parentNameInput.required = false;
-        gradeInput.required = false;
-      }
-    });
-
-    // Handle Form Submission (Login or Register)
-    authForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      hideAlert();
-
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (!supabaseClient) {
-        showAlert("Database client not connected.", "error");
         return;
       }
 
-      btnSubmit.disabled = true;
-
-      if (isRegisterMode) {
-        // --- REGISTRATION LOGIC ---
-        btnSubmit.textContent = "Creating Account...";
-        const parentName = parentNameInput.value.trim();
-        const grade = gradeInput.value;
-
-        if (!grade) {
-          showAlert("Please select a grade.", "error");
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = "Register Account";
-          return;
-        }
-
-        try {
-          const { data, error } = await supabaseClient.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-              data: {
-                parent_name: parentName,
-                full_name: parentName, // Fallback for profile triggers
-                grade: grade
-              }
-            }
-          });
-
-          if (error) throw error;
-
-          // If session is returned immediately, redirect; otherwise sign in explicitly
-          if (data.session) {
-            showAlert("Account created! Redirecting...", "success");
-            setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
-          } else {
-            // Auto sign-in fallback
-            const { error: signInErr } = await supabaseClient.auth.signInWithPassword({
-              email: email,
-              password: password
-            });
-
-            if (signInErr) {
-              showAlert("Account registered! Please click 'Sign in here' to log in.", "success");
-              btnSubmit.disabled = false;
-              btnSubmit.textContent = "Register Account";
-            } else {
-              window.location.href = "dashboard.html";
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              parent_name: parentName,
+              full_name: parentName, // Fallback for profile triggers
+              grade: grade
             }
           }
+        });
 
-        } catch (err) {
-          showAlert(err.message || "Failed to register account.", "error");
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = "Register Account";
-        }
+        if (error) throw error;
 
-      } else {
-        // --- LOGIN LOGIC ---
-        btnSubmit.textContent = "Signing in...";
-
-        try {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({
+        // If session is returned immediately, redirect; otherwise sign in explicitly
+        if (data.session) {
+          showAlert("Account created! Redirecting...", "success");
+          setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+        } else {
+          // Auto sign-in fallback
+          const { error: signInErr } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
           });
 
-          if (error) throw error;
-
-          window.location.href = "dashboard.html";
-
-        } catch (err) {
-          showAlert(err.message || "Invalid login credentials.", "error");
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = "Sign In";
+          if (signInErr) {
+            showAlert("Account registered! Please click 'Sign in here' to log in.", "success");
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = "Register Account";
+          } else {
+            window.location.href = "dashboard.html";
+          }
         }
+
+      } catch (err) {
+        showAlert(err.message || "Failed to register account.", "error");
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = "Register Account";
       }
-    });
 
-    function showAlert(msg, type = "error") {
-      alertMsg.textContent = msg;
-      alertMsg.className = `alert alert-${type}`;
-      alertMsg.style.display = 'block';
-    }
+    } else {
+      // --- LOGIN LOGIC ---
+      btnSubmit.textContent = "Signing in...";
 
-    function hideAlert() {
-      alertMsg.style.display = 'none';
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) throw error;
+
+        window.location.href = "dashboard.html";
+
+      } catch (err) {
+        showAlert(err.message || "Invalid login credentials.", "error");
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = "Sign In";
+      }
     }
-  </script>
+  });
+
+  function showAlert(msg, type = "error") {
+    alertMsg.textContent = msg;
+    alertMsg.className = `alert alert-${type}`;
+    alertMsg.style.display = 'block';
+  }
+
+  function hideAlert() {
+    alertMsg.style.display = 'none';
+  }
+</script>
 </body>
 </html>
