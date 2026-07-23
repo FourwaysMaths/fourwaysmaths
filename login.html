@@ -1,1 +1,176 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fourways Maths | Portal Login</title>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-hover: #1D4ED8;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #0F172A;
+      --border: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    
+    .login-card { background: var(--card-bg); width: 100%; max-width: 420px; padding: 32px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+    .brand-title { text-align: center; color: var(--primary); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+    .brand-subtitle { text-align: center; color: #64748B; font-size: 0.9rem; margin-bottom: 24px; }
+    
+    .tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+    .tab-btn { flex: 1; padding: 10px; border: none; background: none; font-weight: 600; color: #64748B; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -2px; }
+
+    form { display: flex; flex-direction: column; gap: 16px; }
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; font-weight: 600; color: #334155; }
+    input, select { padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
+
+    .btn-submit { background-color: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-submit:hover { background-color: var(--primary-hover); }
+
+    .message-box { padding: 10px; border-radius: 6px; font-size: 0.85rem; text-align: center; display: none; }
+    .message-box.error { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+    .message-box.success { background-color: #F0FDF4; color: #166534; border: 1px solid #86EFAC; }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h1 class="brand-title">Fourways Maths</h1>
+    <p class="brand-subtitle">Learner & Parent Portal</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Register</button>
+    </div>
+
+    <div id="msg" class="message-box"></div>
+
+    <!-- LOGIN FORM -->
+    <form id="login-form">
+      <div class="input-group">
+        <label for="login-email">Email Address</label>
+        <input type="email" id="login-email" required placeholder="student@example.com">
+      </div>
+      <div class="input-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn-submit">Sign In</button>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form id="signup-form" style="display: none;">
+      <div class="input-group">
+        <label for="signup-name">Full Name</label>
+        <input type="text" id="signup-name" required placeholder="John Doe">
+      </div>
+      <div class="input-group">
+        <label for="signup-grade">Grade</label>
+        <select id="signup-grade" required>
+          <option value="">Select Grade</option>
+          <option value="Grade 8">Grade 8</option>
+          <option value="Grade 9">Grade 9</option>
+          <option value="Grade 10">Grade 10</option>
+          <option value="Grade 11">Grade 11</option>
+          <option value="Grade 12">Grade 12</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="signup-email">Email Address</label>
+        <input type="email" id="signup-email" required placeholder="student@example.com">
+      </div>
+      <div class="input-group">
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" required minlength="6" placeholder="At least 6 characters">
+      </div>
+      <button type="submit" class="btn-submit">Create Account</button>
+    </form>
+  </div>
+
+  <script>
+    // Initialize Supabase Client
+    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const msgBox = document.getElementById('msg');
+
+    function showMsg(text, isError = false) {
+      msgBox.textContent = text;
+      msgBox.className = `message-box ${isError ? 'error' : 'success'}`;
+      msgBox.style.display = 'block';
+    }
+
+    function switchTab(tab) {
+      msgBox.style.display = 'none';
+      if (tab === 'login') {
+        document.getElementById('login-form').style.display = 'flex';
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('tab-login').classList.add('active');
+        document.getElementById('tab-signup').classList.remove('active');
+      } else {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'flex';
+        document.getElementById('tab-signup').classList.add('active');
+        document.getElementById('tab-login').classList.remove('active');
+      }
+    }
+
+    // Handle Login
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        showMsg(error.message, true);
+      } else {
+        showMsg("Login successful! Redirecting...", false);
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+      }
+    });
+
+    // Handle Signup & Student Profile Creation
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value;
+      const grade = document.getElementById('signup-grade').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+
+      // 1. Create auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+
+      if (authError) {
+        showMsg(authError.message, true);
+        return;
+      }
+
+      if (authData.user) {
+        // 2. Insert into students table
+        const { error: dbError } = await supabase.from('students').insert([
+          { user_id: authData.user.id, full_name: name, grade: grade }
+        ]);
+
+        if (dbError) {
+          showMsg("Account created, but profile setup failed: " + dbError.message, true);
+        } else {
+          showMsg("Account created successfully! Redirecting...", false);
+          setTimeout(() => window.location.href = 'dashboard.html', 1200);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
