@@ -308,6 +308,13 @@
         const parentName = parentNameInput.value.trim();
         const grade = gradeInput.value;
 
+        if (!grade) {
+          showAlert("Please select a grade.", "error");
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = "Register Account";
+          return;
+        }
+
         try {
           const { data, error } = await supabaseClient.auth.signUp({
             email: email,
@@ -323,8 +330,25 @@
 
           if (error) throw error;
 
-          showAlert("Account created! Redirecting to dashboard...", "success");
-          setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+          // If session is returned immediately, redirect; otherwise sign in explicitly
+          if (data.session) {
+            showAlert("Account created! Redirecting...", "success");
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+          } else {
+            // Auto sign-in fallback
+            const { error: signInErr } = await supabaseClient.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+            if (signInErr) {
+              showAlert("Account registered! Please click 'Sign in here' to log in.", "success");
+              btnSubmit.disabled = false;
+              btnSubmit.textContent = "Register Account";
+            } else {
+              window.location.href = "dashboard.html";
+            }
+          }
 
         } catch (err) {
           showAlert(err.message || "Failed to register account.", "error");
