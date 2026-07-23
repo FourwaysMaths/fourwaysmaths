@@ -424,96 +424,139 @@
 
   </div>
 
-  <script>
-    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+<script>
+  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    let currentUser = null;
+  let currentUser = null;
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      if (!supabaseClient) return;
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (!supabaseClient) return;
 
-      // 1. Verify User Authentication Session
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      currentUser = session.user;
-
-      // 2. Hydrate User Details
-      const meta = currentUser.user_metadata || {};
-      const parentName = meta.parent_name || meta.full_name || currentUser.email.split('@')[0];
-      const grade = meta.grade || "High School Learner";
-
-      document.getElementById("display-name").textContent = parentName;
-      document.getElementById("welcome-name").textContent = parentName;
-      document.getElementById("display-grade").textContent = grade;
-
-      // Fallback Profile Avatar using initials
-      const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(parentName)}&background=1E293B&color=EAB308`;
-      document.getElementById("user-avatar").src = avatarUrl;
-    });
-
-    // 3. Handle File Upload to Supabase Storage Bucket
-    const fileInput = document.getElementById("file-input");
-    const uploadStatus = document.getElementById("upload-status");
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file || !currentUser) return;
-
-      uploadStatus.style.color = "#0F172A";
-      uploadStatus.textContent = "Uploading file...";
-
-      try {
-        const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
-        const { data, error } = await supabaseClient.storage
-          .from("student-files")
-          .upload(filePath, file);
-
-        if (error) throw error;
-
-        uploadStatus.style.color = "#059669";
-        uploadStatus.textContent = "✅ File uploaded successfully!";
-      } catch (err) {
-        console.error("Upload error:", err);
-        uploadStatus.style.color = "#EF4444";
-        uploadStatus.textContent = "Upload failed: " + (err.message || "Ensure 'student-files' bucket exists.");
-      }
-    });
-
-    // 4. Handle Logout
-    document.getElementById("btn-logout").addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+    // 1. Verify User Authentication Session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
       window.location.href = "login.html";
-    });
+      return;
+    }
 
-    // 5. Initialize Performance Chart
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Term 1', 'Term 2', 'Term 3', 'Current'],
-        datasets: [{
-          label: 'Math Mark %',
-          data: [58, 64, 69, 72],
-          borderColor: '#EAB308',
-          backgroundColor: 'rgba(234, 179, 8, 0.1)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } }
-      }
-    });
-  </script>
+    currentUser = session.user;
+
+    // 2. Hydrate User Details
+    const meta = currentUser.user_metadata || {};
+    const parentName = meta.parent_name || meta.full_name || currentUser.email.split('@')[0];
+    const grade = meta.grade || "High School Learner";
+
+    document.getElementById("display-name").textContent = parentName;
+    document.getElementById("welcome-name").textContent = parentName;
+    document.getElementById("display-grade").textContent = grade;
+
+    // Fallback Profile Avatar using initials
+    const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(parentName)}&background=1E293B&color=EAB308`;
+    document.getElementById("user-avatar").src = avatarUrl;
+  });
+
+  // 3. School Marks File Upload
+  const fileInput = document.getElementById("file-input");
+  const uploadStatus = document.getElementById("upload-status");
+
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
+
+    uploadStatus.style.color = "#0F172A";
+    uploadStatus.textContent = "Uploading file...";
+
+    try {
+      const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
+      const { data, error } = await supabaseClient.storage
+        .from("student-files")
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      uploadStatus.style.color = "#059669";
+      uploadStatus.textContent = "✅ File uploaded successfully!";
+    } catch (err) {
+      console.error("Upload error:", err);
+      uploadStatus.style.color = "#EF4444";
+      uploadStatus.textContent = "Upload failed: " + (err.message || "Error uploading file.");
+    }
+  });
+
+  // 4. Profile Picture Upload & Update
+  const avatarInput = document.getElementById("avatar-input");
+  const userAvatarImg = document.getElementById("user-avatar");
+
+  avatarInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `avatars/${currentUser.id}_${Date.now()}.${fileExt}`;
+
+      // Upload image to Supabase Storage
+      const { data, error } = await supabaseClient.storage
+        .from("student-files")
+        .upload(filePath, file, { upsert: true });
+
+      if (error) throw error;
+
+      // Get Public URL
+      const { data: publicUrlData } = supabaseClient.storage
+        .from("student-files")
+        .getPublicUrl(filePath);
+
+      const publicUrl = publicUrlData.publicUrl;
+
+      // Update Supabase Auth User Metadata
+      const { error: updateError } = await supabaseClient.auth.updateUser({
+        data: { avatar_url: publicUrl }
+      });
+
+      if (updateError) throw updateError;
+
+      // Update image on page immediately
+      userAvatarImg.src = publicUrl;
+      alert("Profile picture updated successfully!");
+
+    } catch (err) {
+      console.error("Avatar upload error:", err);
+      alert("Failed to update profile picture: " + err.message);
+    }
+  });
+
+  // 5. Logout Handler
+  document.getElementById("btn-logout").addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
+    window.location.href = "login.html";
+  });
+
+  // 6. Initialize Performance Chart
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Term 1', 'Term 2', 'Term 3', 'Current'],
+      datasets: [{
+        label: 'Math Mark %',
+        data: [58, 64, 69, 72],
+        borderColor: '#EAB308',
+        backgroundColor: 'rgba(234, 179, 8, 0.1)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  });
+</script>
 </body>
 </html>
