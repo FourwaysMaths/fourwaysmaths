@@ -40,12 +40,17 @@
       text-decoration: none;
     }
 
-    /* Logo Image Styling */
-    .brand-logo-img {
-      height: 48px;
-      width: auto;
-      object-fit: contain;
-    }
+  /* Logo Image Styling */
+.brand-logo-img {
+  height: 64px; /* Increased from 48px for a bolder presence */
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.03); /* Subtle hover effect */
+}
 
     .user-profile-widget {
       display: flex;
