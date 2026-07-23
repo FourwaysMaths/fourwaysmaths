@@ -1,16 +1,225 @@
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fourways Maths | Learner Dashboard</title>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-hover: #1D4ED8;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #0F172A;
+      --border: #E2E8F0;
+      --accent: #10B981;
+    }
 
-async function handleLogin(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password,
-  });
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; }
 
-  if (error) {
-    alert("Login failed: " + error.message);
-  } else {
-    window.location.href = "dashboard.html";
-  }
-}
+    /* Header & Nav */
+    header { background-color: var(--primary); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .brand-logo { font-size: 1.4rem; font-weight: 700; }
+    .user-info { display: flex; align-items: center; gap: 16px; font-size: 0.95rem; }
+    .btn-logout { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+    .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+    /* Main Layout */
+    .container { max-width: 1000px; margin: 32px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 24px; }
+    
+    .welcome-card { background: linear-gradient(135deg, var(--primary), #3B82F6); color: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15); }
+    .welcome-card h2 { font-size: 1.6rem; margin-bottom: 6px; }
+    .welcome-card p { opacity: 0.9; font-size: 0.95rem; }
+
+    /* Sections */
+    .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media(min-width: 768px) { .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+
+    .card { background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border); padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .card-title { font-size: 1.1rem; color: var(--primary); font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Tables & Lists */
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { text-align: left; padding: 10px 12px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+    th { color: #64748B; font-weight: 600; background-color: #F1F5F9; }
+    
+    .mark-badge { background: #ECFDF5; color: #047857; font-weight: 700; padding: 4px 8px; border-radius: 4px; border: 1px solid #A7F3D0; }
+    .resource-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-link { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    .resource-link:hover { text-decoration: underline; }
+
+    .empty-state { text-align: center; color: #94A3B8; font-size: 0.9rem; padding: 20px 0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-logo">Fourways Maths</div>
+    <div class="user-info">
+      <span id="nav-user-name">Loading...</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="welcome-card">
+      <h2 id="welcome-heading">Welcome back!</h2>
+      <p id="welcome-sub">Access your marks, tutor feedback, and resources below.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- PROGRESS & MARKS -->
+      <div class="card">
+        <div class="card-title">
+          <span>Recent Test Results</span>
+        </div>
+        <div id="reports-container">
+          <p class="empty-state">Loading results...</p>
+        </div>
+      </div>
+
+      <!-- STUDY MATERIALS -->
+      <div class="card">
+        <div class="card-title">
+          <span>Study Materials & Papers</span>
+        </div>
+        <div id="materials-container">
+          <p class="empty-state">Loading materials...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Supabase Client
+    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentStudent = null;
+
+    // Check Auth & Load Dashboard Data
+    async function initDashboard() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      // If not logged in, redirect to login page
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Fetch student details
+      const { data: student, error } = await supabase
+        .from('students')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (error || !student) {
+        console.error("Error fetching student profile:", error);
+        document.getElementById('nav-user-name').textContent = session.user.email;
+        document.getElementById('welcome-heading').textContent = "Welcome!";
+      } else {
+        currentStudent = student;
+        document.getElementById('nav-user-name').textContent = student.full_name;
+        document.getElementById('welcome-heading').textContent = `Welcome, ${student.full_name}!`;
+        document.getElementById('welcome-sub').textContent = `${student.grade} Learner Portal`;
+        
+        // Load data
+        loadProgressReports(student.id);
+        loadStudyMaterials(student.grade);
+      }
+    }
+
+    // Load Progress Reports / Marks
+    async function loadProgressReports(studentId) {
+      const container = document.getElementById('reports-container');
+      
+      const { data: reports, error } = await supabase
+        .from('progress_reports')
+        .select('*')
+        .eq('student_id', studentId)
+        .order('test_date', { ascending: false });
+
+      if (error || !reports || reports.length === 0) {
+        container.innerHTML = `<p class="empty-state">No test results added yet.</p>`;
+        return;
+      }
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Date</th>
+              <th>Mark</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      reports.forEach(r => {
+        const percentage = Math.round((r.mark_achieved / r.total_mark) * 100);
+        html += `
+          <tr>
+            <td>
+              <strong>${r.test_topic}</strong>
+              ${r.tutor_feedback ? `<br><small style="color: #64748B;">"${r.tutor_feedback}"</small>` : ''}
+            </td>
+            <td>${r.test_date}</td>
+            <td><span class="mark-badge">${r.mark_achieved}/${r.total_mark} (${percentage}%)</span></td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+
+    // Load Study Materials for Student's Grade
+    async function loadStudyMaterials(grade) {
+      const container = document.getElementById('materials-container');
+
+      const { data: materials, error } = await supabase
+        .from('study_materials')
+        .select('*')
+        .or(`grade.eq.${grade},grade.eq.All Grades`)
+        .order('created_at', { ascending: false });
+
+      if (error || !materials || materials.length === 0) {
+        container.innerHTML = `<p class="empty-state">No study materials posted for ${grade} yet.</p>`;
+        return;
+      }
+
+      let html = '<div>';
+      materials.forEach(m => {
+        html += `
+          <div class="resource-item">
+            <div>
+              <a href="${m.file_url}" target="_blank" class="resource-link">${m.title}</a>
+              <br><small style="color: #64748B;">${m.category}</small>
+            </div>
+            <a href="${m.file_url}" target="_blank" class="btn-logout" style="background: var(--primary); text-decoration: none;">Download</a>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    // Handle Logout
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    // Run on page load
+    initDashboard();
+  </script>
+</body>
+</html>
