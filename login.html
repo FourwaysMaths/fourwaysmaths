@@ -151,37 +151,43 @@
       }
     });
 
-    // Handle Signup Submit
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!supabaseClient) return showMsg("Supabase client failed to load.", true);
+  signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!supabaseClient) return showMsg("Supabase client failed to load.", true);
 
-      const name = document.getElementById('signup-name').value;
-      const grade = document.getElementById('signup-grade').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
+  const name = document.getElementById('signup-name').value;
+  const grade = document.getElementById('signup-grade').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
 
-      showMsg("Creating account...", false);
+  showMsg("Creating account...", false);
 
-      // Send full_name and grade inside user metadata so SQL trigger handles creation
-      const { data: authData, error: authError } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: name,
-            grade: grade
-          }
-        }
-      });
-
-      if (authError) {
-        showMsg(authError.message, true);
-        return;
+  // Send full_name and grade inside user metadata so SQL trigger handles creation
+  const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name,
+        grade: grade
       }
+    }
+  });
 
-      showMsg("Account created! Please check your email for confirmation.", false);
-    });
+  if (authError) {
+    showMsg(authError.message, true);
+    return;
+  }
+
+  // Updated message & automatic switch to login tab
+  showMsg("Account created! Go ahead and login.", false);
+  
+  // Optional: Automatically switch them to the Sign In tab after 1.5s
+  setTimeout(() => {
+    loginBtn.click();
+    document.getElementById('login-email').value = email; // pre-fill their email for convenience
+  }, 1500);
+});
   </script>
 </body>
 </html>
