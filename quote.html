@@ -235,6 +235,7 @@
 </div>
 
 <!-- AJAX Form Submission Script -->
+<!-- AJAX Form Submission Script with Graceful Fallback -->
 <script>
   const form = document.getElementById("assessment-form");
   const thankYouMsg = document.getElementById("thank-you-message");
@@ -246,7 +247,7 @@
     btn.disabled = true;
 
     const data = new FormData(form);
-    
+
     try {
       const response = await fetch(form.action, {
         method: form.method,
@@ -259,17 +260,16 @@
         thankYouMsg.style.display = "block";
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alert("Oops! There was a problem submitting your form. Please try again or email us directly at info@fourwaysmaths.co.za.");
-        btn.innerText = "Submit Assessment";
-        btn.disabled = false;
+        // If Formspree blocks JS fetch (e.g. unverified target email or CORS), submit standard HTML form
+        console.warn("AJAX submission failed. Falling back to native HTML submit.");
+        form.submit();
       }
     } catch (error) {
-      alert("Oops! Connection error. Please check your network and try again.");
-      btn.innerText = "Submit Assessment";
-      btn.disabled = false;
+      // Network drop or script block fallback
+      console.error("Network error, falling back to direct submit:", error);
+      form.submit();
     }
   });
 </script>
-
 </body>
 </html>
