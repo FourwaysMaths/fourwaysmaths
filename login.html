@@ -97,7 +97,7 @@
   </div>
 
   <script>
-    // Initialize Supabase Client (Only ONCE)
+    // Initialize Supabase Client
     const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -163,25 +163,24 @@
 
       showMsg("Creating account...", false);
 
-      const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password });
+      // Send full_name and grade inside user metadata so SQL trigger handles creation
+      const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            grade: grade
+          }
+        }
+      });
 
       if (authError) {
         showMsg(authError.message, true);
         return;
       }
 
-      if (authData.user) {
-        const { error: dbError } = await supabaseClient.from('students').insert([
-          { user_id: authData.user.id, full_name: name, grade: grade }
-        ]);
-
-        if (dbError) {
-          showMsg("Account created! " + dbError.message, true);
-        } else {
-          showMsg("Account created successfully! Redirecting...", false);
-          setTimeout(() => window.location.href = 'dashboard.html', 1000);
-        }
-      }
+      showMsg("Account created! Please check your email for confirmation.", false);
     });
   </script>
 </body>
