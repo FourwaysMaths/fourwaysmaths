@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fourways Maths | Student Registration</title>
+  <title>Fourways Maths | Portal Access</title>
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -29,18 +29,18 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 28px 20px;
+      padding: 24px 20px;
     }
 
     /* Container Box */
-    .register-card {
+    .auth-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-top: 6px solid var(--yellow-accent);
       border-radius: 12px;
       padding: 40px;
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       box-shadow: 0 10px 25px rgba(30, 41, 59, 0.08);
       text-align: center;
     }
@@ -64,17 +64,17 @@
       transform: scale(1.04);
     }
 
-    .register-header h2 {
+    .auth-header h2 {
       color: var(--primary-grey);
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 8px;
     }
 
-    .register-header p {
+    .auth-header p {
       color: var(--text-muted);
       font-size: 0.9rem;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     /* Form Inputs */
@@ -120,19 +120,19 @@
       font-weight: 700;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .btn-primary:hover {
       background-color: var(--yellow-hover);
     }
 
-    /* Feedback Alerts */
+    /* Alerts */
     .alert {
-      padding: 12px;
+      padding: 10px;
       border-radius: 6px;
       font-size: 0.85rem;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       display: none;
       text-align: left;
     }
@@ -149,47 +149,55 @@
       border: 1px solid #BBF7D0;
     }
 
+    /* Footer Switch Link */
     .footer-link {
       margin-top: 24px;
       font-size: 0.88rem;
       color: var(--text-muted);
     }
 
-    .footer-link a {
+    .footer-link button {
+      background: none;
+      border: none;
       color: var(--primary-grey);
       font-weight: 700;
-      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      text-decoration: underline;
+      padding: 0;
     }
 
-    .footer-link a:hover {
-      text-decoration: underline;
+    /* Hidden element helper */
+    .register-only {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="register-card">
+  <div class="auth-card">
     <a href="index.html" class="brand-logo-container">
       <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img">
     </a>
 
-    <div class="register-header">
-      <h2>Create Student Account</h2>
-      <p>Fill in the details below to register for the portal.</p>
+    <div class="auth-header">
+      <h2 id="form-title">Student Login</h2>
+      <p id="form-subtitle">Welcome back! Enter your details to continue.</p>
     </div>
 
     <div id="alert-msg" class="alert"></div>
 
-    <form id="register-form">
-      <!-- PARENT NAME FIELD -->
-      <div class="form-group">
+    <form id="auth-form">
+      <!-- PARENT NAME (Register Mode Only) -->
+      <div class="form-group register-only" id="group-parent-name">
         <label for="parent-name">Parent Name</label>
-        <input type="text" id="parent-name" class="form-control" placeholder="e.g. John Smith" required>
+        <input type="text" id="parent-name" class="form-control" placeholder="e.g. John Smith">
       </div>
 
-      <div class="form-group">
+      <!-- LEARNER GRADE (Register Mode Only) -->
+      <div class="form-group register-only" id="group-grade">
         <label for="grade">Learner Grade</label>
-        <select id="grade" class="form-control" required>
+        <select id="grade" class="form-control">
           <option value="" disabled selected>Select Grade</option>
           <option value="Grade 8">Grade 8</option>
           <option value="Grade 9">Grade 9</option>
@@ -199,21 +207,24 @@
         </select>
       </div>
 
+      <!-- EMAIL -->
       <div class="form-group">
         <label for="email">Email Address</label>
         <input type="email" id="email" class="form-control" placeholder="parent@example.com" required>
       </div>
 
+      <!-- PASSWORD -->
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6">
       </div>
 
-      <button type="submit" class="btn-primary" id="btn-submit">Register Account</button>
+      <button type="submit" class="btn-primary" id="btn-submit">Sign In</button>
     </form>
 
     <div class="footer-link">
-      Already registered? <a href="login.html">Sign in here</a>
+      <span id="toggle-prompt">Don't have an account?</span>
+      <button type="button" id="btn-toggle-mode">Register here</button>
     </div>
   </div>
 
@@ -223,17 +234,64 @@
     const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    const registerForm = document.getElementById('register-form');
+    let isRegisterMode = false;
+
+    const authForm = document.getElementById('auth-form');
     const alertMsg = document.getElementById('alert-msg');
     const btnSubmit = document.getElementById('btn-submit');
+    const btnToggleMode = document.getElementById('btn-toggle-mode');
+    
+    const formTitle = document.getElementById('form-title');
+    const formSubtitle = document.getElementById('form-subtitle');
+    const togglePrompt = document.getElementById('toggle-prompt');
+    
+    const registerFields = document.querySelectorAll('.register-only');
+    const parentNameInput = document.getElementById('parent-name');
+    const gradeInput = document.getElementById('grade');
 
-    // Handle Registration Submission
-    registerForm.addEventListener('submit', async (e) => {
+    // Auto-redirect if already logged in
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          window.location.href = "dashboard.html";
+        }
+      }
+    });
+
+    // Toggle between Login & Registration view
+    btnToggleMode.addEventListener('click', () => {
+      isRegisterMode = !isRegisterMode;
+      hideAlert();
+
+      if (isRegisterMode) {
+        formTitle.textContent = "Create Student Account";
+        formSubtitle.textContent = "Fill in the details below to register for the portal.";
+        btnSubmit.textContent = "Register Account";
+        togglePrompt.textContent = "Already registered?";
+        btnToggleMode.textContent = "Sign in here";
+
+        registerFields.forEach(el => el.style.display = 'block');
+        parentNameInput.required = true;
+        gradeInput.required = true;
+      } else {
+        formTitle.textContent = "Student Login";
+        formSubtitle.textContent = "Welcome back! Enter your details to continue.";
+        btnSubmit.textContent = "Sign In";
+        togglePrompt.textContent = "Don't have an account?";
+        btnToggleMode.textContent = "Register here";
+
+        registerFields.forEach(el => el.style.display = 'none');
+        parentNameInput.required = false;
+        gradeInput.required = false;
+      }
+    });
+
+    // Handle Form Submission (Login or Register)
+    authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      alertMsg.style.display = 'none';
+      hideAlert();
 
-      const parentName = document.getElementById('parent-name').value.trim();
-      const grade = document.getElementById('grade').value;
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
@@ -243,41 +301,67 @@
       }
 
       btnSubmit.disabled = true;
-      btnSubmit.textContent = "Creating Account...";
 
-      try {
-        // Register user and attach parent_name & grade metadata
-        const { data, error } = await supabaseClient.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              parent_name: parentName,
-              full_name: parentName, // Passed for legacy fallback compatibility
-              grade: grade
+      if (isRegisterMode) {
+        // --- REGISTRATION LOGIC ---
+        btnSubmit.textContent = "Creating Account...";
+        const parentName = parentNameInput.value.trim();
+        const grade = gradeInput.value;
+
+        try {
+          const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: {
+                parent_name: parentName,
+                full_name: parentName, // Fallback for profile triggers
+                grade: grade
+              }
             }
-          }
-        });
+          });
 
-        if (error) throw error;
+          if (error) throw error;
 
-        showAlert("Account created successfully! Redirecting to login...", "success");
-        
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1500);
+          showAlert("Account created! Redirecting to dashboard...", "success");
+          setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
 
-      } catch (err) {
-        showAlert(err.message || "Failed to register account.", "error");
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = "Register Account";
+        } catch (err) {
+          showAlert(err.message || "Failed to register account.", "error");
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = "Register Account";
+        }
+
+      } else {
+        // --- LOGIN LOGIC ---
+        btnSubmit.textContent = "Signing in...";
+
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+          if (error) throw error;
+
+          window.location.href = "dashboard.html";
+
+        } catch (err) {
+          showAlert(err.message || "Invalid login credentials.", "error");
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = "Sign In";
+        }
       }
     });
 
-    function showAlert(msg, type) {
+    function showAlert(msg, type = "error") {
       alertMsg.textContent = msg;
       alertMsg.className = `alert alert-${type}`;
       alertMsg.style.display = 'block';
+    }
+
+    function hideAlert() {
+      alertMsg.style.display = 'none';
     }
   </script>
 </body>
