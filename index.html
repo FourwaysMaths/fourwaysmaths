@@ -10,9 +10,86 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
 
-    <!-- SEO Meta Tags Go Right Here -->
+    <!-- SEO Meta Tags -->
     <meta name="description" content="Specialised Mathematics and Mathematical Literacy tutoring for Grades 8–12. Supporting CAPS, IEB, and Cambridge curricula online and in Fourways.">
     <meta name="keywords" content="Maths tutor Fourways, Mathematical Literacy tutor, Grade 12 Maths Sandton, online maths tutoring South Africa">
+
+    <!-- Auth & Footer Styles -->
+    <style>
+        /* Header Auth Links */
+        .nav-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .portal-auth-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .portal-auth-links a {
+            text-decoration: none;
+            color: #1E293B; /* Slate grey */
+            transition: color 0.2s ease;
+        }
+        .portal-auth-links a:hover {
+            color: #EAB308; /* Yellow accent */
+        }
+        .auth-divider {
+            color: #CBD5E1;
+            font-weight: 300;
+        }
+
+        /* Upgraded Footer with Links */
+        .site-footer {
+            background-color: #1E293B;
+            color: #F8FAFC;
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+        .footer-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .footer-portal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .footer-btn {
+            background-color: transparent;
+            border: 1px solid #EAB308;
+            color: #EAB308;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .footer-btn:hover {
+            background-color: #EAB308;
+            color: #1E293B;
+        }
+        .footer-copyright {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .nav-right-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -29,7 +106,16 @@
             <li><a href="#services">Our Services</a></li>
             <li><a href="#contact">Contact Us</a></li>
         </ul>
-        <a class="nav-cta-btn" href="quote.html">Start My Quote</a>
+        
+        <!-- Upgraded Right Side Navigation -->
+        <div class="nav-right-actions">
+            <div class="portal-auth-links">
+                <a href="login.html">Login</a>
+                <span class="auth-divider">|</span>
+                <a href="login.html?mode=register">Register</a>
+            </div>
+            <a class="nav-cta-btn" href="quote.html">Start My Quote</a>
+        </div>
     </nav>
 </header>
 
@@ -72,7 +158,6 @@
 <section id="about">
     <h2>About Fourways Maths</h2>
 
-    <!-- FIXED: Cleared out the duplicate empty template block and placed data-aos directly onto active content rows -->
     <div class="about-split-container">
         <div class="about-content" data-aos="fade-right">
             <p>Fourways Maths was founded in the heart of Fourways with a simple mission: to help learners unlock their mathematical potential through high-quality, personalised support. What began as a local tutoring service has since expanded beyond Fourways, with learners joining our online lessons from across South Africa.</p>
@@ -86,7 +171,6 @@
         </div>
     </div>
 
-    <!-- Features Stagger Grid -->
     <div class="about-features-grid">
         <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
             <div class="feature-icon-wrapper">📈</div>
@@ -112,7 +196,6 @@
 <section id="tutor">
     <h2>Meet Your Tutor</h2>
 
-    <!-- FIXED: Removed the empty duplicate template block -->
     <div class="tutor-split-container">
         <div class="tutor-image-side" data-aos="fade-right">
             <img src="images/gcina-tutor.jpg" alt="Gcina Sithole" class="profile-pic">
@@ -133,7 +216,6 @@
 <section id="testimonials">
     <h2>What Parents & Learners Say</h2>
     
-    <!-- Added stagger entry points for your parent panels -->
     <div class="testimonials-grid">
         <div class="testimonial-card family-card" data-aos="fade-up" data-aos-delay="100">
             <span class="family-badge">Family Feedback</span>
@@ -217,7 +299,6 @@
 
 <!-- Contact Section -->
 <section id="contact">
-    <!-- FIXED: Removed the broken nested layout loop completely -->
     <div class="contact-split-container">
         
         <div class="contact-text-side" data-aos="fade-right">
@@ -247,8 +328,18 @@
     </div>
 </section>
     
-<footer>
-    <p>© 2026 Fourways Maths. All rights reserved.</p>
+<!-- Upgraded Footer with Portal Links -->
+<footer class="site-footer">
+    <div class="footer-grid">
+        <h4>Student & Parent Portal</h4>
+        <div class="footer-portal-actions">
+            <a href="login.html" class="footer-btn">Portal Login</a>
+            <a href="login.html?mode=register" class="footer-btn">Register Account</a>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <p>© 2026 Fourways Maths. All rights reserved.</p>
+    </div>
 </footer>
 
 <!-- Animate On Scroll Scripts Initialization Injection -->
@@ -262,7 +353,7 @@
 </script>
     
 <!-- Start of HubSpot Embed Code -->
-  <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/148890223.js"></script>
+<script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/148890223.js"></script>
 <!-- End of HubSpot Embed Code -->
     
 </body>
