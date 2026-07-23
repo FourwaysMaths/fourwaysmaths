@@ -28,7 +28,7 @@
     }
 
     /* ----------------------------------
-       1. SIDEBAR WITH TOOLTIPS
+        1. SIDEBAR WITH TOOLTIPS
     ----------------------------------- */
     .sidebar-nav {
       width: 80px;
@@ -103,7 +103,7 @@
     }
 
     /* ----------------------------------
-       2. DASHBOARD LAYOUT
+        2. DASHBOARD LAYOUT
     ----------------------------------- */
     .portal-container {
       flex: 1;
@@ -122,6 +122,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      overflow-y: auto;
     }
 
     .avatar-wrapper {
@@ -218,10 +219,14 @@
       font-weight: 600;
     }
 
-    /* --- CENTER PANEL --- */
+    /* --- CENTER PANEL (Dynamic View Switcher Container) --- */
     .main-panel {
       padding: 30px;
       overflow-y: auto;
+    }
+
+    .app-view {
+      width: 100%;
     }
 
     .panel-header {
@@ -301,6 +306,7 @@
       background: #FFF;
       border-left: 1px solid #E2E8F0;
       padding: 30px 20px;
+      overflow-y: auto;
     }
 
     .stat-box {
@@ -326,22 +332,22 @@
       <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
     </a>
     <ul class="nav-menu">
-      <li class="nav-item active" data-tooltip="Dashboard"><a href="#"><i class="fa-solid fa-house"></i></a></li>
-      <li class="nav-item" data-tooltip="Subjects & Modules"><a href="#"><i class="fa-solid fa-book-open"></i></a></li>
-      <li class="nav-item" data-tooltip="Chat to Educator"><a href="#"><i class="fa-solid fa-comments"></i></a></li>
-      <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#"><i class="fa-solid fa-calendar-days"></i></a></li>
-      <li class="nav-item" data-tooltip="Achievements & Badges"><a href="#"><i class="fa-solid fa-award"></i></a></li>
-      <li class="nav-item" data-tooltip="Account Settings"><a href="#"><i class="fa-solid fa-gear"></i></a></li>
+      <li class="nav-item active" data-tooltip="Dashboard"><a href="#" class="nav-link-item" data-target="view-dashboard"><i class="fa-solid fa-house"></i></a></li>
+      <li class="nav-item" data-tooltip="Subjects & Modules"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
+      <li class="nav-item" data-tooltip="Chat to Educator"><a href="#" class="nav-link-item" data-target="view-chat"><i class="fa-solid fa-comments"></i></a></li>
+      <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#" class="nav-link-item" data-target="view-calendar"><i class="fa-solid fa-calendar-days"></i></a></li>
+      <li class="nav-item" data-tooltip="Achievements & Badges"><a href="#" class="nav-link-item" data-target="view-badges"><i class="fa-solid fa-award"></i></a></li>
+      <li class="nav-item" data-tooltip="Account Settings"><a href="#" class="nav-link-item" data-target="view-settings"><i class="fa-solid fa-gear"></i></a></li>
     </ul>
     <div class="nav-item" data-tooltip="Log Out">
       <a href="#" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i></a>
     </div>
   </nav>
 
-  <!-- 2. MAIN DASHBOARD CONTENT -->
+  <!-- 2. MAIN DASHBOARD CONTAINER -->
   <div class="portal-container">
 
-    <!-- LEFT PANEL -->
+    <!-- LEFT PANEL: PROFILE & UPLOADS -->
     <section class="profile-panel">
       <div class="avatar-wrapper">
         <img src="https://ui-avatars.com/api/?name=Student&background=1E293B&color=EAB308" id="user-avatar" class="avatar-img" alt="Profile Picture" />
@@ -368,51 +374,122 @@
       </div>
     </section>
 
-    <!-- CENTER PANEL -->
+    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
     <section class="main-panel">
-      <div class="panel-header">
-        <div>
-          <h2>Hi, <span id="welcome-name">Student</span>! 👋</h2>
-          <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
+
+      <!-- VIEW 1: DASHBOARD -->
+      <div id="view-dashboard" class="app-view">
+        <div class="panel-header">
+          <div>
+            <h2>Hi, <span id="welcome-name">Student</span>! 👋</h2>
+            <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
+          </div>
+          <div class="notif-bell" id="notif-btn">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notif-badge">3</span>
+          </div>
         </div>
-        <div class="notif-bell" id="notif-btn">
-          <i class="fa-regular fa-bell"></i>
-          <span class="notif-badge">3</span>
+
+        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Subjects</h3>
+        <div class="subject-grid">
+          <div class="subject-card">
+            <i class="fa-solid fa-calculator"></i>
+            <h4>Mathematics</h4>
+            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Tutor: Gcina S.</p>
+          </div>
+          <div class="subject-card">
+            <i class="fa-solid fa-chart-line"></i>
+            <h4>Math Literacy</h4>
+            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Interactive Modules</p>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">Functions & Trigonometry Review</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">Tomorrow | 15:30 - 16:30</p>
+          </div>
+          <span class="class-status">Confirmed</span>
+        </div>
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">Exam Past Paper Workshop</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">Saturday | 09:00 - 10:30</p>
+          </div>
+          <span class="class-status">Important</span>
         </div>
       </div>
 
-      <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Subjects</h3>
-      <div class="subject-grid">
-        <div class="subject-card">
-          <i class="fa-solid fa-calculator"></i>
-          <h4>Mathematics</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Tutor: Gcina S.</p>
+      <!-- VIEW 2: SUBJECTS -->
+      <div id="view-subjects" class="app-view" style="display: none;">
+        <h2>Subjects & Study Modules</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Access your curriculum resources and past papers.</p>
+        <div class="subject-card" style="margin-bottom: 15px;">
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Grade 12 Advanced Core Mathematics</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Includes Calculus, Algebra, and Euclidean Geometry modules.</p>
         </div>
         <div class="subject-card">
-          <i class="fa-solid fa-chart-line"></i>
-          <h4>Math Literacy</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Interactive Modules</p>
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Mathematical Literacy</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Includes Finance, Measurement, and Data Handling.</p>
         </div>
       </div>
 
-      <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
-      <div class="class-item">
-        <div>
-          <h4 style="font-size: 0.95rem;">Functions & Trigonometry Review</h4>
-          <p style="font-size: 0.8rem; color: #64748B;">Tomorrow | 15:30 - 16:30</p>
+      <!-- VIEW 3: CHAT -->
+      <div id="view-chat" class="app-view" style="display: none;">
+        <h2>Tutor Chat Support</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Connect directly with Gcina Sithole for assignment assistance.</p>
+        <div class="class-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+          <p style="font-size: 0.9rem; font-weight: 600;">Gcina S. (Lead Educator)</p>
+          <p style="font-size: 0.85rem; color: #64748B;">"Drop a message or upload your practice test on the left panel so we can review it during our next session!"</p>
         </div>
-        <span class="class-status">Confirmed</span>
       </div>
-      <div class="class-item">
-        <div>
-          <h4 style="font-size: 0.95rem;">Exam Past Paper Workshop</h4>
-          <p style="font-size: 0.8rem; color: #64748B;">Saturday | 09:00 - 10:30</p>
+
+      <!-- VIEW 4: CALENDAR -->
+      <div id="view-calendar" class="app-view" style="display: none;">
+        <h2>Class Schedule & Calendar</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">Live Online Calculus Drill</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">Monday | 16:00 - 17:00</p>
+          </div>
+          <span class="class-status">Scheduled</span>
         </div>
-        <span class="class-status">Important</span>
       </div>
+
+      <!-- VIEW 5: BADGES -->
+      <div id="view-badges" class="app-view" style="display: none;">
+        <h2>Achievements & Badges</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Milestones unlocked through consistent study sessions.</p>
+        <div class="subject-grid">
+          <div class="subject-card" style="text-align: center;">
+            <i class="fa-solid fa-star"></i>
+            <h4>Top Prep</h4>
+            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Completed all weekly prep tasks.</p>
+          </div>
+          <div class="subject-card" style="text-align: center;">
+            <i class="fa-solid fa-fire"></i>
+            <h4>5 Session Streak</h4>
+            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Attended 5 consecutive classes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: SETTINGS -->
+      <div id="view-settings" class="app-view" style="display: none;">
+        <h2>Account Settings</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Manage your student profile preferences.</p>
+        <div class="subject-card">
+          <h4 style="margin-bottom: 10px;">Session Preferences</h4>
+          <p style="font-size: 0.85rem; color: #64748B;">Notifications: Enabled</p>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 5px;">Theme: Slate & Gold High-Contrast</p>
+        </div>
+      </div>
+
     </section>
 
-    <!-- RIGHT PANEL -->
+    <!-- RIGHT PANEL: ANALYTICS -->
     <section class="analytics-panel">
       <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
       <canvas id="performanceChart" width="100" height="100"></canvas>
@@ -457,7 +534,33 @@
     document.getElementById("user-avatar").src = avatarUrl;
   });
 
-  // 3. School Marks File Upload
+  // 3. SPA Navigation Switcher Logic
+  const navLinks = document.querySelectorAll('.nav-link-item');
+  const appViews = document.querySelectorAll('.app-view');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetViewId = link.getAttribute('data-target');
+
+      // Update active class on parent list items
+      document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      link.parentElement.classList.add('active');
+
+      // Toggle views visibility
+      appViews.forEach(view => {
+        if (view.id === targetViewId) {
+          view.style.display = 'block';
+        } else {
+          view.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // 4. School Marks File Upload
   const fileInput = document.getElementById("file-input");
   const uploadStatus = document.getElementById("upload-status");
 
@@ -485,7 +588,7 @@
     }
   });
 
-  // 4. Profile Picture Upload & Update
+  // 5. Profile Picture Upload & Update
   const avatarInput = document.getElementById("avatar-input");
   const userAvatarImg = document.getElementById("user-avatar");
 
@@ -528,7 +631,7 @@
     }
   });
 
-  // 5. Logout Handler
+  // 6. Logout Handler
   document.getElementById("btn-logout").addEventListener("click", async (e) => {
     e.preventDefault();
     if (supabaseClient) {
@@ -537,7 +640,7 @@
     window.location.href = "login.html";
   });
 
-  // 6. Initialize Performance Chart
+  // 7. Initialize Performance Chart
   const ctx = document.getElementById('performanceChart').getContext('2d');
   new Chart(ctx, {
     type: 'line',
