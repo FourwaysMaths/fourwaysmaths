@@ -27,7 +27,7 @@
     header {
       background-color: #FFFFFF;
       border-bottom: 2px solid var(--border);
-      padding: 12px 32px;
+      padding: 16px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -38,19 +38,21 @@
       display: flex;
       align-items: center;
       text-decoration: none;
+      overflow: visible;
     }
 
-  /* Logo Image Styling */
-.brand-logo-img {
-  height: 64px; /* Increased from 48px for a bolder presence */
-  width: auto;
-  object-fit: contain;
-  transition: transform 0.2s ease;
-}
+    /* Logo Image Styling - Prominently Enlarged */
+    .brand-logo-img {
+      height: 95px !important;
+      max-height: none !important;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.2s ease;
+    }
 
-.brand-logo-img:hover {
-  transform: scale(1.03); /* Subtle hover effect */
-}
+    .brand-logo-img:hover {
+      transform: scale(1.04);
+    }
 
     .user-profile-widget {
       display: flex;
