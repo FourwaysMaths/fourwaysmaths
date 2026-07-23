@@ -87,6 +87,10 @@
         button:hover {
             background: #D97706;
         }
+        button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -100,8 +104,8 @@
         Questions? Contact us at: <strong>info@fourwaysmaths.co.za</strong>
     </p>
 
-    <!-- Formspree Endpoint remains intact -->
-    <form action="https://formspree.io/f/xjgdqgbl" method="POST">
+    <!-- Added id="assessment-form" -->
+    <form id="assessment-form" action="https://formspree.io/f/xjgdqgbl" method="POST">
         
         <h2>Parent / Guardian Details</h2>
         <label for="parent-name">Parent / Guardian Full Name</label> 
@@ -218,12 +222,54 @@
         <h2>Additional Information</h2>
         <textarea name="Additional Information" rows="6" placeholder="Tell us anything else that may help us support the learner..."></textarea>
         
-        <!-- Redirect to custom domain path instead of old github.io path -->
-        <input type="hidden" name="_next" value="https://fourwaysmaths.co.za/success.html">
-        
         <button type="submit">Submit Assessment</button>
     </form>
+
+    <!-- Success Message Container -->
+    <div id="thank-you-message" style="display: none; text-align: center; padding: 30px 10px; border-top: 4px solid #F59E0B; margin-top: 20px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+        <h2 style="color: #0F172A; border: none; margin-top: 0;">Thank You!</h2>
+        <p style="font-size: 16px; color: #334155;">Your learner assessment has been submitted successfully.</p>
+        <p style="font-size: 15px; color: #64748B;">We will review the details and reach out shortly to discuss the ideal roadmap and schedule for your learner.</p>
+    </div>
 </div>
+
+<!-- AJAX Form Submission Script -->
+<script>
+  const form = document.getElementById("assessment-form");
+  const thankYouMsg = document.getElementById("thank-you-message");
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const btn = form.querySelector("button[type='submit']");
+    btn.innerText = "Submitting...";
+    btn.disabled = true;
+
+    const data = new FormData(form);
+    
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        form.style.display = "none";
+        thankYouMsg.style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert("Oops! There was a problem submitting your form. Please try again or email us directly at info@fourwaysmaths.co.za.");
+        btn.innerText = "Submit Assessment";
+        btn.disabled = false;
+      }
+    } catch (error) {
+      alert("Oops! Connection error. Please check your network and try again.");
+      btn.innerText = "Submit Assessment";
+      btn.disabled = false;
+    }
+  });
+</script>
 
 </body>
 </html>
