@@ -39,6 +39,7 @@
       justify-content: space-between;
       padding: 20px 0;
       z-index: 10;
+      flex-shrink: 0;
     }
 
     .brand-logo-img {
@@ -111,6 +112,7 @@
       grid-template-columns: 280px 1fr 320px;
       height: 100vh;
       overflow-y: auto;
+      width: 100%;
     }
 
     /* --- PROFILE PANEL --- */
@@ -169,6 +171,8 @@
       display: flex;
       gap: 8px;
       margin: 15px 0 25px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .badge-icon {
@@ -223,6 +227,7 @@
     .main-panel {
       padding: 30px;
       overflow-y: auto;
+      width: 100%;
     }
 
     .app-view {
@@ -263,7 +268,7 @@
 
     .subject-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
     }
@@ -322,6 +327,58 @@
     #file-input, #avatar-input {
       display: none;
     }
+
+    /* ----------------------------------
+        3. MOBILE RESPONSIBILITY
+    ----------------------------------- */
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+
+      .sidebar-nav {
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        padding: 0 20px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .nav-menu {
+        flex-direction: row;
+        gap: 12px;
+      }
+
+      .nav-item::after {
+        display: none; /* Hide tooltips on touch devices */
+      }
+
+      .brand-logo-img {
+        width: 36px;
+      }
+
+      .portal-container {
+        grid-template-columns: 1fr; /* Stack panels into single column */
+        height: auto;
+        padding-bottom: 70px; /* Offset for fixed bottom navigation */
+      }
+
+      .profile-panel, .analytics-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid #E2E8F0;
+      }
+
+      .main-panel {
+        padding: 20px 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -336,7 +393,7 @@
       <li class="nav-item" data-tooltip="Subjects & Modules"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
       <li class="nav-item" data-tooltip="Chat to Educator"><a href="#" class="nav-link-item" data-target="view-chat"><i class="fa-solid fa-comments"></i></a></li>
       <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#" class="nav-link-item" data-target="view-calendar"><i class="fa-solid fa-calendar-days"></i></a></li>
-      <li class="nav-item" data-tooltip="Achievements & Badges"><a href="#" class="nav-link-item" data-target="view-badges"><i class="fa-solid fa-award"></i></a></li>
+      <li class="nav-item" data-tooltip="Grades"><a href="#" class="nav-link-item" data-target="view-grades"><i class="fa-solid fa-graduation-cap"></i></a></li>
       <li class="nav-item" data-tooltip="Account Settings"><a href="#" class="nav-link-item" data-target="view-settings"><i class="fa-solid fa-gear"></i></a></li>
     </ul>
     <div class="nav-item" data-tooltip="Log Out">
@@ -359,8 +416,7 @@
       <p class="user-grade" id="display-grade">High School Learner</p>
 
       <div class="badges-container">
-        <span class="badge-icon">⭐ Top Prep</span>
-        <span class="badge-icon">🔥 5 Session Streak</span>
+        <span class="badge-icon" id="display-subject-tag">📚 Mathematics</span>
       </div>
 
       <!-- Functional File Upload Card -->
@@ -390,24 +446,15 @@
           </div>
         </div>
 
-        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Subjects</h3>
-        <div class="subject-grid">
-          <div class="subject-card">
-            <i class="fa-solid fa-calculator"></i>
-            <h4>Mathematics</h4>
-            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Tutor: Gcina S.</p>
-          </div>
-          <div class="subject-card">
-            <i class="fa-solid fa-chart-line"></i>
-            <h4>Math Literacy</h4>
-            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Interactive Modules</p>
-          </div>
+        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Enrolled Subject</h3>
+        <div class="subject-grid" id="dashboard-subject-container">
+          <!-- Dynamic Personalized Subject Rendered via JavaScript -->
         </div>
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
         <div class="class-item">
           <div>
-            <h4 style="font-size: 0.95rem;">Functions & Trigonometry Review</h4>
+            <h4 style="font-size: 0.95rem;">Interactive Assessment Review</h4>
             <p style="font-size: 0.8rem; color: #64748B;">Tomorrow | 15:30 - 16:30</p>
           </div>
           <span class="class-status">Confirmed</span>
@@ -425,13 +472,8 @@
       <div id="view-subjects" class="app-view" style="display: none;">
         <h2>Subjects & Study Modules</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Access your curriculum resources and past papers.</p>
-        <div class="subject-card" style="margin-bottom: 15px;">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Grade 12 Advanced Core Mathematics</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Includes Calculus, Algebra, and Euclidean Geometry modules.</p>
-        </div>
-        <div class="subject-card">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Mathematical Literacy</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Includes Finance, Measurement, and Data Handling.</p>
+        <div id="personalized-modules-container">
+          <!-- Dynamically populated based on student's registered subject -->
         </div>
       </div>
 
@@ -451,28 +493,43 @@
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
         <div class="class-item">
           <div>
-            <h4 style="font-size: 0.95rem;">Live Online Calculus Drill</h4>
+            <h4 style="font-size: 0.95rem;">Live Problem Solving Session</h4>
             <p style="font-size: 0.8rem; color: #64748B;">Monday | 16:00 - 17:00</p>
           </div>
           <span class="class-status">Scheduled</span>
         </div>
       </div>
 
-      <!-- VIEW 5: BADGES -->
-      <div id="view-badges" class="app-view" style="display: none;">
-        <h2>Achievements & Badges</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Milestones unlocked through consistent study sessions.</p>
-        <div class="subject-grid">
-          <div class="subject-card" style="text-align: center;">
-            <i class="fa-solid fa-star"></i>
-            <h4>Top Prep</h4>
-            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Completed all weekly prep tasks.</p>
-          </div>
-          <div class="subject-card" style="text-align: center;">
-            <i class="fa-solid fa-fire"></i>
-            <h4>5 Session Streak</h4>
-            <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Attended 5 consecutive classes.</p>
-          </div>
+      <!-- VIEW 5: GRADES -->
+      <div id="view-grades" class="app-view" style="display: none;">
+        <h2>Grades & Test Results</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Review your assessment scores and teacher feedback.</p>
+        
+        <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #E2E8F0; overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 450px;">
+            <thead>
+              <tr style="border-bottom: 2px solid #F1F5F9; color: #64748B; font-size: 0.85rem;">
+                <th style="padding: 10px;">Assessment</th>
+                <th style="padding: 10px;">Date</th>
+                <th style="padding: 10px;">Score</th>
+                <th style="padding: 10px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 12px 10px; font-weight: 600;">Term 1 Diagnostic Test</td>
+                <td style="padding: 12px 10px; color: #64748B;">12 Feb</td>
+                <td style="padding: 12px 10px; font-weight: 700; color: #059669;">78%</td>
+                <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 10px; font-weight: 600;">Term 2 Assignment</td>
+                <td style="padding: 12px 10px; color: #64748B;">15 May</td>
+                <td style="padding: 12px 10px; font-weight: 700; color: #059669;">72%</td>
+                <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -495,7 +552,7 @@
       <canvas id="performanceChart" width="100" height="100"></canvas>
 
       <div class="stat-box">
-        🚀 Current Mark Average: <strong>72%</strong>
+        🚀 Current Mark Average: <strong>75%</strong>
       </div>
     </section>
 
@@ -524,17 +581,65 @@
     const meta = currentUser.user_metadata || {};
     const parentName = meta.parent_name || meta.full_name || currentUser.email.split('@')[0];
     const grade = meta.grade || "High School Learner";
+    const selectedSubject = meta.subject || "Mathematics"; // Default fallback
 
     document.getElementById("display-name").textContent = parentName;
     document.getElementById("welcome-name").textContent = parentName;
     document.getElementById("display-grade").textContent = grade;
+    document.getElementById("display-subject-tag").textContent = `📚 ${selectedSubject}`;
 
     // Fallback Profile Avatar using initials
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(parentName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
+
+    // 3. Render Personalized Subjects (Maths vs Math Literacy filter)
+    const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
+    const personalizedModulesContainer = document.getElementById("personalized-modules-container");
+
+    const isMathLit = selectedSubject.toLowerCase().includes("lit");
+
+    if (isMathLit) {
+      dashboardSubjectContainer.innerHTML = `
+        <div class="subject-card">
+          <i class="fa-solid fa-chart-line"></i>
+          <h4>Mathematical Literacy</h4>
+          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
+        </div>
+      `;
+
+      personalizedModulesContainer.innerHTML = `
+        <div class="subject-card" style="margin-bottom: 15px;">
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Financial Mathematics & Taxation</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Personal budgeting, interest calculations, and tariffs.</p>
+        </div>
+        <div class="subject-card">
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Data Handling & Statistics</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Data interpretation, probability, and real-world trends.</p>
+        </div>
+      `;
+    } else {
+      dashboardSubjectContainer.innerHTML = `
+        <div class="subject-card">
+          <i class="fa-solid fa-calculator"></i>
+          <h4>Core Mathematics</h4>
+          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
+        </div>
+      `;
+
+      personalizedModulesContainer.innerHTML = `
+        <div class="subject-card" style="margin-bottom: 15px;">
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Functions & Calculus</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Algebraic graphs, derivatives, and optimization problems.</p>
+        </div>
+        <div class="subject-card">
+          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Trigonometry & Geometry</h4>
+          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Euclidean Geometry, Sine/Cosine rules, and proofs.</p>
+        </div>
+      `;
+    }
   });
 
-  // 3. SPA Navigation Switcher Logic
+  // 4. SPA Navigation Switcher Logic
   const navLinks = document.querySelectorAll('.nav-link-item');
   const appViews = document.querySelectorAll('.app-view');
 
@@ -560,7 +665,7 @@
     });
   });
 
-  // 4. School Marks File Upload
+  // 5. School Marks File Upload
   const fileInput = document.getElementById("file-input");
   const uploadStatus = document.getElementById("upload-status");
 
@@ -588,7 +693,7 @@
     }
   });
 
-  // 5. Profile Picture Upload & Update
+  // 6. Profile Picture Upload & Update
   const avatarInput = document.getElementById("avatar-input");
   const userAvatarImg = document.getElementById("user-avatar");
 
@@ -631,7 +736,7 @@
     }
   });
 
-  // 6. Logout Handler
+  // 7. Logout Handler
   document.getElementById("btn-logout").addEventListener("click", async (e) => {
     e.preventDefault();
     if (supabaseClient) {
@@ -640,7 +745,7 @@
     window.location.href = "login.html";
   });
 
-  // 7. Initialize Performance Chart
+  // 8. Initialize Performance Chart
   const ctx = document.getElementById('performanceChart').getContext('2d');
   new Chart(ctx, {
     type: 'line',
@@ -648,7 +753,7 @@
       labels: ['Term 1', 'Term 2', 'Term 3', 'Current'],
       datasets: [{
         label: 'Math Mark %',
-        data: [58, 64, 69, 72],
+        data: [65, 68, 71, 75],
         borderColor: '#EAB308',
         backgroundColor: 'rgba(234, 179, 8, 0.1)',
         fill: true,
