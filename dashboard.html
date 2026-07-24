@@ -113,6 +113,12 @@
       height: 100vh;
       overflow-y: auto;
       width: 100%;
+      transition: grid-template-columns 0.2s ease;
+    }
+
+    /* Layout override when viewing non-dashboard tabs */
+    .portal-container.full-width-view {
+      grid-template-columns: 1fr;
     }
 
     /* --- PROFILE PANEL --- */
@@ -223,7 +229,7 @@
       font-weight: 600;
     }
 
-    /* --- CENTER PANEL (Dynamic View Switcher Container) --- */
+    /* --- CENTER PANEL --- */
     .main-panel {
       padding: 30px;
       overflow-y: auto;
@@ -356,7 +362,7 @@
       }
 
       .nav-item::after {
-        display: none; /* Hide tooltips on touch devices */
+        display: none;
       }
 
       .brand-logo-img {
@@ -364,9 +370,9 @@
       }
 
       .portal-container {
-        grid-template-columns: 1fr; /* Stack panels into single column */
+        grid-template-columns: 1fr !important;
         height: auto;
-        padding-bottom: 70px; /* Offset for fixed bottom navigation */
+        padding-bottom: 70px;
       }
 
       .profile-panel, .analytics-panel {
@@ -402,10 +408,10 @@
   </nav>
 
   <!-- 2. MAIN DASHBOARD CONTAINER -->
-  <div class="portal-container">
+  <div class="portal-container" id="portal-container">
 
-    <!-- LEFT PANEL: PROFILE & UPLOADS -->
-    <section class="profile-panel">
+    <!-- LEFT PANEL: PROFILE & UPLOADS (VISIBLE ON HOMESCREEN ONLY) -->
+    <section class="profile-panel dashboard-only">
       <div class="avatar-wrapper">
         <img src="https://ui-avatars.com/api/?name=Student&background=1E293B&color=EAB308" id="user-avatar" class="avatar-img" alt="Profile Picture" />
         <button class="edit-avatar-btn" onclick="document.getElementById('avatar-input').click()"><i class="fa-solid fa-pen"></i></button>
@@ -419,11 +425,11 @@
         <span class="badge-icon" id="display-subject-tag">📚 Mathematics</span>
       </div>
 
-      <!-- Functional File Upload Card -->
+      <!-- Updated Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
-        <h4 style="font-size: 0.95rem;">Upload School Marks</h4>
-        <p style="font-size: 0.75rem; color: #64748B; margin-top: 5px;">Share tests or report cards with your educator.</p>
+        <h4 style="font-size: 0.95rem;">Upload Files</h4>
+        <p style="font-size: 0.75rem; color: #64748B; margin-top: 5px;">Share any file with your educator. Ensure correct file name.</p>
         <button class="btn-upload" id="btn-select-file" onclick="document.getElementById('file-input').click()">Choose File</button>
         <input type="file" id="file-input" />
         <p id="upload-status" class="upload-status"></p>
@@ -546,8 +552,8 @@
 
     </section>
 
-    <!-- RIGHT PANEL: ANALYTICS -->
-    <section class="analytics-panel">
+    <!-- RIGHT PANEL: ANALYTICS (VISIBLE ON HOMESCREEN ONLY) -->
+    <section class="analytics-panel dashboard-only">
       <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
       <canvas id="performanceChart" width="100" height="100"></canvas>
 
@@ -581,18 +587,18 @@
     const meta = currentUser.user_metadata || {};
     const parentName = meta.parent_name || meta.full_name || currentUser.email.split('@')[0];
     const grade = meta.grade || "High School Learner";
-    const selectedSubject = meta.subject || "Mathematics"; // Default fallback
+    const selectedSubject = meta.subject || "Mathematics";
 
     document.getElementById("display-name").textContent = parentName;
     document.getElementById("welcome-name").textContent = parentName;
     document.getElementById("display-grade").textContent = grade;
     document.getElementById("display-subject-tag").textContent = `📚 ${selectedSubject}`;
 
-    // Fallback Profile Avatar using initials
+    // Fallback Profile Avatar
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(parentName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
 
-    // 3. Render Personalized Subjects (Maths vs Math Literacy filter)
+    // 3. Render Personalized Subjects
     const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
     const personalizedModulesContainer = document.getElementById("personalized-modules-container");
 
@@ -639,16 +645,18 @@
     }
   });
 
-  // 4. SPA Navigation Switcher Logic
+  // 4. SPA Navigation Switcher + Homescreen Panel Toggling
   const navLinks = document.querySelectorAll('.nav-link-item');
   const appViews = document.querySelectorAll('.app-view');
+  const dashboardOnlyPanels = document.querySelectorAll('.dashboard-only');
+  const portalContainer = document.getElementById('portal-container');
 
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const targetViewId = link.getAttribute('data-target');
 
-      // Update active class on parent list items
+      // Update active nav menu link
       document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
         item.classList.remove('active');
       });
@@ -662,10 +670,19 @@
           view.style.display = 'none';
         }
       });
+
+      // Toggle side panels visibility (homescreen dashboard only)
+      if (targetViewId === 'view-dashboard') {
+        dashboardOnlyPanels.forEach(panel => panel.style.display = 'flex');
+        portalContainer.classList.remove('full-width-view');
+      } else {
+        dashboardOnlyPanels.forEach(panel => panel.style.display = 'none');
+        portalContainer.classList.add('full-width-view');
+      }
     });
   });
 
-  // 5. School Marks File Upload
+  // 5. File Upload Handler
   const fileInput = document.getElementById("file-input");
   const uploadStatus = document.getElementById("upload-status");
 
@@ -705,28 +722,24 @@
       const fileExt = file.name.split('.').pop();
       const filePath = `avatars/${currentUser.id}_${Date.now()}.${fileExt}`;
 
-      // Upload image to Supabase Storage
       const { data, error } = await supabaseClient.storage
         .from("student-files")
         .upload(filePath, file, { upsert: true });
 
       if (error) throw error;
 
-      // Get Public URL
       const { data: publicUrlData } = supabaseClient.storage
         .from("student-files")
         .getPublicUrl(filePath);
 
       const publicUrl = publicUrlData.publicUrl;
 
-      // Update Supabase Auth User Metadata
       const { error: updateError } = await supabaseClient.auth.updateUser({
         data: { avatar_url: publicUrl }
       });
 
       if (updateError) throw updateError;
 
-      // Update image on page immediately
       userAvatarImg.src = publicUrl;
       alert("Profile picture updated successfully!");
 
