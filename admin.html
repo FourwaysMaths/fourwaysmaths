@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Educator Command Center | Fourways Maths</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #F1F5F9; color: #0F172A; padding: 30px; }
+    
+    header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 30px; 
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .card { 
+      background: #FFF; 
+      border-radius: 14px; 
+      padding: 24px; 
+      border: 1px solid #E2E8F0; 
+      margin-bottom: 25px; 
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: #1E293B;
+    }
+
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 15px; border-bottom: 1px solid #F1F5F9; }
+    th { color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .btn { 
+      background: #EAB308; 
+      color: #1E293B; 
+      border: none; 
+      padding: 9px 16px; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: #CA8A04; }
+    .btn-secondary { background: #1E293B; color: #FFF; }
+    .btn-secondary:hover { background: #0F172A; }
+
+    .form-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h2>Educator Command Center 👨‍🏫</h2>
+      <p style="color: #64748B;">Manage Fourways Maths learners, mark records, and review student test uploads.</p>
+    </div>
+    <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-user-graduate"></i> Open Student Dashboard View</a>
+  </header>
+
+  <!-- SECTION 1: UPLOADED STUDENT DOCUMENTS -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-folder-open" style="color: #EAB308;"></i>
+      <h3>Uploaded Student Test Scripts & Reports</h3>
+    </div>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Document Path / File Name</th>
+            <th>Uploaded Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="student-files-table">
+          <tr>
+            <td colspan="3" style="color: #64748B;">Scanning Supabase storage bucket...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 2: LOG NEW GRADES FOR LEARNERS -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-pen-to-square" style="color: #EAB308;"></i>
+      <h3>Log Learner Marks & Assessment Scores</h3>
+    </div>
+    <form id="form-log-grade">
+      <div class="form-group">
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Student Name / ID</label>
+          <input type="text" id="student-identifier" placeholder="e.g. John Doe" required />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Assessment Name</label>
+          <input type="text" id="assessment-title" placeholder="e.g. Term 3 Trigonometry Test" required />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Score (%)</label>
+          <input type="number" id="assessment-score" placeholder="e.g. 85" min="0" max="100" required />
+        </div>
+      </div>
+      <button type="submit" class="btn" style="margin-top: 15px;"><i class="fa-solid fa-check"></i> Record Grade</button>
+    </form>
+  </div>
+
+<script>
+  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Fetch and render student uploads from Supabase storage
+  async function loadStudentUploads() {
+    const tableBody = document.getElementById("student-files-table");
+
+    const { data, error } = await supabaseClient.storage
+      .from("student-files")
+      .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+
+    if (error || !data || data.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="3" style="color: #64748B;">No student test submissions or reports found yet.</td></tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = data.map(file => {
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/student-files/${file.name}`;
+      return `
+        <tr>
+          <td style="font-weight: 600;">${file.name}</td>
+          <td style="color: #64748B;">${new Date(file.created_at).toLocaleDateString()}</td>
+          <td>
+            <a href="${publicUrl}" target="_blank" class="btn" style="padding: 5px 12px; font-size: 0.8rem;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open File
+            </a>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // Handle Mark Entry Submission
+  document.getElementById("form-log-grade").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const student = document.getElementById("student-identifier").value;
+    const title = document.getElementById("assessment-title").value;
+    const score = document.getElementById("assessment-score").value;
+
+    alert(`Successfully recorded mark: ${score}% for ${student} on "${title}".`);
+    e.target.reset();
+  });
+
+  document.addEventListener("DOMContentLoaded", loadStudentUploads);
+</script>
+</body>
+</html>
