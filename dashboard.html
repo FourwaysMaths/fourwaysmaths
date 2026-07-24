@@ -270,6 +270,7 @@
       padding: 2px 6px;
       border-radius: 10px;
       font-weight: bold;
+      display: none; /* Hidden by default until dynamic notifications exist */
     }
 
     .subject-grid {
@@ -425,7 +426,7 @@
         <span class="badge-icon" id="display-subject-tag">📚 Mathematics</span>
       </div>
 
-      <!-- Updated Upload File Box -->
+      <!-- Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
         <h4 style="font-size: 0.95rem;">Upload Files</h4>
@@ -448,7 +449,7 @@
           </div>
           <div class="notif-bell" id="notif-btn">
             <i class="fa-regular fa-bell"></i>
-            <span class="notif-badge">3</span>
+            <span class="notif-badge" id="notif-badge">0</span>
           </div>
         </div>
 
@@ -521,18 +522,9 @@
                 <th style="padding: 10px;">Status</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="grades-table-body">
               <tr>
-                <td style="padding: 12px 10px; font-weight: 600;">Term 1 Diagnostic Test</td>
-                <td style="padding: 12px 10px; color: #64748B;">12 Feb</td>
-                <td style="padding: 12px 10px; font-weight: 700; color: #059669;">78%</td>
-                <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 10px; font-weight: 600;">Term 2 Assignment</td>
-                <td style="padding: 12px 10px; color: #64748B;">15 May</td>
-                <td style="padding: 12px 10px; font-weight: 700; color: #059669;">72%</td>
-                <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+                <td colspan="4" style="padding: 15px; text-align: center; color: #64748B;">Loading grades...</td>
               </tr>
             </tbody>
           </table>
@@ -557,8 +549,8 @@
       <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
       <canvas id="performanceChart" width="100" height="100"></canvas>
 
-      <div class="stat-box">
-        🚀 Current Mark Average: <strong>75%</strong>
+      <div class="stat-box" id="stat-avg-box">
+        🚀 Current Mark Average: <strong>--%</strong>
       </div>
     </section>
 
@@ -570,6 +562,7 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
   let currentUser = null;
+  let myPerformanceChart = null;
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
@@ -643,6 +636,9 @@
         </div>
       `;
     }
+
+    // 4. Fetch Dynamic Performance & Grades
+    loadStudentGrades(currentUser.id);
   });
 
   // 4. SPA Navigation Switcher + Homescreen Panel Toggling
@@ -758,26 +754,93 @@
     window.location.href = "login.html";
   });
 
-  // 8. Initialize Performance Chart
-  const ctx = document.getElementById('performanceChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Term 1', 'Term 2', 'Term 3', 'Current'],
-      datasets: [{
-        label: 'Math Mark %',
-        data: [65, 68, 71, 75],
-        borderColor: '#EAB308',
-        backgroundColor: 'rgba(234, 179, 8, 0.1)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } }
+  // 8. DYNAMIC PERFORMANCE & GRADES FETCHING
+  async function loadStudentGrades(studentId) {
+    if (!supabaseClient) return;
+
+    const { data: grades, error } = await supabaseClient
+      .from('grades')
+      .select('*')
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: true });
+
+    const tbody = document.getElementById('grades-table-body');
+    const statAvgBox = document.getElementById('stat-avg-box');
+
+    if (error) {
+      console.error("Error loading grades:", error);
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Unable to load grades.</td></tr>`;
+      renderPerformanceChart(['No Data'], [0]);
+      return;
     }
-  });
+
+    if (!grades || grades.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No graded assessments recorded yet.</td></tr>`;
+      statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>--%</strong>`;
+      renderPerformanceChart(['No Data'], [0]);
+      return;
+    }
+
+    // Populate Table View
+    tbody.innerHTML = grades.map(g => {
+      const dateStr = new Date(g.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
+      return `
+        <tr>
+          <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name}</td>
+          <td style="padding: 12px 10px; color: #64748B;">${dateStr}</td>
+          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score_percentage}%</td>
+          <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+        </tr>
+      `;
+    }).join('');
+
+    // Extract Chart Data & Calculate Average
+    const labels = grades.map(g => g.assessment_name);
+    const scores = grades.map(g => Number(g.score_percentage));
+    
+    const sum = scores.reduce((acc, curr) => acc + curr, 0);
+    const avg = Math.round(sum / scores.length);
+
+    statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>${avg}%</strong>`;
+
+    renderPerformanceChart(labels, scores);
+  }
+
+  function renderPerformanceChart(labels, dataPoints) {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+
+    if (myPerformanceChart) {
+      myPerformanceChart.destroy();
+    }
+
+    myPerformanceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Mark %',
+          data: dataPoints,
+          borderColor: '#EAB308',
+          backgroundColor: 'rgba(234, 179, 8, 0.1)',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#1E293B',
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: { callback: value => value + '%' }
+          }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
 </script>
 </body>
 </html>
