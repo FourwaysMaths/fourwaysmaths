@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fourways Maths | Educator Access</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary-grey: #1E293B;
+      --yellow-accent: #EAB308;
+      --yellow-hover: #CA8A04;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text-main); 
+      min-height: 100vh; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: 6px solid var(--primary-grey); /* Darker header tab for Admin */
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(30, 41, 59, 0.08);
+      text-align: center;
+    }
+    .auth-header h2 { color: var(--primary-grey); font-size: 1.5rem; margin-bottom: 8px; }
+    .auth-header p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .form-group { text-align: left; margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--primary-grey); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+    .form-control:focus { border-color: var(--yellow-accent); box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.2); }
+    .btn-primary { width: 100%; background-color: var(--primary-grey); color: #FFF; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-primary:hover { background-color: #0F172A; }
+    .alert { padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 16px; display: none; text-align: left; background-color: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+  </style>
+</head>
+<body>
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Educator Command Center</h2>
+      <p>Authorized access only. Sign in with administrative credentials.</p>
+    </div>
+
+    <div id="alert-msg" class="alert"></div>
+
+    <form id="admin-auth-form">
+      <div class="form-group">
+        <label for="admin-email">Admin Email</label>
+        <input type="email" id="admin-email" class="form-control" placeholder="admin@fourwaysmaths.co.za" required>
+      </div>
+
+      <div class="form-group">
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" class="form-control" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-primary" id="btn-submit">Sign In to Dashboard</button>
+    </form>
+  </div>
+
+<script>
+  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+  const authForm = document.getElementById('admin-auth-form');
+  const alertMsg = document.getElementById('alert-msg');
+  const btnSubmit = document.getElementById('btn-submit');
+
+  // Auto-redirect if already logged in as admin
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (supabaseClient) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session?.user?.user_metadata?.role === "admin") {
+        window.location.href = "admin.html";
+      }
+    }
+  });
+
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    alertMsg.style.display = 'none';
+
+    const email = document.getElementById('admin-email').value.trim();
+    const password = document.getElementById('admin-password').value.trim();
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Authenticating...";
+
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) throw error;
+
+      // Verify account role is actually admin
+      if (data.user?.user_metadata?.role !== "admin") {
+        // Ensure role is explicitly set for admin session
+        await supabaseClient.auth.updateUser({ data: { role: "admin" } });
+      }
+
+      window.location.href = "admin.html";
+
+    } catch (err) {
+      alertMsg.textContent = err.message || "Invalid administrative credentials.";
+      alertMsg.style.display = 'block';
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Sign In to Dashboard";
+    }
+  });
+</script>
+</body>
+</html>
