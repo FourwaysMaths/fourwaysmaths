@@ -181,17 +181,32 @@
     </a>
 
     <div class="auth-header">
-      <h2 id="form-title">Student Login</h2>
+      <h2 id="form-title">Portal Login</h2>
       <p id="form-subtitle">Welcome back! Enter your details to continue.</p>
     </div>
 
     <div id="alert-msg" class="alert"></div>
 
     <form id="auth-form">
+      <!-- ACCOUNT ROLE (Register Mode Only) -->
+      <div class="form-group register-only" id="group-role">
+        <label for="account-role">Account Type</label>
+        <select id="account-role" class="form-control">
+          <option value="student" selected>Learner / Student</option>
+          <option value="parent">Parent / Guardian</option>
+        </select>
+      </div>
+
       <!-- PARENT NAME (Register Mode Only) -->
       <div class="form-group register-only" id="group-parent-name">
-        <label for="parent-name">Parent Name</label>
+        <label for="parent-name">Parent / Guardian Full Name</label>
         <input type="text" id="parent-name" class="form-control" placeholder="e.g. John Smith">
+      </div>
+
+      <!-- LEARNER NAME (Register Mode Only) -->
+      <div class="form-group register-only" id="group-learner-name">
+        <label for="learner-name">Learner Full Name</label>
+        <input type="text" id="learner-name" class="form-control" placeholder="e.g. Sipho Smith">
       </div>
 
       <!-- LEARNER GRADE (Register Mode Only) -->
@@ -209,8 +224,8 @@
 
       <!-- EMAIL -->
       <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" class="form-control" placeholder="parent@example.com" required>
+        <label for="email" id="label-email">Email Address</label>
+        <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
       </div>
 
       <!-- PASSWORD -->
@@ -247,14 +262,29 @@
   
   const registerFields = document.querySelectorAll('.register-only');
   const parentNameInput = document.getElementById('parent-name');
+  const learnerNameInput = document.getElementById('learner-name');
   const gradeInput = document.getElementById('grade');
+  const roleInput = document.getElementById('account-role');
+  const emailLabel = document.getElementById('label-email');
 
-  // Auto-redirect if already logged in + handle URL URL parameters
+  // Central Role Router
+  function redirectUserByRole(user) {
+    const role = user?.user_metadata?.role || "student";
+    if (role === "parent") {
+      window.location.href = "parent-dashboard.html";
+    } else if (role === "admin") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  }
+
+  // Auto-redirect if already logged in + handle URL parameters
   document.addEventListener("DOMContentLoaded", async () => {
     if (supabaseClient) {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
-        window.location.href = "dashboard.html";
+      if (session?.user) {
+        redirectUserByRole(session.user);
         return;
       }
     }
@@ -272,24 +302,32 @@
     hideAlert();
 
     if (isRegisterMode) {
-      formTitle.textContent = "Create Student Account";
-      formSubtitle.textContent = "Fill in the details below to register for the portal.";
+      formTitle.textContent = "Create an Account";
+      formSubtitle.textContent = "Fill in the details below to register for portal access.";
       btnSubmit.textContent = "Register Account";
       togglePrompt.textContent = "Already registered?";
       btnToggleMode.textContent = "Sign in here";
 
+      // Dynamic label update for parent email
+      if (emailLabel) emailLabel.textContent = "Parent's Email Address";
+
       registerFields.forEach(el => el.style.display = 'block');
       parentNameInput.required = true;
+      learnerNameInput.required = true;
       gradeInput.required = true;
     } else {
-      formTitle.textContent = "Student Login";
+      formTitle.textContent = "Portal Login";
       formSubtitle.textContent = "Welcome back! Enter your details to continue.";
       btnSubmit.textContent = "Sign In";
       togglePrompt.textContent = "Don't have an account?";
       btnToggleMode.textContent = "Register here";
 
+      // Reset email label
+      if (emailLabel) emailLabel.textContent = "Email Address";
+
       registerFields.forEach(el => el.style.display = 'none');
       parentNameInput.required = false;
+      learnerNameInput.required = false;
       gradeInput.required = false;
     }
   });
@@ -313,7 +351,9 @@
       // --- REGISTRATION LOGIC ---
       btnSubmit.textContent = "Creating Account...";
       const parentName = parentNameInput.value.trim();
+      const learnerName = learnerNameInput.value.trim();
       const grade = gradeInput.value;
+      const role = roleInput.value;
 
       if (!grade) {
         showAlert("Please select a grade.", "error");
@@ -328,8 +368,10 @@
           password: password,
           options: {
             data: {
+              full_name: learnerName,     // Student dashboard greets user by full_name / learner_name
+              learner_name: learnerName,
               parent_name: parentName,
-              full_name: parentName, // Fallback for profile triggers
+              role: role,                 // Saves 'parent' or 'student'
               grade: grade
             }
           }
@@ -337,13 +379,12 @@
 
         if (error) throw error;
 
-        // If session is returned immediately, redirect; otherwise sign in explicitly
         if (data.session) {
           showAlert("Account created! Redirecting...", "success");
-          setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+          setTimeout(() => { redirectUserByRole(data.user); }, 800);
         } else {
           // Auto sign-in fallback
-          const { error: signInErr } = await supabaseClient.auth.signInWithPassword({
+          const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
           });
@@ -353,7 +394,7 @@
             btnSubmit.disabled = false;
             btnSubmit.textContent = "Register Account";
           } else {
-            window.location.href = "dashboard.html";
+            redirectUserByRole(signInData.user);
           }
         }
 
@@ -375,7 +416,8 @@
 
         if (error) throw error;
 
-        window.location.href = "dashboard.html";
+        // Automatically route based on user_metadata.role
+        redirectUserByRole(data.user);
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
