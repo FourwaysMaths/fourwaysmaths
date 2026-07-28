@@ -251,15 +251,25 @@
 
   let activeChatStudentId = null;
   let activeChannel = null;
+  let currentUserFullName = "Educator";
 
   // Single DOMContentLoaded listener
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
-    // Verify Session
+    // Verify Session & Role
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       window.location.href = "login.html";
+      return;
+    }
+
+    const userRole = session.user.user_metadata?.role || "student";
+    currentUserFullName = session.user.user_metadata?.full_name || "Educator";
+
+    if (userRole !== "admin" && userRole !== "educator") {
+      // Redirect unauthorized non-admin users to learner portal
+      window.location.href = "dashboard.html";
       return;
     }
 
@@ -292,8 +302,8 @@
     chatSelect.innerHTML = defaultOption;
 
     students.forEach(student => {
-      // Exclude educators/admins from dropdowns if desired
-      if (student.role === 'admin') return;
+      // Filter out admin users from student selection dropdowns
+      if (student.role === 'admin' || student.role === 'educator') return;
 
       const option = document.createElement("option");
       option.value = student.id;
@@ -386,35 +396,36 @@
     const bg = isEducator ? "#EAB308" : "#1E293B";
     const color = isEducator ? "#1E293B" : "#FFF";
     const align = isEducator ? "flex-end" : "flex-start";
+    const senderLabel = isEducator ? `${currentUserFullName} (You)` : "Learner";
 
     return `
       <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4;">
-        <strong>${isEducator ? "Gcina Sithole (You)" : "Student"}:</strong> ${msg.message_text}
+        <strong>${senderLabel}:</strong> ${msg.message_text}
       </div>
     `;
   }
 
-async function handleSendAdminMessage() {
-  const text = adminChatInput.value.trim();
-  if (!text || !activeChatStudentId) return;
+  async function handleSendAdminMessage() {
+    const text = adminChatInput.value.trim();
+    if (!text || !activeChatStudentId) return;
 
-  adminChatInput.value = "";
+    adminChatInput.value = "";
 
-  const { error } = await supabaseClient
-    .from("messages")
-    .insert([
-      {
-        student_id: activeChatStudentId,
-        sender_role: "admin", // ✅ Changed from "educator" to "admin"
-        message_text: text
-      }
-    ]);
+    const { error } = await supabaseClient
+      .from("messages")
+      .insert([
+        {
+          student_id: activeChatStudentId,
+          sender_role: "admin",
+          message_text: text
+        }
+      ]);
 
-  if (error) {
-    console.error("Error sending educator message:", error);
-    alert("Failed to send message: " + error.message);
+    if (error) {
+      console.error("Error sending educator message:", error);
+      alert("Failed to send message: " + error.message);
+    }
   }
-}
 
   btnSendAdminChat.addEventListener("click", handleSendAdminMessage);
   adminChatInput.addEventListener("keypress", (e) => {
