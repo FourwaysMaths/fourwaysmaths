@@ -164,7 +164,7 @@
     <form id="auth-form">
       <!-- ALWAYS VISIBLE ROLE SELECTOR -->
       <div class="form-group">
-        <label for="account-role" id="role-label">Account Type</label>
+        <label for="account-role" id="role-label">Login / Register As</label>
         <select id="account-role" class="form-control">
           <option value="student" selected>Learner / Student</option>
           <option value="parent">Parent / Guardian</option>
@@ -236,26 +236,16 @@
   const gradeInput = document.getElementById('grade');
   const roleInput = document.getElementById('account-role');
 
-  function redirectUserByRole(user) {
-    const userRole = user?.user_metadata?.role || roleInput.value;
+  // Redirect strictly based on the user's explicitly selected role dropdown
+  function redirectSelectedRole() {
+    const chosenRole = roleInput.value;
     
-    if (userRole === "admin" || userRole === "educator") {
-      window.location.href = "admin.html";
-    } else if (userRole === "parent") {
+    if (chosenRole === "parent") {
       window.location.href = "parent-dashboard.html";
     } else {
       window.location.href = "dashboard.html";
     }
   }
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    if (supabaseClient) {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session?.user) {
-        redirectUserByRole(session.user);
-      }
-    }
-  });
 
   // Toggle between Login & Register views
   btnToggleMode.addEventListener('click', () => {
@@ -320,7 +310,7 @@
 
         if (error) throw error;
         showAlert("Account created! Redirecting...", "success");
-        setTimeout(() => { redirectUserByRole(data.user); }, 800);
+        setTimeout(() => { redirectSelectedRole(); }, 800);
 
       } catch (err) {
         showAlert(err.message || "Failed to register account.", "error");
@@ -339,8 +329,8 @@
 
         if (error) throw error;
 
-        // Redirect based on metadata, or fallback to selected dropdown role
-        redirectUserByRole(data.user);
+        // Route directly based on user's manual dropdown selection
+        redirectSelectedRole();
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
