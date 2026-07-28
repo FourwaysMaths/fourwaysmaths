@@ -1,846 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Portal | Fourways Maths</title>
-  <!-- FontAwesome Icons -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fourways Maths | Student Portal</title>
+  
+  <!-- FontAwesome & Chart.js CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Supabase JS Client -->
+  <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    :root {
+      --primary-grey: #1E293B;
+      --secondary-grey: #334155;
+      --yellow-accent: #EAB308;
+      --yellow-hover: #CA8A04;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
     }
 
-    body {
-      background-color: #F1F5F9;
-      color: #0F172A;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* ----------------------------------
-        1. SIDEBAR WITH TOOLTIPS
-    ----------------------------------- */
-    .sidebar-nav {
-      width: 80px;
-      background-color: #1E293B; /* Slate Grey */
+    /* Top Navigation Header */
+    .navbar {
+      background: var(--primary-grey);
+      color: #FFF;
+      padding: 16px 24px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: space-between;
-      padding: 20px 0;
-      z-index: 10;
-      flex-shrink: 0;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .brand-logo-img {
-      width: 48px;
-      height: auto;
-      border-radius: 8px;
-      object-fit: contain;
-    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-brand img { height: 40px; }
+    .nav-brand h1 { font-size: 1.25rem; font-weight: 700; color: #FFF; }
 
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      list-style: none;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-item a {
-      color: #94A3B8;
-      font-size: 1.2rem;
-      text-decoration: none;
+    .nav-user { display: flex; align-items: center; gap: 16px; }
+    .greeting { font-size: 0.95rem; font-weight: 600; color: var(--yellow-accent); }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--yellow-accent);
+      color: var(--yellow-accent);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
       transition: all 0.2s ease;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
     }
+    .btn-logout:hover { background: var(--yellow-accent); color: var(--primary-grey); }
 
-    .nav-item.active a, .nav-item a:hover {
-      color: #EAB308;
-      background-color: rgba(234, 179, 8, 0.15);
-    }
+    /* Main Container */
+    .container { max-width: 1100px; width: 100%; margin: 24px auto; padding: 0 20px; flex: 1; }
 
-    /* Hover Tooltips */
-    .nav-item::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      left: 90px;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: #0F172A;
-      color: #FFF;
-      padding: 6px 12px;
+    /* Navigation Tabs */
+    .tab-bar { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
       border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      z-index: 100;
+      transition: all 0.2s ease;
     }
+    .tab-btn.active { background: var(--primary-grey); color: var(--yellow-accent); }
 
-    .nav-item:hover::after {
-      opacity: 1;
-    }
+    /* Section Views */
+    .panel-view { display: none; }
+    .panel-view.active { display: block; }
 
-    /* ----------------------------------
-        2. DASHBOARD LAYOUT
-    ----------------------------------- */
-    .portal-container {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 280px 1fr 320px;
-      height: 100vh;
-      overflow-y: auto;
-      width: 100%;
-      transition: grid-template-columns 0.2s ease;
-    }
-
-    /* Layout override when viewing non-dashboard tabs */
-    .portal-container.full-width-view {
-      grid-template-columns: 1fr;
-    }
-
-    /* --- PROFILE PANEL --- */
-    .profile-panel {
-      background-color: #F8FAFC;
-      border-right: 1px solid #E2E8F0;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      overflow-y: auto;
-    }
-
-    .avatar-wrapper {
-      position: relative;
-      margin-bottom: 15px;
-    }
-
-    .avatar-img {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 3px solid #EAB308;
-      object-fit: cover;
-      background-color: #E2E8F0;
-    }
-
-    .edit-avatar-btn {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      background-color: #1E293B;
-      color: #FFF;
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 0.75rem;
-    }
-
-    .user-name {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #0F172A;
-    }
-
-    .user-grade {
-      font-size: 0.85rem;
-      color: #64748B;
-      margin-top: 4px;
-    }
-
-    .badges-container {
-      display: flex;
-      gap: 8px;
-      margin: 15px 0 25px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .badge-icon {
-      background: #FEF08A;
-      color: #854D0E;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    /* Upload Box */
-    .upload-card {
-      background: #FFFFFF;
-      border: 2px dashed #CBD5E1;
-      border-radius: 16px;
-      padding: 25px 15px;
-      margin-top: auto;
-      width: 100%;
-    }
-
-    .upload-card i {
-      font-size: 2rem;
-      color: #EAB308;
-      margin-bottom: 10px;
-    }
-
-    .btn-upload {
-      background-color: #EAB308;
-      color: #1E293B;
-      border: none;
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 700;
-      margin-top: 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-upload:hover {
-      background-color: #CA8A04;
-    }
-
-    .upload-status {
-      margin-top: 10px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    /* --- CENTER PANEL --- */
-    .main-panel {
-      padding: 30px;
-      overflow-y: auto;
-      width: 100%;
-    }
-
-    .app-view {
-      width: 100%;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .notif-bell {
-      position: relative;
-      background: #FFF;
-      border: 1px solid #E2E8F0;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .notif-badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background: #EF4444;
-      color: #FFF;
-      font-size: 0.65rem;
-      padding: 2px 6px;
+    /* Cards & Layout */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--yellow-accent);
       border-radius: 10px;
-      font-weight: bold;
-      display: none; /* Hidden by default until dynamic notifications exist */
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
+    .card h3 { font-size: 1.1rem; color: var(--primary-grey); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 
-    .subject-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .subject-card {
-      background: #FFF;
-      padding: 20px;
-      border-radius: 14px;
-      border: 1px solid #E2E8F0;
-    }
-
-    .subject-card i {
-      font-size: 1.8rem;
-      color: #EAB308;
-      margin-bottom: 12px;
-    }
-
-    .class-item {
-      background: #FFF;
-      padding: 16px 20px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      border: 1px solid #E2E8F0;
-    }
-
-    .class-status {
-      background: #ECFDF5;
-      color: #059669;
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: 700;
-    }
-
-    /* --- ANALYTICS PANEL --- */
-    .analytics-panel {
-      background: #FFF;
-      border-left: 1px solid #E2E8F0;
-      padding: 30px 20px;
-      overflow-y: auto;
-    }
-
-    .stat-box {
-      background: #FEF3C7;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 20px;
-      text-align: center;
-      color: #92400E;
-      font-weight: 700;
-    }
-
-    #file-input, #avatar-input {
-      display: none;
-    }
-
-    /* ----------------------------------
-        3. MOBILE RESPONSIBILITY
-    ----------------------------------- */
-    @media (max-width: 900px) {
-      body {
-        flex-direction: column;
-        height: auto;
-        overflow-y: auto;
-      }
-
-      .sidebar-nav {
-        width: 100%;
-        height: 60px;
-        flex-direction: row;
-        padding: 0 20px;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        z-index: 1000;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      .nav-menu {
-        flex-direction: row;
-        gap: 12px;
-      }
-
-      .nav-item::after {
-        display: none;
-      }
-
-      .brand-logo-img {
-        width: 36px;
-      }
-
-      .portal-container {
-        grid-template-columns: 1fr !important;
-        height: auto;
-        padding-bottom: 70px;
-      }
-
-      .profile-panel, .analytics-panel {
-        border-right: none;
-        border-left: none;
-        border-bottom: 1px solid #E2E8F0;
-      }
-
-      .main-panel {
-        padding: 20px 15px;
-      }
-    }
+    /* Performance Table */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
+    th { background: #F1F5F9; color: var(--primary-grey); font-weight: 700; }
+    .grade-badge { background: #FEF3C7; color: #92400E; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <!-- 1. LEFT SIDEBAR WITH TOOLTIPS -->
-  <nav class="sidebar-nav">
-    <a href="index.html">
-      <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
-    </a>
-    <ul class="nav-menu">
-      <li class="nav-item active" data-tooltip="Dashboard"><a href="#" class="nav-link-item" data-target="view-dashboard"><i class="fa-solid fa-house"></i></a></li>
-      <li class="nav-item" data-tooltip="Subjects & Modules"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
-      <li class="nav-item" data-tooltip="Chat to Educator"><a href="#" class="nav-link-item" data-target="view-chat"><i class="fa-solid fa-comments"></i></a></li>
-      <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#" class="nav-link-item" data-target="view-calendar"><i class="fa-solid fa-calendar-days"></i></a></li>
-      <li class="nav-item" data-tooltip="Grades"><a href="#" class="nav-link-item" data-target="view-grades"><i class="fa-solid fa-graduation-cap"></i></a></li>
-      <li class="nav-item" data-tooltip="Account Settings"><a href="#" class="nav-link-item" data-target="view-settings"><i class="fa-solid fa-gear"></i></a></li>
-    </ul>
-    <div class="nav-item" data-tooltip="Log Out">
-      <a href="#" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="images/logo.png" alt="Fourways Maths Logo">
+      <h1>Fourways Maths</h1>
+    </div>
+    <div class="nav-user">
+      <span class="greeting" id="user-greeting">Hi Learner</span>
+      <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
   </nav>
 
-  <!-- 2. MAIN DASHBOARD CONTAINER -->
-  <div class="portal-container" id="portal-container">
+  <!-- Main Content Area -->
+  <main class="container">
+    
+    <!-- Tab Controls -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('overview')"><i class="fa-solid fa-chart-line"></i> Performance</button>
+      <button class="tab-btn" onclick="switchTab('resources')"><i class="fa-solid fa-folder-open"></i> Learning Resources</button>
+    </div>
 
-    <!-- LEFT PANEL: PROFILE & UPLOADS (VISIBLE ON HOMESCREEN ONLY) -->
-    <section class="profile-panel dashboard-only">
-      <div class="avatar-wrapper">
-        <img src="https://ui-avatars.com/api/?name=Student&background=1E293B&color=EAB308" id="user-avatar" class="avatar-img" alt="Profile Picture" />
-        <button class="edit-avatar-btn" onclick="document.getElementById('avatar-input').click()"><i class="fa-solid fa-pen"></i></button>
-        <input type="file" id="avatar-input" accept="image/*" />
-      </div>
-
-      <h3 class="user-name" id="display-name">Student</h3>
-      <p class="user-grade" id="display-grade">High School Learner</p>
-
-      <div class="badges-container">
-        <span class="badge-icon" id="display-subject-tag">📚 Mathematics</span>
-      </div>
-
-      <!-- Upload File Box -->
-      <div class="upload-card">
-        <i class="fa-solid fa-cloud-arrow-up"></i>
-        <h4 style="font-size: 0.95rem;">Upload Files</h4>
-        <p style="font-size: 0.75rem; color: #64748B; margin-top: 5px;">Share any file with your educator. Ensure correct file name.</p>
-        <button class="btn-upload" id="btn-select-file" onclick="document.getElementById('file-input').click()">Choose File</button>
-        <input type="file" id="file-input" />
-        <p id="upload-status" class="upload-status"></p>
-      </div>
-    </section>
-
-    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
-    <section class="main-panel">
-
-      <!-- VIEW 1: DASHBOARD -->
-      <div id="view-dashboard" class="app-view">
-        <div class="panel-header">
-          <div>
-            <h2>Hi, <span id="welcome-name">Student</span>! 👋</h2>
-            <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
-          </div>
-          <div class="notif-bell" id="notif-btn">
-            <i class="fa-regular fa-bell"></i>
-            <span class="notif-badge" id="notif-badge">0</span>
-          </div>
-        </div>
-
-        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Enrolled Subject</h3>
-        <div class="subject-grid" id="dashboard-subject-container">
-          <!-- Dynamic Personalized Subject Rendered via JavaScript -->
-        </div>
-
-        <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Interactive Assessment Review</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Tomorrow | 15:30 - 16:30</p>
-          </div>
-          <span class="class-status">Confirmed</span>
-        </div>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Exam Past Paper Workshop</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Saturday | 09:00 - 10:30</p>
-          </div>
-          <span class="class-status">Important</span>
-        </div>
-      </div>
-
-      <!-- VIEW 2: SUBJECTS -->
-      <div id="view-subjects" class="app-view" style="display: none;">
-        <h2>Subjects & Study Modules</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Access your curriculum resources and past papers.</p>
-        <div id="personalized-modules-container">
-          <!-- Dynamically populated based on student's registered subject -->
-        </div>
-      </div>
-
-      <!-- VIEW 3: CHAT -->
-      <div id="view-chat" class="app-view" style="display: none;">
-        <h2>Tutor Chat Support</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Connect directly with Gcina Sithole for assignment assistance.</p>
-        <div class="class-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
-          <p style="font-size: 0.9rem; font-weight: 600;">Gcina S. (Lead Educator)</p>
-          <p style="font-size: 0.85rem; color: #64748B;">"Drop a message or upload your practice test on the left panel so we can review it during our next session!"</p>
-        </div>
-      </div>
-
-      <!-- VIEW 4: CALENDAR -->
-      <div id="view-calendar" class="app-view" style="display: none;">
-        <h2>Class Schedule & Calendar</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Live Problem Solving Session</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Monday | 16:00 - 17:00</p>
-          </div>
-          <span class="class-status">Scheduled</span>
-        </div>
-      </div>
-
-      <!-- VIEW 5: GRADES -->
-      <div id="view-grades" class="app-view" style="display: none;">
-        <h2>Grades & Test Results</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Review your assessment scores and teacher feedback.</p>
+    <!-- PANEL 1: Academic Overview -->
+    <div id="panel-overview" class="panel-view active">
+      <div class="grid-2">
         
-        <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #E2E8F0; overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 450px;">
+        <!-- Grade Chart -->
+        <div class="card">
+          <h3><i class="fa-solid fa-chart-column" style="color: var(--yellow-accent);"></i> Recent Test Progress</h3>
+          <canvas id="performanceChart" height="200"></canvas>
+        </div>
+
+        <!-- Grade History Table -->
+        <div class="card">
+          <h3><i class="fa-solid fa-list-check" style="color: var(--yellow-accent);"></i> Assessment Logs</h3>
+          <table>
             <thead>
-              <tr style="border-bottom: 2px solid #F1F5F9; color: #64748B; font-size: 0.85rem;">
-                <th style="padding: 10px;">Assessment</th>
-                <th style="padding: 10px;">Date</th>
-                <th style="padding: 10px;">Score</th>
-                <th style="padding: 10px;">Status</th>
+              <tr>
+                <th>Assessment</th>
+                <th>Score</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody id="grades-table-body">
               <tr>
-                <td colspan="4" style="padding: 15px; text-align: center; color: #64748B;">Loading grades...</td>
+                <td colspan="3" style="text-align: center; color: var(--text-muted);">Loading assessments...</td>
               </tr>
             </tbody>
           </table>
         </div>
+
       </div>
+    </div>
 
-      <!-- VIEW 6: SETTINGS -->
-      <div id="view-settings" class="app-view" style="display: none;">
-        <h2>Account Settings</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Manage your student profile preferences.</p>
-        <div class="subject-card">
-          <h4 style="margin-bottom: 10px;">Session Preferences</h4>
-          <p style="font-size: 0.85rem; color: #64748B;">Notifications: Enabled</p>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 5px;">Theme: Slate & Gold High-Contrast</p>
+    <!-- PANEL 2: Resources -->
+    <div id="panel-resources" class="panel-view">
+      <div class="card">
+        <h3><i class="fa-solid fa-file-pdf" style="color: var(--yellow-accent);"></i> Study Materials & Past Papers</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Access your grade revision notes and past exam solutions here.</p>
+        <div id="resource-list" style="color: var(--text-muted); font-size: 0.88rem;">
+          <p>No resources currently posted for your grade.</p>
         </div>
       </div>
+    </div>
 
-    </section>
+  </main>
 
-    <!-- RIGHT PANEL: ANALYTICS (VISIBLE ON HOMESCREEN ONLY) -->
-    <section class="analytics-panel dashboard-only">
-      <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
-      <canvas id="performanceChart" width="100" height="100"></canvas>
+  <script>
+    // Initialize Supabase Client
+    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-      <div class="stat-box" id="stat-avg-box">
-        🚀 Current Mark Average: <strong>--%</strong>
-      </div>
-    </section>
+    let currentUser = null;
+    let chartInstance = null;
 
-  </div>
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!supabaseClient) return;
 
-<script>
-  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+      // 1. Session & Authentication Check
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      
+      if (!session) {
+        window.location.href = "login.html";
+        return;
+      }
 
-  let currentUser = null;
-  let myPerformanceChart = null;
+      currentUser = session.user;
+      const userRole = currentUser.user_metadata?.role || "student";
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    if (!supabaseClient) return;
+      // 2. PORTAL GUARD CLAUSES
+      if (userRole === "parent") {
+        // Prevent parents from accessing student dashboard
+        window.location.href = "parent-dashboard.html";
+        return;
+      } else if (userRole === "admin") {
+        window.location.href = "admin.html";
+        return;
+      }
 
-    // 1. Verify User Authentication Session
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      window.location.href = "login.html";
-      return;
-    }
+      // 3. Set Dynamic Greeting: "Hi [Learner Name]"
+      const learnerName = currentUser.user_metadata?.learner_name || currentUser.user_metadata?.full_name || "Learner";
+      document.getElementById("user-greeting").textContent = `Hi ${learnerName}`;
 
-    currentUser = session.user;
+      // 4. Fetch Learner Data
+      fetchStudentGrades(currentUser.id);
+    });
 
-    // 2. Hydrate User Details
-    const meta = currentUser.user_metadata || {};
-    const parentName = meta.parent_name || meta.full_name || currentUser.email.split('@')[0];
-    const grade = meta.grade || "High School Learner";
-    const selectedSubject = meta.subject || "Mathematics";
+    // Fetch Student Grades & Render Chart/Table
+    async function fetchStudentGrades(studentId) {
+      const { data: grades, error } = await supabaseClient
+        .from("grades")
+        .select("*")
+        .eq("student_id", studentId)
+        .order("created_at", { ascending: true });
 
-    document.getElementById("display-name").textContent = parentName;
-    document.getElementById("welcome-name").textContent = parentName;
-    document.getElementById("display-grade").textContent = grade;
-    document.getElementById("display-subject-tag").textContent = `📚 ${selectedSubject}`;
+      const tbody = document.getElementById("grades-table-body");
+      tbody.innerHTML = "";
 
-    // Fallback Profile Avatar
-    const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(parentName)}&background=1E293B&color=EAB308`;
-    document.getElementById("user-avatar").src = avatarUrl;
+      if (error || !grades || grades.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No recorded grades yet.</td></tr>`;
+        renderChart([], []);
+        return;
+      }
 
-    // 3. Render Personalized Subjects
-    const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
-    const personalizedModulesContainer = document.getElementById("personalized-modules-container");
+      const labels = [];
+      const scores = [];
 
-    const isMathLit = selectedSubject.toLowerCase().includes("lit");
+      grades.forEach(g => {
+        labels.push(g.title || "Test");
+        scores.push(g.score);
 
-    if (isMathLit) {
-      dashboardSubjectContainer.innerHTML = `
-        <div class="subject-card">
-          <i class="fa-solid fa-chart-line"></i>
-          <h4>Mathematical Literacy</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-        </div>
-      `;
-
-      personalizedModulesContainer.innerHTML = `
-        <div class="subject-card" style="margin-bottom: 15px;">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Financial Mathematics & Taxation</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Personal budgeting, interest calculations, and tariffs.</p>
-        </div>
-        <div class="subject-card">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Data Handling & Statistics</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Data interpretation, probability, and real-world trends.</p>
-        </div>
-      `;
-    } else {
-      dashboardSubjectContainer.innerHTML = `
-        <div class="subject-card">
-          <i class="fa-solid fa-calculator"></i>
-          <h4>Core Mathematics</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-        </div>
-      `;
-
-      personalizedModulesContainer.innerHTML = `
-        <div class="subject-card" style="margin-bottom: 15px;">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Functions & Calculus</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Algebraic graphs, derivatives, and optimization problems.</p>
-        </div>
-        <div class="subject-card">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Trigonometry & Geometry</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Euclidean Geometry, Sine/Cosine rules, and proofs.</p>
-        </div>
-      `;
-    }
-
-    // 4. Fetch Dynamic Performance & Grades
-    loadStudentGrades(currentUser.id);
-  });
-
-  // 4. SPA Navigation Switcher + Homescreen Panel Toggling
-  const navLinks = document.querySelectorAll('.nav-link-item');
-  const appViews = document.querySelectorAll('.app-view');
-  const dashboardOnlyPanels = document.querySelectorAll('.dashboard-only');
-  const portalContainer = document.getElementById('portal-container');
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetViewId = link.getAttribute('data-target');
-
-      // Update active nav menu link
-      document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
-        item.classList.remove('active');
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${g.title}</strong></td>
+          <td><span class="grade-badge">${g.score}%</span></td>
+          <td>${new Date(g.created_at).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(row);
       });
-      link.parentElement.classList.add('active');
 
-      // Toggle views visibility
-      appViews.forEach(view => {
-        if (view.id === targetViewId) {
-          view.style.display = 'block';
-        } else {
-          view.style.display = 'none';
+      renderChart(labels, scores);
+    }
+
+    // Chart.js Rendering Function
+    function renderChart(labels, scores) {
+      const ctx = document.getElementById("performanceChart").getContext("2d");
+      
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels.length ? labels : ["No Data"],
+          datasets: [{
+            label: "Test Results (%)",
+            data: scores.length ? scores : [0],
+            backgroundColor: "#EAB308",
+            borderColor: "#CA8A04",
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, max: 100 }
+          }
         }
       });
-
-      // Toggle side panels visibility (homescreen dashboard only)
-      if (targetViewId === 'view-dashboard') {
-        dashboardOnlyPanels.forEach(panel => panel.style.display = 'flex');
-        portalContainer.classList.remove('full-width-view');
-      } else {
-        dashboardOnlyPanels.forEach(panel => panel.style.display = 'none');
-        portalContainer.classList.add('full-width-view');
-      }
-    });
-  });
-
-  // 5. File Upload Handler
-  const fileInput = document.getElementById("file-input");
-  const uploadStatus = document.getElementById("upload-status");
-
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file || !currentUser) return;
-
-    uploadStatus.style.color = "#0F172A";
-    uploadStatus.textContent = "Uploading file...";
-
-    try {
-      const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage
-        .from("student-files")
-        .upload(filePath, file);
-
-      if (error) throw error;
-
-      uploadStatus.style.color = "#059669";
-      uploadStatus.textContent = "✅ File uploaded successfully!";
-    } catch (err) {
-      console.error("Upload error:", err);
-      uploadStatus.style.color = "#EF4444";
-      uploadStatus.textContent = "Upload failed: " + (err.message || "Error uploading file.");
     }
-  });
 
-  // 6. Profile Picture Upload & Update
-  const avatarInput = document.getElementById("avatar-input");
-  const userAvatarImg = document.getElementById("user-avatar");
+    // Tab Navigation Switcher
+    function switchTab(tabName) {
+      document.querySelectorAll(".panel-view").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-  avatarInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file || !currentUser) return;
-
-    try {
-      const fileExt = file.name.split('.').pop();
-      const filePath = `avatars/${currentUser.id}_${Date.now()}.${fileExt}`;
-
-      const { data, error } = await supabaseClient.storage
-        .from("student-files")
-        .upload(filePath, file, { upsert: true });
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabaseClient.storage
-        .from("student-files")
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicUrlData.publicUrl;
-
-      const { error: updateError } = await supabaseClient.auth.updateUser({
-        data: { avatar_url: publicUrl }
-      });
-
-      if (updateError) throw updateError;
-
-      userAvatarImg.src = publicUrl;
-      alert("Profile picture updated successfully!");
-
-    } catch (err) {
-      console.error("Avatar upload error:", err);
-      alert("Failed to update profile picture: " + err.message);
+      document.getElementById(`panel-${tabName}`).classList.add("active");
+      event.currentTarget.classList.add("active");
     }
-  });
 
-  // 7. Logout Handler
-  document.getElementById("btn-logout").addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (supabaseClient) {
+    // Logout Function
+    async function logout() {
       await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
     }
-    window.location.href = "login.html";
-  });
-
-  // 8. DYNAMIC PERFORMANCE & GRADES FETCHING
-  async function loadStudentGrades(studentId) {
-    if (!supabaseClient) return;
-
-    const { data: grades, error } = await supabaseClient
-      .from('grades')
-      .select('*')
-      .eq('student_id', studentId)
-      .order('created_at', { ascending: true });
-
-    const tbody = document.getElementById('grades-table-body');
-    const statAvgBox = document.getElementById('stat-avg-box');
-
-    if (error) {
-      console.error("Error loading grades:", error);
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Unable to load grades.</td></tr>`;
-      renderPerformanceChart(['No Data'], [0]);
-      return;
-    }
-
-    if (!grades || grades.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No graded assessments recorded yet.</td></tr>`;
-      statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>--%</strong>`;
-      renderPerformanceChart(['No Data'], [0]);
-      return;
-    }
-
-    // Populate Table View
-    tbody.innerHTML = grades.map(g => {
-      const dateStr = new Date(g.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
-      return `
-        <tr>
-          <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name}</td>
-          <td style="padding: 12px 10px; color: #64748B;">${dateStr}</td>
-          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score_percentage}%</td>
-          <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-        </tr>
-      `;
-    }).join('');
-
-    // Extract Chart Data & Calculate Average
-    const labels = grades.map(g => g.assessment_name);
-    const scores = grades.map(g => Number(g.score_percentage));
-    
-    const sum = scores.reduce((acc, curr) => acc + curr, 0);
-    const avg = Math.round(sum / scores.length);
-
-    statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>${avg}%</strong>`;
-
-    renderPerformanceChart(labels, scores);
-  }
-
-  function renderPerformanceChart(labels, dataPoints) {
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-
-    if (myPerformanceChart) {
-      myPerformanceChart.destroy();
-    }
-
-    myPerformanceChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Mark %',
-          data: dataPoints,
-          borderColor: '#EAB308',
-          backgroundColor: 'rgba(234, 179, 8, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointBackgroundColor: '#1E293B',
-          pointRadius: 5
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            min: 0,
-            max: 100,
-            ticks: { callback: value => value + '%' }
-          }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-</script>
+  </script>
 </body>
 </html>
