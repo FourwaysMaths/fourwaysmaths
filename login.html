@@ -8,11 +8,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      /* Sleek Grey & Vibrant Yellow Color Theme */
-      --primary-grey: #1E293B;      /* Deep Slate Grey */
-      --secondary-grey: #334155;    /* Accent Slate Grey */
-      --yellow-accent: #EAB308;    /* Vibrant Yellow/Gold */
-      --yellow-hover: #CA8A04;     /* Darker Gold Hover */
+      --primary-grey: #1E293B;
+      --secondary-grey: #334155;
+      --yellow-accent: #EAB308;
+      --yellow-hover: #CA8A04;
       --bg: #F8FAFC;
       --card-bg: #FFFFFF;
       --text-main: #0F172A;
@@ -32,7 +31,6 @@
       padding: 24px 20px;
     }
 
-    /* Container Box */
     .auth-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -43,10 +41,8 @@
       max-width: 460px;
       box-shadow: 0 10px 25px rgba(30, 41, 59, 0.08);
       text-align: center;
-      position: relative;
     }
 
-    /* Branding / Logo Area */
     .brand-logo-container {
       display: block;
       margin-bottom: 24px;
@@ -58,11 +54,6 @@
       max-height: none !important;
       width: auto;
       object-fit: contain;
-      transition: transform 0.2s ease;
-    }
-
-    .brand-logo-img:hover {
-      transform: scale(1.04);
     }
 
     .auth-header h2 {
@@ -78,7 +69,6 @@
       margin-bottom: 24px;
     }
 
-    /* Form Inputs */
     .form-group {
       text-align: left;
       margin-bottom: 18px;
@@ -99,7 +89,6 @@
       border-radius: 8px;
       font-size: 0.95rem;
       background: #F8FAFC;
-      transition: all 0.2s ease;
       outline: none;
     }
 
@@ -109,7 +98,6 @@
       box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.2);
     }
 
-    /* Buttons */
     .btn-primary {
       width: 100%;
       background-color: var(--yellow-accent);
@@ -120,7 +108,6 @@
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s ease;
       margin-top: 8px;
     }
 
@@ -128,7 +115,6 @@
       background-color: var(--yellow-hover);
     }
 
-    /* Alerts */
     .alert {
       padding: 10px;
       border-radius: 6px;
@@ -138,37 +124,24 @@
       text-align: left;
     }
 
-    .alert-error {
-      background-color: #FEF2F2;
-      color: #DC2626;
-      border: 1px solid #FCA5A5;
-    }
+    .alert-error { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+    .alert-success { background-color: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
 
-    .alert-success {
-      background-color: #F0FDF4;
-      color: #166534;
-      border: 1px solid #BBF7D0;
-    }
-
-    /* Footer Switch Links */
     .footer-link {
       margin-top: 20px;
       font-size: 0.88rem;
       color: var(--text-muted);
     }
 
-    .footer-link button, .footer-link a {
+    .footer-link button {
       background: none;
       border: none;
       color: var(--primary-grey);
       font-weight: 700;
       cursor: pointer;
-      font-size: 0.88rem;
       text-decoration: underline;
-      padding: 0;
     }
 
-    /* Hidden element helper */
     .register-only {
       display: none;
     }
@@ -189,28 +162,26 @@
     <div id="alert-msg" class="alert"></div>
 
     <form id="auth-form">
-      <!-- ACCOUNT ROLE (Register Mode Only) -->
-      <div class="form-group register-only" id="group-role">
-        <label for="account-role">Account Type</label>
+      <!-- ALWAYS VISIBLE ROLE SELECTOR -->
+      <div class="form-group">
+        <label for="account-role" id="role-label">Account Type</label>
         <select id="account-role" class="form-control">
           <option value="student" selected>Learner / Student</option>
           <option value="parent">Parent / Guardian</option>
         </select>
       </div>
 
-      <!-- PARENT NAME (Register Mode Only) -->
+      <!-- REGISTRATION ONLY FIELDS -->
       <div class="form-group register-only" id="group-parent-name">
         <label for="parent-name">Parent / Guardian Full Name</label>
         <input type="text" id="parent-name" class="form-control" placeholder="e.g. John Smith">
       </div>
 
-      <!-- LEARNER NAME (Register Mode Only) -->
       <div class="form-group register-only" id="group-learner-name">
         <label for="learner-name">Learner Full Name</label>
         <input type="text" id="learner-name" class="form-control" placeholder="e.g. Kevin Smith">
       </div>
 
-      <!-- LEARNER GRADE (Register Mode Only) -->
       <div class="form-group register-only" id="group-grade">
         <label for="grade">Learner Grade</label>
         <select id="grade" class="form-control">
@@ -223,13 +194,12 @@
         </select>
       </div>
 
-      <!-- EMAIL -->
+      <!-- EMAIL & PASSWORD -->
       <div class="form-group">
-        <label for="email" id="label-email">Email Address</label>
+        <label for="email">Email Address</label>
         <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
       </div>
 
-      <!-- PASSWORD -->
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6">
@@ -238,14 +208,13 @@
       <button type="submit" class="btn-primary" id="btn-submit">Sign In</button>
     </form>
 
-    <div class="footer-link" id="register-toggle-row">
+    <div class="footer-link">
       <span id="toggle-prompt">Don't have an account?</span>
       <button type="button" id="btn-toggle-mode">Register here</button>
     </div>
   </div>
 
 <script>
-  // Initialize Supabase Client
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -267,11 +236,9 @@
   const gradeInput = document.getElementById('grade');
   const roleInput = document.getElementById('account-role');
 
-  // Strict central router based on user's persistent metadata/email
   function redirectUserByRole(user) {
-    const userRole = user?.user_metadata?.role;
+    const userRole = user?.user_metadata?.role || roleInput.value;
     
-    // Explicit admin check
     if (userRole === "admin" || userRole === "educator") {
       window.location.href = "admin.html";
     } else if (userRole === "parent") {
@@ -281,34 +248,16 @@
     }
   }
 
-  // Auto-redirect if already logged in
   document.addEventListener("DOMContentLoaded", async () => {
     if (supabaseClient) {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session?.user) {
         redirectUserByRole(session.user);
-        return;
       }
     }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('mode') === 'register') {
-      btnToggleMode.click();
-    }
   });
 
-  // Dynamic field toggling for Registration
-  roleInput.addEventListener('change', () => {
-    if (roleInput.value === 'parent') {
-      learnerNameInput.required = false;
-      gradeInput.required = false;
-    } else {
-      learnerNameInput.required = true;
-      gradeInput.required = true;
-    }
-  });
-
-  // Toggle between Login & Registration view
+  // Toggle between Login & Register views
   btnToggleMode.addEventListener('click', () => {
     isRegisterMode = !isRegisterMode;
     hideAlert();
@@ -321,12 +270,7 @@
       btnToggleMode.textContent = "Sign in here";
 
       registerFields.forEach(el => el.style.display = 'block');
-      
       parentNameInput.required = true;
-      if (roleInput.value === 'student') {
-        learnerNameInput.required = true;
-        gradeInput.required = true;
-      }
     } else {
       formTitle.textContent = "Portal Login";
       formSubtitle.textContent = "Welcome back! Please sign in to continue.";
@@ -335,14 +279,12 @@
       btnToggleMode.textContent = "Register here";
 
       registerFields.forEach(el => el.style.display = 'none');
-      
       parentNameInput.required = false;
       learnerNameInput.required = false;
       gradeInput.required = false;
     }
   });
 
-  // Handle Form Submission
   authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideAlert();
@@ -358,19 +300,8 @@
     btnSubmit.disabled = true;
 
     if (isRegisterMode) {
-      // --- REGISTRATION LOGIC ---
       btnSubmit.textContent = "Creating Account...";
-      const parentName = parentNameInput.value.trim();
-      const learnerName = learnerNameInput.value.trim();
-      const grade = gradeInput.value;
-      const role = roleInput.value; // Only allows 'student' or 'parent'
-
-      if (role === 'student' && !grade) {
-        showAlert("Please select a grade.", "error");
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = "Register Account";
-        return;
-      }
+      const role = roleInput.value;
 
       try {
         const { data, error } = await supabaseClient.auth.signUp({
@@ -378,34 +309,18 @@
           password: password,
           options: {
             data: {
-              full_name: role === 'student' ? learnerName : parentName,
-              learner_name: learnerName || parentName,
-              parent_name: parentName,
+              full_name: role === 'student' ? learnerNameInput.value.trim() : parentNameInput.value.trim(),
+              learner_name: learnerNameInput.value.trim() || parentNameInput.value.trim(),
+              parent_name: parentNameInput.value.trim(),
               role: role,
-              grade: grade || "N/A"
+              grade: gradeInput.value || "N/A"
             }
           }
         });
 
         if (error) throw error;
-
-        if (data.session) {
-          showAlert("Account created! Redirecting...", "success");
-          setTimeout(() => { redirectUserByRole(data.session.user); }, 800);
-        } else {
-          const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
-
-          if (signInErr) {
-            showAlert("Account registered! Please click 'Sign in here' to log in.", "success");
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = "Register Account";
-          } else {
-            redirectUserByRole(signInData.user);
-          }
-        }
+        showAlert("Account created! Redirecting...", "success");
+        setTimeout(() => { redirectUserByRole(data.user); }, 800);
 
       } catch (err) {
         showAlert(err.message || "Failed to register account.", "error");
@@ -414,7 +329,6 @@
       }
 
     } else {
-      // --- STANDARD LOGIN LOGIC ---
       btnSubmit.textContent = "Signing in...";
 
       try {
@@ -425,7 +339,7 @@
 
         if (error) throw error;
 
-        // Redirect based strictly on the role saved in Supabase
+        // Redirect based on metadata, or fallback to selected dropdown role
         redirectUserByRole(data.user);
 
       } catch (err) {
