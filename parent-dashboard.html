@@ -149,7 +149,7 @@
   <!-- Top Navigation -->
   <nav class="navbar">
     <div class="nav-brand">
-      <img src="images/logo.png" alt="Fourways Maths Logo">
+      <img src="images/logo.png" alt="Fourways Maths Logo" onerror="this.src='https://via.placeholder.com/120x40/1E293B/EAB308?text=Fourways+Maths'">
       <h1>Fourways Maths</h1>
     </div>
     <div class="nav-user">
@@ -246,17 +246,18 @@
     document.addEventListener("DOMContentLoaded", async () => {
       if (!supabaseClient) return;
 
-      // 1. Session & Auth Verification
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
+      // 1. Fetch fresh user account details from server
+      const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
+
+      if (userErr || !user) {
         window.location.href = "login.html";
         return;
       }
 
-      currentUser = session.user;
-      const userRole = currentUser.user_metadata?.role || "student";
+      currentUser = user;
+      const userRole = currentUser.user_metadata?.role || "parent";
 
-      // 2. PORTAL GUARD CLAUSE: Keep Students and Admins out
+      // 2. PORTAL GUARD CLAUSE: Only redirect if explicitly a student or admin
       if (userRole === "student") {
         window.location.href = "dashboard.html";
         return;
@@ -280,7 +281,6 @@
 
     // Fetch child's grades from the Supabase `grades` table
     async function fetchLearnerGradesForParent() {
-      // Searches by student_id or fallback query
       const studentId = currentUser.user_metadata?.student_id || currentUser.id;
 
       const { data: grades, error } = await supabaseClient
@@ -325,7 +325,6 @@
       status.style.color = "var(--primary-grey)";
       status.textContent = "Uploading proof of payment...";
 
-      // Path: proof_of_payments/{user_id}/{timestamp}_{filename}
       const filePath = `proof_of_payments/${currentUser.id}/${Date.now()}_${file.name}`;
 
       const { error } = await supabaseClient.storage
@@ -337,7 +336,7 @@
         status.textContent = "❌ Upload failed: " + error.message;
       } else {
         status.style.color = "#166534";
-        status.textContent = "✅ POP uploaded successfully! Admin will verify shorty.";
+        status.textContent = "✅ POP uploaded successfully! Admin will verify shortly.";
       }
     });
 
