@@ -459,19 +459,8 @@
         </div>
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Interactive Assessment Review</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Tomorrow | 15:30 - 16:30</p>
-          </div>
-          <span class="class-status">Confirmed</span>
-        </div>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Exam Past Paper Workshop</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Saturday | 09:00 - 10:30</p>
-          </div>
-          <span class="class-status">Important</span>
+        <div id="upcoming-classes-container">
+          <p style="color: #64748B; font-size: 0.85rem;">Loading schedule...</p>
         </div>
       </div>
 
@@ -498,12 +487,8 @@
       <div id="view-calendar" class="app-view" style="display: none;">
         <h2>Class Schedule & Calendar</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">Live Problem Solving Session</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">Monday | 16:00 - 17:00</p>
-          </div>
-          <span class="class-status">Scheduled</span>
+        <div id="calendar-classes-container">
+          <p style="color: #64748B; font-size: 0.85rem;">Loading schedule...</p>
         </div>
       </div>
 
@@ -647,7 +632,8 @@
       `;
     }
 
-    // 5. Fetch Dynamic Performance & Grades
+    // 5. Fetch Dynamic Schedules & Performance
+    loadUpcomingClasses(currentUser.id);
     loadStudentGrades(currentUser.id);
   });
 
@@ -684,6 +670,51 @@
       }
     });
   });
+
+  // Fetch Dynamic Upcoming Classes from Supabase
+  async function loadUpcomingClasses(studentId) {
+    if (!supabaseClient) return;
+
+    const dashboardContainer = document.getElementById("upcoming-classes-container");
+    const calendarContainer = document.getElementById("calendar-classes-container");
+
+    const { data: schedules, error } = await supabaseClient
+      .from("schedules")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("class_date", { ascending: true });
+
+    if (error) {
+      console.error("Error loading schedule:", error);
+      const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
+      dashboardContainer.innerHTML = errMarkup;
+      calendarContainer.innerHTML = errMarkup;
+      return;
+    }
+
+    if (!schedules || schedules.length === 0) {
+      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled at this time.</p></div>`;
+      dashboardContainer.innerHTML = emptyMarkup;
+      calendarContainer.innerHTML = emptyMarkup;
+      return;
+    }
+
+    const htmlContent = schedules.map(s => {
+      const dateFormatted = new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' });
+      return `
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">${s.topic}</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time}</p>
+          </div>
+          <span class="class-status">Scheduled</span>
+        </div>
+      `;
+    }).join('');
+
+    dashboardContainer.innerHTML = htmlContent;
+    calendarContainer.innerHTML = htmlContent;
+  }
 
   // File Upload Handler
   const fileInput = document.getElementById("file-input");
