@@ -253,23 +253,29 @@
   let activeChannel = null;
   let currentUserFullName = "Educator";
 
-  // Single DOMContentLoaded listener
+  // Single DOMContentLoaded listener with Admin Guard
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
-    // Verify Session & Role
+    // Verify Session & Role Security Guard
     const { data: { session } } = await supabaseClient.auth.getSession();
+    
     if (!session) {
       window.location.href = "login.html";
       return;
     }
 
-    const userRole = session.user.user_metadata?.role || "student";
+    const userRole = session.user.user_metadata?.role;
+    const userEmail = session.user.email;
     currentUserFullName = session.user.user_metadata?.full_name || "Educator";
 
-    if (userRole !== "admin" && userRole !== "educator") {
-      // Redirect unauthorized non-admin users to learner portal
-      window.location.href = "dashboard.html";
+    // Strict Admin & Educator Route Protection
+    const isAdminOrEducator = userRole === "admin" || userRole === "educator" || userEmail === "info@fourwaysmaths.co.za";
+
+    if (!isAdminOrEducator) {
+      // Instantly evict unauthorized accounts
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
       return;
     }
 
