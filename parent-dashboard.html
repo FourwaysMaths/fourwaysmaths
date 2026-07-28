@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fourways Maths | Parent Portal</title>
+  
+  <!-- FontAwesome & Supabase CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary-grey: #1E293B;      /* Deep Slate Grey */
+      --secondary-grey: #334155;    /* Accent Slate Grey */
+      --yellow-accent: #EAB308;    /* Vibrant Yellow/Gold */
+      --yellow-hover: #CA8A04;     /* Darker Gold Hover */
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Top Navigation Header */
+    .navbar {
+      background: var(--primary-grey);
+      color: #FFF;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-brand img { height: 40px; }
+    .nav-brand h1 { font-size: 1.25rem; font-weight: 700; color: #FFF; }
+
+    .nav-user { display: flex; align-items: center; gap: 16px; }
+    .greeting { font-size: 0.95rem; font-weight: 600; color: var(--yellow-accent); }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--yellow-accent);
+      color: var(--yellow-accent);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-logout:hover { background: var(--yellow-accent); color: var(--primary-grey); }
+
+    /* Main Container */
+    .container { max-width: 1100px; width: 100%; margin: 24px auto; padding: 0 20px; flex: 1; }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: var(--secondary-grey);
+      color: #FFF;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border-left: 6px solid var(--yellow-accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-banner h2 { font-size: 1.4rem; margin-bottom: 4px; }
+    .hero-banner p { color: #94A3B8; font-size: 0.9rem; }
+    .learner-pill {
+      background: rgba(234, 179, 8, 0.15);
+      border: 1px solid var(--yellow-accent);
+      color: var(--yellow-accent);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* Grid Layout */
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--yellow-accent);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card h3 { font-size: 1.1rem; color: var(--primary-grey); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .card-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; flex-grow: 0; }
+
+    /* Buttons */
+    .btn-gold {
+      background-color: var(--yellow-accent);
+      color: var(--primary-grey);
+      border: none;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .btn-gold:hover { background-color: var(--yellow-hover); }
+
+    /* Tables & Lists */
+    .doc-list { list-style: none; margin-bottom: 16px; }
+    .doc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .doc-item a { color: var(--primary-grey); font-weight: 600; text-decoration: none; }
+    .doc-item a:hover { color: var(--yellow-hover); text-decoration: underline; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--border); }
+    th { background: #F1F5F9; color: var(--primary-grey); font-weight: 700; }
+    .grade-badge { background: #FEF3C7; color: #92400E; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+
+    /* Status Messages */
+    #pop-status { font-size: 0.82rem; margin-top: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="images/logo.png" alt="Fourways Maths Logo">
+      <h1>Fourways Maths</h1>
+    </div>
+    <div class="nav-user">
+      <span class="greeting" id="parent-greeting">Hi Parent</span>
+      <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="container">
+    
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div>
+        <h2 id="hero-parent-name">Welcome to the Parent Portal</h2>
+        <p>Manage fee payments, view statements, and track your learner's academic progress.</p>
+      </div>
+      <div class="learner-pill" id="hero-learner-info">
+        <i class="fa-solid fa-user-graduate"></i> Learner: Loading...
+      </div>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="grid-3">
+
+      <!-- CARD 1: Proof of Payment Upload -->
+      <div class="card">
+        <h3><i class="fa-solid fa-file-invoice-dollar" style="color: var(--yellow-accent);"></i> Upload Proof of Payment</h3>
+        <p class="card-subtitle">Upload monthly tuition deposit slips, bank receipts, or EFT confirmations for account reconciliation.</p>
+
+        <input type="file" id="pop-file" accept=".pdf,image/*" style="display:none;" />
+        
+        <button class="btn-gold" onclick="document.getElementById('pop-file').click()">
+          <i class="fa-solid fa-upload"></i> Choose & Upload POP File
+        </button>
+        <div id="pop-status"></div>
+      </div>
+
+      <!-- CARD 2: Statements & Invoices -->
+      <div class="card">
+        <h3><i class="fa-solid fa-receipt" style="color: var(--yellow-accent);"></i> Statements & Invoices</h3>
+        <p class="card-subtitle">Download official monthly fee statements and tax invoices.</p>
+
+        <ul class="doc-list" id="statements-list">
+          <li class="doc-item">
+            <span><i class="fa-solid fa-file-pdf" style="color: #DC2626; margin-right:6px;"></i> Latest Account Statement</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Current</span>
+          </li>
+        </ul>
+
+        <button class="btn-gold" style="background:#334155; color:#FFF;" onclick="alert('Statements updated automatically on the 1st of every month.')">
+          <i class="fa-solid fa-circle-info"></i> Billing Help & Enquiries
+        </button>
+      </div>
+
+      <!-- CARD 3: Academic Summary -->
+      <div class="card" style="grid-column: span 1;">
+        <h3><i class="fa-solid fa-chart-line" style="color: var(--yellow-accent);"></i> Learner Performance</h3>
+        <p class="card-subtitle">Live assessment results for your child.</p>
+
+        <div style="background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 14px; text-align: center;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Overall Average</span>
+          <div id="overall-average" style="font-size: 1.6rem; font-weight: 800; color: #059669; margin-top: 4px;">--%</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="parent-grades-body">
+            <tr>
+              <td colspan="3" style="text-align: center; color: var(--text-muted);">Loading scores...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Initialize Supabase Client
+    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+    let currentUser = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!supabaseClient) return;
+
+      // 1. Session & Auth Verification
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      currentUser = session.user;
+      const userRole = currentUser.user_metadata?.role || "student";
+
+      // 2. PORTAL GUARD CLAUSE: Keep Students and Admins out
+      if (userRole === "student") {
+        window.location.href = "dashboard.html";
+        return;
+      } else if (userRole === "admin") {
+        window.location.href = "admin.html";
+        return;
+      }
+
+      // 3. Populate Parent and Learner Names
+      const parentName = currentUser.user_metadata?.parent_name || currentUser.user_metadata?.full_name || "Parent";
+      const learnerName = currentUser.user_metadata?.learner_name || "Assigned Student";
+      const grade = currentUser.user_metadata?.grade || "Maths";
+
+      document.getElementById("parent-greeting").textContent = `Hi ${parentName}`;
+      document.getElementById("hero-parent-name").textContent = `Welcome, ${parentName}`;
+      document.getElementById("hero-learner-info").innerHTML = `<i class="fa-solid fa-user-graduate"></i> Learner: <strong>${learnerName}</strong> (${grade})`;
+
+      // 4. Fetch Learner Grades for Parent View
+      fetchLearnerGradesForParent();
+    });
+
+    // Fetch child's grades from the Supabase `grades` table
+    async function fetchLearnerGradesForParent() {
+      // Searches by student_id or fallback query
+      const studentId = currentUser.user_metadata?.student_id || currentUser.id;
+
+      const { data: grades, error } = await supabaseClient
+        .from("grades")
+        .select("*")
+        .eq("student_id", studentId)
+        .order("created_at", { ascending: false });
+
+      const tbody = document.getElementById("parent-grades-body");
+      const avgDisplay = document.getElementById("overall-average");
+      tbody.innerHTML = "";
+
+      if (error || !grades || grades.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No assessment records yet.</td></tr>`;
+        avgDisplay.textContent = "N/A";
+        return;
+      }
+
+      let totalScore = 0;
+      grades.forEach(g => {
+        totalScore += Number(g.score || 0);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${g.title}</strong></td>
+          <td><span class="grade-badge">${g.score}%</span></td>
+          <td>${new Date(g.created_at).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      const average = Math.round(totalScore / grades.length);
+      avgDisplay.textContent = `${average}%`;
+    }
+
+    // Proof of Payment File Upload Handler
+    document.getElementById("pop-file").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      const status = document.getElementById("pop-status");
+      if (!file || !currentUser) return;
+
+      status.style.color = "var(--primary-grey)";
+      status.textContent = "Uploading proof of payment...";
+
+      // Path: proof_of_payments/{user_id}/{timestamp}_{filename}
+      const filePath = `proof_of_payments/${currentUser.id}/${Date.now()}_${file.name}`;
+
+      const { error } = await supabaseClient.storage
+        .from("student-files")
+        .upload(filePath, file);
+
+      if (error) {
+        status.style.color = "#DC2626";
+        status.textContent = "❌ Upload failed: " + error.message;
+      } else {
+        status.style.color = "#166534";
+        status.textContent = "✅ POP uploaded successfully! Admin will verify shorty.";
+      }
+    });
+
+    // Logout Function
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
