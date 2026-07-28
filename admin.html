@@ -22,6 +22,12 @@
       gap: 15px;
     }
 
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     .card { 
       background: #FFF; 
       border-radius: 14px; 
@@ -62,6 +68,8 @@
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-secondary { background: #1E293B; color: #FFF; }
     .btn-secondary:hover { background: #0F172A; }
+    .btn-danger { background: #EF4444; color: #FFF; }
+    .btn-danger:hover { background: #DC2626; }
 
     .form-group {
       display: grid;
@@ -84,6 +92,30 @@
       font-size: 0.9rem;
       font-weight: 600;
     }
+
+    /* Chat Hub Specific Styling */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .chat-messages-box {
+      height: 320px;
+      overflow-y: auto;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -91,12 +123,40 @@
   <header>
     <div>
       <h2>Educator Command Center 👨‍🏫</h2>
-      <p style="color: #64748B;">Manage Fourways Maths learners, mark records, and review student test uploads.</p>
+      <p style="color: #64748B;">Manage Fourways Maths learners, mark records, lesson schedules, and live communications.</p>
     </div>
-    <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-user-graduate"></i> Open Student Dashboard View</a>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-user-graduate"></i> Student View</a>
+      <button id="btn-logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+    </div>
   </header>
 
-  <!-- SECTION 1: UPLOADED STUDENT DOCUMENTS -->
+  <!-- SECTION 1: LIVE STUDENT CHAT HUB -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-comments" style="color: #EAB308;"></i>
+      <h3>Live Learner Chat & Queries</h3>
+    </div>
+    <div class="chat-container">
+      <div style="max-width: 320px;">
+        <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student to Message</label>
+        <select id="chat-student-select">
+          <option value="">-- Select a Learner --</option>
+        </select>
+      </div>
+
+      <div class="chat-messages-box" id="admin-chat-box">
+        <p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.9rem;">Select a student from the dropdown above to view or send messages.</p>
+      </div>
+
+      <div class="chat-input-row">
+        <input type="text" id="admin-chat-input" placeholder="Type your response to the student..." disabled />
+        <button id="btn-send-admin-chat" class="btn" disabled><i class="fa-solid fa-paper-plane"></i> Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: UPLOADED STUDENT DOCUMENTS -->
   <div class="card">
     <div class="card-title">
       <i class="fa-solid fa-folder-open" style="color: #EAB308;"></i>
@@ -120,7 +180,7 @@
     </div>
   </div>
 
-  <!-- SECTION 2: LOG NEW GRADES FOR LEARNERS -->
+  <!-- SECTION 3: LOG NEW GRADES FOR LEARNERS -->
   <div class="card">
     <div class="card-title">
       <i class="fa-solid fa-pen-to-square" style="color: #EAB308;"></i>
@@ -150,7 +210,7 @@
     </form>
   </div>
 
-  <!-- SECTION 3: SCHEDULE UPCOMING CLASSES -->
+  <!-- SECTION 4: SCHEDULE UPCOMING CLASSES -->
   <div class="card">
     <div class="card-title">
       <i class="fa-solid fa-calendar-plus" style="color: #EAB308;"></i>
@@ -187,58 +247,183 @@
 <script>
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-  // Fetch registered students for Grade Logging dropdown
-  async function loadStudentsDropdown() {
-    const selectEl = document.getElementById("student-select");
+  let activeChatStudentId = null;
+  let activeChannel = null;
+
+  // Single DOMContentLoaded listener
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (!supabaseClient) return;
+
+    // Verify Session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    loadStudentDropdowns();
+    loadStudentUploads();
+  });
+
+  // Populate Dropdowns across Grade Logging, Scheduling, and Chat Hub
+  async function loadStudentDropdowns() {
+    const gradeSelect = document.getElementById("student-select");
+    const schedSelect = document.getElementById("schedule-student-select");
+    const chatSelect = document.getElementById("chat-student-select");
 
     const { data: students, error } = await supabaseClient
       .from("profiles")
       .select("id, full_name, grade, role")
       .order("full_name", { ascending: true });
 
-    if (error) {
-      console.error("Error loading profiles:", error);
-      selectEl.innerHTML = `<option value="">Error loading students</option>`;
+    if (error || !students || students.length === 0) {
+      const fallbackMsg = `<option value="">No registered students found</option>`;
+      gradeSelect.innerHTML = fallbackMsg;
+      schedSelect.innerHTML = fallbackMsg;
+      chatSelect.innerHTML = fallbackMsg;
       return;
     }
 
-    if (!students || students.length === 0) {
-      selectEl.innerHTML = `<option value="">No registered students found</option>`;
-      return;
-    }
+    let defaultOption = `<option value="">-- Select a Learner --</option>`;
+    gradeSelect.innerHTML = defaultOption;
+    schedSelect.innerHTML = defaultOption;
+    chatSelect.innerHTML = defaultOption;
 
-    selectEl.innerHTML = `<option value="">-- Select a Learner --</option>`;
     students.forEach(student => {
+      // Exclude educators/admins from dropdowns if desired
+      if (student.role === 'admin') return;
+
       const option = document.createElement("option");
       option.value = student.id;
       option.textContent = `${student.full_name || 'Unnamed Student'} ${student.grade ? `(${student.grade})` : ''}`;
-      selectEl.appendChild(option);
+
+      gradeSelect.appendChild(option.cloneNode(true));
+      schedSelect.appendChild(option.cloneNode(true));
+      chatSelect.appendChild(option.cloneNode(true));
     });
   }
 
-  // Populate the scheduling student dropdown
-  async function populateScheduleStudentDropdown() {
-    const scheduleSelect = document.getElementById("schedule-student-select");
-    
-    const { data: students, error } = await supabaseClient
-      .from("profiles")
-      .select("id, full_name, grade")
-      .order("full_name", { ascending: true });
+  /* ----------------------------------------------------
+      REAL-TIME CHAT HUB FOR EDUCATOR
+  ---------------------------------------------------- */
+  const chatStudentSelect = document.getElementById("chat-student-select");
+  const adminChatBox = document.getElementById("admin-chat-box");
+  const adminChatInput = document.getElementById("admin-chat-input");
+  const btnSendAdminChat = document.getElementById("btn-send-admin-chat");
 
-    if (error || !students) return;
+  chatStudentSelect.addEventListener("change", async (e) => {
+    activeChatStudentId = e.target.value;
 
-    scheduleSelect.innerHTML = `<option value="">-- Select a Learner --</option>`;
-    students.forEach(student => {
-      const option = document.createElement("option");
-      option.value = student.id;
-      option.textContent = `${student.full_name || 'Student'} ${student.grade ? `(${student.grade})` : ''}`;
-      scheduleSelect.appendChild(option);
-    });
+    // Clean up existing Supabase Realtime channel subscription if switched
+    if (activeChannel) {
+      supabaseClient.removeChannel(activeChannel);
+      activeChannel = null;
+    }
+
+    if (!activeChatStudentId) {
+      adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.9rem;">Select a student from the dropdown above to view or send messages.</p>`;
+      adminChatInput.disabled = true;
+      btnSendAdminChat.disabled = true;
+      return;
+    }
+
+    adminChatInput.disabled = false;
+    btnSendAdminChat.disabled = false;
+    adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.85rem;">Fetching chat history...</p>`;
+
+    // Fetch message history for selected student
+    const { data: messages, error } = await supabaseClient
+      .from("messages")
+      .select("*")
+      .eq("student_id", activeChatStudentId)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching messages:", error);
+      adminChatBox.innerHTML = `<p style="color: #EF4444; text-align: center; margin: auto; font-size: 0.85rem;">Failed to load messages.</p>`;
+      return;
+    }
+
+    renderAdminChatMessages(messages);
+    adminChatBox.scrollTop = adminChatBox.scrollHeight;
+
+    // Subscribe to incoming messages for this selected student
+    activeChannel = supabaseClient
+      .channel(`admin-chat-${activeChatStudentId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", filter: `student_id=eq.${activeChatStudentId}`, schema: "public", table: "messages" },
+        (payload) => {
+          appendAdminMessage(payload.new);
+          adminChatBox.scrollTop = adminChatBox.scrollHeight;
+        }
+      )
+      .subscribe();
+  });
+
+  function renderAdminChatMessages(messages) {
+    if (!messages || messages.length === 0) {
+      adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.85rem;">No past messages found with this learner.</p>`;
+      return;
+    }
+    adminChatBox.innerHTML = messages.map(msg => createAdminMessageBubble(msg)).join("");
   }
 
-  // Fetch and render student uploads from Supabase storage
+  function appendAdminMessage(msg) {
+    if (adminChatBox.querySelector('p')) {
+      const pText = adminChatBox.querySelector('p').innerText;
+      if (pText.includes("No past messages") || pText.includes("Fetching")) {
+        adminChatBox.innerHTML = "";
+      }
+    }
+    adminChatBox.innerHTML += createAdminMessageBubble(msg);
+  }
+
+  function createAdminMessageBubble(msg) {
+    const isEducator = msg.sender_role === "educator" || msg.sender_role === "admin";
+    const bg = isEducator ? "#EAB308" : "#1E293B";
+    const color = isEducator ? "#1E293B" : "#FFF";
+    const align = isEducator ? "flex-end" : "flex-start";
+
+    return `
+      <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4;">
+        <strong>${isEducator ? "Gcina Sithole (You)" : "Student"}:</strong> ${msg.message_text}
+      </div>
+    `;
+  }
+
+  async function handleSendAdminMessage() {
+    const text = adminChatInput.value.trim();
+    if (!text || !activeChatStudentId) return;
+
+    adminChatInput.value = "";
+
+    const { error } = await supabaseClient
+      .from("messages")
+      .insert([
+        {
+          student_id: activeChatStudentId,
+          sender_role: "educator",
+          message_text: text
+        }
+      ]);
+
+    if (error) {
+      console.error("Error sending educator message:", error);
+      alert("Failed to send message: " + error.message);
+    }
+  }
+
+  btnSendAdminChat.addEventListener("click", handleSendAdminMessage);
+  adminChatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") handleSendAdminMessage();
+  });
+
+  /* ----------------------------------------------------
+      STUDENT FILE SUBMISSIONS
+  ---------------------------------------------------- */
   async function loadStudentUploads() {
     const tableBody = document.getElementById("student-files-table");
 
@@ -267,7 +452,9 @@
     }).join("");
   }
 
-  // Handle Mark Entry Submission directly to 'grades' table
+  /* ----------------------------------------------------
+      FORM HANDLERS (GRADES & SCHEDULES)
+  ---------------------------------------------------- */
   document.getElementById("form-log-grade").addEventListener("submit", async (e) => {
     e.preventDefault();
     
@@ -293,7 +480,9 @@
         {
           student_id: studentId,
           title: title,
-          score: score
+          assessment_name: title,
+          score: score,
+          score_percentage: score
         }
       ]);
 
@@ -314,7 +503,6 @@
     submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Record Grade`;
   });
 
-  // Form Handler for Scheduling Lessons
   document.getElementById("form-schedule-class").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -359,11 +547,12 @@
     btn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> Schedule Lesson`;
   });
 
-  // Single DOMContentLoaded listener for initial page load
-  document.addEventListener("DOMContentLoaded", () => {
-    loadStudentsDropdown();
-    populateScheduleStudentDropdown();
-    loadStudentUploads();
+  // Sign-Out Handler
+  document.getElementById("btn-logout").addEventListener("click", async () => {
+    if (supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
+    window.location.href = "login.html";
   });
 </script>
 </body>
