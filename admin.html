@@ -150,12 +150,46 @@
     </form>
   </div>
 
+  <!-- SECTION 3: SCHEDULE UPCOMING CLASSES -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-calendar-plus" style="color: #EAB308;"></i>
+      <h3>Schedule Upcoming Class / Session</h3>
+    </div>
+    <form id="form-schedule-class">
+      <div class="form-group">
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student</label>
+          <select id="schedule-student-select" required>
+            <option value="">Loading student list...</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Topic / Lesson Focus</label>
+          <input type="text" id="schedule-topic" placeholder="e.g. Financial Maths: Compound Interest" required />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Date</label>
+          <input type="date" id="schedule-date" required />
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Time</label>
+          <input type="time" id="schedule-time" required />
+        </div>
+      </div>
+      <button type="submit" id="btn-submit-schedule" class="btn" style="margin-top: 15px;">
+        <i class="fa-solid fa-calendar-check"></i> Schedule Lesson
+      </button>
+      <div id="schedule-status" style="margin-top: 15px; font-size: 0.9rem; font-weight: 600;"></div>
+    </form>
+  </div>
+
 <script>
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Fetch registered students from 'profiles' table to populate dropdown
+  // Fetch registered students for Grade Logging dropdown
   async function loadStudentsDropdown() {
     const selectEl = document.getElementById("student-select");
 
@@ -181,6 +215,26 @@
       option.value = student.id;
       option.textContent = `${student.full_name || 'Unnamed Student'} ${student.grade ? `(${student.grade})` : ''}`;
       selectEl.appendChild(option);
+    });
+  }
+
+  // Populate the scheduling student dropdown
+  async function populateScheduleStudentDropdown() {
+    const scheduleSelect = document.getElementById("schedule-student-select");
+    
+    const { data: students, error } = await supabaseClient
+      .from("profiles")
+      .select("id, full_name, grade")
+      .order("full_name", { ascending: true });
+
+    if (error || !students) return;
+
+    scheduleSelect.innerHTML = `<option value="">-- Select a Learner --</option>`;
+    students.forEach(student => {
+      const option = document.createElement("option");
+      option.value = student.id;
+      option.textContent = `${student.full_name || 'Student'} ${student.grade ? `(${student.grade})` : ''}`;
+      scheduleSelect.appendChild(option);
     });
   }
 
@@ -229,7 +283,6 @@
       return;
     }
 
-    // Indicate processing state
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Mark...`;
     statusEl.textContent = "";
@@ -252,7 +305,6 @@
       statusEl.style.color = "#166534";
       statusEl.textContent = `✅ Recorded mark: ${score}% for "${title}" successfully!`;
       
-      // Reset text inputs & drop selection
       document.getElementById("assessment-title").value = "";
       document.getElementById("assessment-score").value = "";
       document.getElementById("student-select").value = "";
@@ -262,9 +314,55 @@
     submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Record Grade`;
   });
 
-  // Load roster and bucket uploads on initial load
+  // Form Handler for Scheduling Lessons
+  document.getElementById("form-schedule-class").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const studentId = document.getElementById("schedule-student-select").value;
+    const topic = document.getElementById("schedule-topic").value.trim();
+    const date = document.getElementById("schedule-date").value;
+    const time = document.getElementById("schedule-time").value;
+    const statusEl = document.getElementById("schedule-status");
+    const btn = document.getElementById("btn-submit-schedule");
+
+    if (!studentId) {
+      statusEl.style.color = "#DC2626";
+      statusEl.textContent = "Please select a student from the dropdown list.";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Scheduling...`;
+    statusEl.textContent = "";
+
+    const { data, error } = await supabaseClient
+      .from("schedules")
+      .insert([
+        {
+          student_id: studentId,
+          topic: topic,
+          class_date: date,
+          class_time: time
+        }
+      ]);
+
+    if (error) {
+      statusEl.style.color = "#DC2626";
+      statusEl.textContent = "❌ Failed to schedule class: " + error.message;
+    } else {
+      statusEl.style.color = "#166534";
+      statusEl.textContent = `✅ Lesson on "${topic}" scheduled for ${date} at ${time}!`;
+      document.getElementById("form-schedule-class").reset();
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> Schedule Lesson`;
+  });
+
+  // Single DOMContentLoaded listener for initial page load
   document.addEventListener("DOMContentLoaded", () => {
     loadStudentsDropdown();
+    populateScheduleStudentDropdown();
     loadStudentUploads();
   });
 </script>
