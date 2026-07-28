@@ -177,17 +177,26 @@
 
   <div class="auth-card">
     <a href="index.html" class="brand-logo-container">
-      <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img">
+      <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/200x95/1E293B/EAB308?text=Fourways+Maths'">
     </a>
 
     <div class="auth-header">
       <h2 id="form-title">Portal Login</h2>
-      <p id="form-subtitle">Welcome back! Enter your details to continue.</p>
+      <p id="form-subtitle">Welcome back! Choose your account type and sign in.</p>
     </div>
 
     <div id="alert-msg" class="alert"></div>
 
     <form id="auth-form">
+      <!-- LOGIN ROLE (Login Mode Only) -->
+      <div class="form-group" id="group-login-role">
+        <label for="login-role">Signing In As</label>
+        <select id="login-role" class="form-control">
+          <option value="student" selected>Learner / Student</option>
+          <option value="parent">Parent / Guardian</option>
+        </select>
+      </div>
+
       <!-- ACCOUNT ROLE (Register Mode Only) -->
       <div class="form-group register-only" id="group-role">
         <label for="account-role">Account Type</label>
@@ -261,15 +270,17 @@
   const togglePrompt = document.getElementById('toggle-prompt');
   
   const registerFields = document.querySelectorAll('.register-only');
+  const groupLoginRole = document.getElementById('group-login-role');
   const parentNameInput = document.getElementById('parent-name');
   const learnerNameInput = document.getElementById('learner-name');
   const gradeInput = document.getElementById('grade');
   const roleInput = document.getElementById('account-role');
+  const loginRoleInput = document.getElementById('login-role');
   const emailLabel = document.getElementById('label-email');
 
   // Central Role Router
-  function redirectUserByRole(user) {
-    const role = user?.user_metadata?.role || "student";
+  function redirectUserByRole(user, selectedRoleOverride) {
+    const role = selectedRoleOverride || user?.user_metadata?.role || "student";
     if (role === "parent") {
       window.location.href = "parent-dashboard.html";
     } else if (role === "admin") {
@@ -296,6 +307,17 @@
     }
   });
 
+  // Dynamic field toggling for Registration Role Selection
+  roleInput.addEventListener('change', () => {
+    if (roleInput.value === 'parent') {
+      learnerNameInput.required = false;
+      gradeInput.required = false;
+    } else {
+      learnerNameInput.required = true;
+      gradeInput.required = true;
+    }
+  });
+
   // Toggle between Login & Registration view
   btnToggleMode.addEventListener('click', () => {
     isRegisterMode = !isRegisterMode;
@@ -308,27 +330,33 @@
       togglePrompt.textContent = "Already registered?";
       btnToggleMode.textContent = "Sign in here";
 
-      // Dynamic label update for parent email
-      if (emailLabel) emailLabel.textContent = "Parent's Email Address";
-
+      // Hide login-specific role selector, show registration fields
+      groupLoginRole.style.display = 'none';
       registerFields.forEach(el => el.style.display = 'block');
+      
       parentNameInput.required = true;
-      learnerNameInput.required = true;
-      gradeInput.required = true;
+      if (roleInput.value === 'student') {
+        learnerNameInput.required = true;
+        gradeInput.required = true;
+      }
+
+      if (emailLabel) emailLabel.textContent = "Email Address";
     } else {
       formTitle.textContent = "Portal Login";
-      formSubtitle.textContent = "Welcome back! Enter your details to continue.";
+      formSubtitle.textContent = "Welcome back! Choose your account type and sign in.";
       btnSubmit.textContent = "Sign In";
       togglePrompt.textContent = "Don't have an account?";
       btnToggleMode.textContent = "Register here";
 
-      // Reset email label
-      if (emailLabel) emailLabel.textContent = "Email Address";
-
+      // Show login-specific role selector, hide registration fields
+      groupLoginRole.style.display = 'block';
       registerFields.forEach(el => el.style.display = 'none');
+      
       parentNameInput.required = false;
       learnerNameInput.required = false;
       gradeInput.required = false;
+
+      if (emailLabel) emailLabel.textContent = "Email Address";
     }
   });
 
@@ -355,7 +383,7 @@
       const grade = gradeInput.value;
       const role = roleInput.value;
 
-      if (!grade) {
+      if (role === 'student' && !grade) {
         showAlert("Please select a grade.", "error");
         btnSubmit.disabled = false;
         btnSubmit.textContent = "Register Account";
@@ -368,11 +396,11 @@
           password: password,
           options: {
             data: {
-              full_name: learnerName,     // Student dashboard greets user by full_name / learner_name
-              learner_name: learnerName,
+              full_name: role === 'student' ? learnerName : parentName,
+              learner_name: learnerName || parentName,
               parent_name: parentName,
               role: role,                 // Saves 'parent' or 'student'
-              grade: grade
+              grade: grade || "N/A"
             }
           }
         });
@@ -381,7 +409,7 @@
 
         if (data.session) {
           showAlert("Account created! Redirecting...", "success");
-          setTimeout(() => { redirectUserByRole(data.user); }, 800);
+          setTimeout(() => { redirectUserByRole(data.user, role); }, 800);
         } else {
           // Auto sign-in fallback
           const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
@@ -394,7 +422,7 @@
             btnSubmit.disabled = false;
             btnSubmit.textContent = "Register Account";
           } else {
-            redirectUserByRole(signInData.user);
+            redirectUserByRole(signInData.user, role);
           }
         }
 
@@ -407,6 +435,7 @@
     } else {
       // --- LOGIN LOGIC ---
       btnSubmit.textContent = "Signing in...";
+      const selectedLoginRole = loginRoleInput.value;
 
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -416,8 +445,16 @@
 
         if (error) throw error;
 
-        // Automatically route based on user_metadata.role
-        redirectUserByRole(data.user);
+        // If metadata role is missing, dynamically set it to user's dropdown choice
+        if (!data.user.user_metadata?.role) {
+          await supabaseClient.auth.updateUser({
+            data: { role: selectedLoginRole }
+          });
+        }
+
+        // Redirect based on selected login role or stored metadata
+        const finalRole = data.user.user_metadata?.role || selectedLoginRole;
+        redirectUserByRole(data.user, finalRole);
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
