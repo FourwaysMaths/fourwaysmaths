@@ -473,13 +473,26 @@
         </div>
       </div>
 
-      <!-- VIEW 3: CHAT -->
+      <!-- VIEW 3: CHAT (UPDATED INTERFACE) -->
       <div id="view-chat" class="app-view" style="display: none;">
-        <h2>Tutor Chat Support</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Connect directly with Gcina Sithole for assignment assistance.</p>
-        <div class="class-item" style="flex-direction: column; align-items: flex-start; gap: 10px;">
-          <p style="font-size: 0.9rem; font-weight: 600;">Gcina S. (Lead Educator)</p>
-          <p style="font-size: 0.85rem; color: #64748B;">"Drop a message or upload your practice test on the left panel so we can review it during our next session!"</p>
+        <h2>Chat to Educator</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
+          Send a direct message or request to Gcina Sithole.
+        </p>
+
+        <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
+          <!-- Chat Messages Container -->
+          <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="color: #94A3B8; text-align: center; font-size: 0.85rem;">Loading chat history...</p>
+          </div>
+
+          <!-- Message Input Controls -->
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="chat-input" placeholder="Type a message (e.g., 'Sir, please upload today's paper')..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
+            <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -632,9 +645,10 @@
       `;
     }
 
-    // 5. Fetch Dynamic Schedules & Performance
+    // 5. Fetch Dynamic Schedules, Performance & Chat
     loadUpcomingClasses(currentUser.id);
     loadStudentGrades(currentUser.id);
+    loadStudentChat(currentUser.id);
   });
 
   // SPA Navigation Switcher
@@ -715,6 +729,103 @@
     dashboardContainer.innerHTML = htmlContent;
     calendarContainer.innerHTML = htmlContent;
   }
+
+  /* ----------------------------------------------------
+      STUDENT CHAT SUPPORT (SUPABASE + REALTIME)
+  ---------------------------------------------------- */
+  async function loadStudentChat(studentId) {
+    if (!supabaseClient) return;
+
+    const chatBox = document.getElementById("chat-box");
+
+    // Fetch initial chat messages
+    const { data: messages, error } = await supabaseClient
+      .from("messages")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching chat:", error);
+      chatBox.innerHTML = `<p style="color:#EF4444; text-align:center; font-size: 0.85rem;">Failed to load messages.</p>`;
+      return;
+    }
+
+    renderChatMessages(messages);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Listen for incoming messages live via Supabase Realtime
+    supabaseClient
+      .channel("public:messages")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", filter: `student_id=eq.${studentId}`, schema: "public", table: "messages" },
+        (payload) => {
+          appendSingleMessage(payload.new);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      )
+      .subscribe();
+  }
+
+  function renderChatMessages(messages) {
+    const chatBox = document.getElementById("chat-box");
+    if (!messages || messages.length === 0) {
+      chatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; font-size: 0.85rem;">No messages yet. Send a message to your educator below!</p>`;
+      return;
+    }
+
+    chatBox.innerHTML = messages.map(msg => createMessageBubble(msg)).join("");
+  }
+
+  function appendSingleMessage(msg) {
+    const chatBox = document.getElementById("chat-box");
+    if (chatBox.querySelector('p')) {
+      const pText = chatBox.querySelector('p').innerText;
+      if (pText.includes("No messages") || pText.includes("Loading")) {
+        chatBox.innerHTML = "";
+      }
+    }
+    chatBox.innerHTML += createMessageBubble(msg);
+  }
+
+  function createMessageBubble(msg) {
+    const isStudent = msg.sender_role === "student";
+    const bg = isStudent ? "#1E293B" : "#EAB308";
+    const color = isStudent ? "#FFF" : "#1E293B";
+    const align = isStudent ? "flex-end" : "flex-start";
+
+    return `
+      <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4;">
+        <strong>${isStudent ? "You" : "Gcina Sithole"}:</strong> ${msg.message_text}
+      </div>
+    `;
+  }
+
+  // Send Message Handler
+  async function handleSendMessage() {
+    const input = document.getElementById("chat-input");
+    const text = input.value.trim();
+    if (!text || !currentUser) return;
+
+    input.value = "";
+
+    const { error } = await supabaseClient
+      .from("messages")
+      .insert([
+        { student_id: currentUser.id, sender_role: "student", message_text: text }
+      ]);
+
+    if (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message: " + error.message);
+    }
+  }
+
+  document.getElementById("btn-send-chat").addEventListener("click", handleSendMessage);
+  document.getElementById("chat-input").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") handleSendMessage();
+  });
 
   // File Upload Handler
   const fileInput = document.getElementById("file-input");
