@@ -59,6 +59,7 @@
     }
 
     .btn:hover { background: #CA8A04; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-secondary { background: #1E293B; color: #FFF; }
     .btn-secondary:hover { background: #0F172A; }
 
@@ -75,6 +76,13 @@
       border: 1px solid #CBD5E1;
       border-radius: 8px;
       font-size: 0.9rem;
+      background-color: #FFF;
+    }
+
+    #form-status {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -121,19 +129,24 @@
     <form id="form-log-grade">
       <div class="form-group">
         <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Student Name / ID</label>
-          <input type="text" id="student-identifier" placeholder="e.g. John Doe" required />
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student</label>
+          <select id="student-select" required>
+            <option value="">Loading student list...</option>
+          </select>
         </div>
         <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Assessment Name</label>
-          <input type="text" id="assessment-title" placeholder="e.g. Term 3 Trigonometry Test" required />
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Assessment Name</label>
+          <input type="text" id="assessment-title" placeholder="e.g. Term 1 Test - Financial Maths" required />
         </div>
         <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B;">Score (%)</label>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Score (%)</label>
           <input type="number" id="assessment-score" placeholder="e.g. 85" min="0" max="100" required />
         </div>
       </div>
-      <button type="submit" class="btn" style="margin-top: 15px;"><i class="fa-solid fa-check"></i> Record Grade</button>
+      <button type="submit" id="btn-submit-mark" class="btn" style="margin-top: 15px;">
+        <i class="fa-solid fa-check"></i> Record Grade
+      </button>
+      <div id="form-status"></div>
     </form>
   </div>
 
@@ -141,6 +154,35 @@
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Fetch registered students from 'profiles' table to populate dropdown
+  async function loadStudentsDropdown() {
+    const selectEl = document.getElementById("student-select");
+
+    const { data: students, error } = await supabaseClient
+      .from("profiles")
+      .select("id, full_name, grade, role")
+      .order("full_name", { ascending: true });
+
+    if (error) {
+      console.error("Error loading profiles:", error);
+      selectEl.innerHTML = `<option value="">Error loading students</option>`;
+      return;
+    }
+
+    if (!students || students.length === 0) {
+      selectEl.innerHTML = `<option value="">No registered students found</option>`;
+      return;
+    }
+
+    selectEl.innerHTML = `<option value="">-- Select a Learner --</option>`;
+    students.forEach(student => {
+      const option = document.createElement("option");
+      option.value = student.id;
+      option.textContent = `${student.full_name || 'Unnamed Student'} ${student.grade ? `(${student.grade})` : ''}`;
+      selectEl.appendChild(option);
+    });
+  }
 
   // Fetch and render student uploads from Supabase storage
   async function loadStudentUploads() {
@@ -171,18 +213,60 @@
     }).join("");
   }
 
-  // Handle Mark Entry Submission
-  document.getElementById("form-log-grade").addEventListener("submit", (e) => {
+  // Handle Mark Entry Submission directly to 'grades' table
+  document.getElementById("form-log-grade").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const student = document.getElementById("student-identifier").value;
-    const title = document.getElementById("assessment-title").value;
-    const score = document.getElementById("assessment-score").value;
+    
+    const studentId = document.getElementById("student-select").value;
+    const title = document.getElementById("assessment-title").value.trim();
+    const score = parseInt(document.getElementById("assessment-score").value, 10);
+    const statusEl = document.getElementById("form-status");
+    const submitBtn = document.getElementById("btn-submit-mark");
 
-    alert(`Successfully recorded mark: ${score}% for ${student} on "${title}".`);
-    e.target.reset();
+    if (!studentId) {
+      statusEl.style.color = "#DC2626";
+      statusEl.textContent = "Please select a student from the dropdown list.";
+      return;
+    }
+
+    // Indicate processing state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Mark...`;
+    statusEl.textContent = "";
+
+    const { data, error } = await supabaseClient
+      .from("grades")
+      .insert([
+        {
+          student_id: studentId,
+          title: title,
+          score: score
+        }
+      ]);
+
+    if (error) {
+      console.error("Database error:", error);
+      statusEl.style.color = "#DC2626";
+      statusEl.textContent = "❌ Error saving mark: " + error.message;
+    } else {
+      statusEl.style.color = "#166534";
+      statusEl.textContent = `✅ Recorded mark: ${score}% for "${title}" successfully!`;
+      
+      // Reset text inputs & drop selection
+      document.getElementById("assessment-title").value = "";
+      document.getElementById("assessment-score").value = "";
+      document.getElementById("student-select").value = "";
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Record Grade`;
   });
 
-  document.addEventListener("DOMContentLoaded", loadStudentUploads);
+  // Load roster and bucket uploads on initial load
+  document.addEventListener("DOMContentLoaded", () => {
+    loadStudentsDropdown();
+    loadStudentUploads();
+  });
 </script>
 </body>
 </html>
