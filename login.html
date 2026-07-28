@@ -182,20 +182,12 @@
 
     <div class="auth-header">
       <h2 id="form-title">Portal Login</h2>
-      <p id="form-subtitle">Welcome back! Choose your account type and sign in.</p>
+      <p id="form-subtitle">Welcome back! Sign in to access your dashboard.</p>
     </div>
 
     <div id="alert-msg" class="alert"></div>
 
     <form id="auth-form">
-      <!-- LOGIN ROLE (Login Mode Only) -->
-      <div class="form-group" id="group-login-role">
-        <label for="login-role">Signing In As</label>
-        <select id="login-role" class="form-control">
-          <option value="student" selected>Learner / Student</option>
-          <option value="parent">Parent / Guardian</option>
-        </select>
-      </div>
 
       <!-- ACCOUNT ROLE (Register Mode Only) -->
       <div class="form-group register-only" id="group-role">
@@ -270,12 +262,10 @@
   const togglePrompt = document.getElementById('toggle-prompt');
   
   const registerFields = document.querySelectorAll('.register-only');
-  const groupLoginRole = document.getElementById('group-login-role');
   const parentNameInput = document.getElementById('parent-name');
   const learnerNameInput = document.getElementById('learner-name');
   const gradeInput = document.getElementById('grade');
   const roleInput = document.getElementById('account-role');
-  const loginRoleInput = document.getElementById('login-role');
   const emailLabel = document.getElementById('label-email');
 
   // Central Role Router
@@ -328,7 +318,6 @@
       togglePrompt.textContent = "Already registered?";
       btnToggleMode.textContent = "Sign in here";
 
-      groupLoginRole.style.display = 'none';
       registerFields.forEach(el => el.style.display = 'block');
       
       parentNameInput.required = true;
@@ -340,12 +329,11 @@
       if (emailLabel) emailLabel.textContent = "Email Address";
     } else {
       formTitle.textContent = "Portal Login";
-      formSubtitle.textContent = "Welcome back! Choose your account type and sign in.";
+      formSubtitle.textContent = "Welcome back! Sign in to access your dashboard.";
       btnSubmit.textContent = "Sign In";
       togglePrompt.textContent = "Don't have an account?";
       btnToggleMode.textContent = "Register here";
 
-      groupLoginRole.style.display = 'block';
       registerFields.forEach(el => el.style.display = 'none');
       
       parentNameInput.required = false;
@@ -430,7 +418,6 @@
     } else {
       // --- LOGIN LOGIC ---
       btnSubmit.textContent = "Signing in...";
-      const selectedLoginRole = loginRoleInput.value;
 
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -440,13 +427,11 @@
 
         if (error) throw error;
 
-        // Force-update user's metadata role to match their current login dropdown selection
-        await supabaseClient.auth.updateUser({
-          data: { role: selectedLoginRole }
-        });
+        // Fetch user role directly from Supabase account metadata
+        const userRole = data.user?.user_metadata?.role || "student";
 
-        // Redirect directly based on the dropdown selection
-        redirectUserByRole(selectedLoginRole);
+        // Automatically route user based on their true account role
+        redirectUserByRole(userRole);
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
