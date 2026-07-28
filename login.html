@@ -78,19 +78,6 @@
       margin-bottom: 24px;
     }
 
-    .admin-badge {
-      display: none;
-      background-color: #1E293B;
-      color: #EAB308;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-    }
-
     /* Form Inputs */
     .form-group {
       text-align: left;
@@ -181,22 +168,6 @@
       padding: 0;
     }
 
-    .admin-toggle-wrapper {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px dashed var(--border);
-    }
-
-    .admin-toggle-wrapper button {
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.82rem;
-    }
-
-    .admin-toggle-wrapper button:hover {
-      color: var(--primary-grey);
-    }
-
     /* Hidden element helper */
     .register-only {
       display: none;
@@ -211,23 +182,13 @@
     </a>
 
     <div class="auth-header">
-      <span id="admin-badge" class="admin-badge">Educator Portal</span>
       <h2 id="form-title">Portal Login</h2>
-      <p id="form-subtitle">Welcome back! Choose your account type and sign in.</p>
+      <p id="form-subtitle">Welcome back! Please sign in to continue.</p>
     </div>
 
     <div id="alert-msg" class="alert"></div>
 
     <form id="auth-form">
-      <!-- LOGIN ROLE (Learner / Parent Selection) -->
-      <div class="form-group" id="group-login-role">
-        <label for="login-role">Signing In As</label>
-        <select id="login-role" class="form-control">
-          <option value="student" selected>Learner / Student</option>
-          <option value="parent">Parent / Guardian</option>
-        </select>
-      </div>
-
       <!-- ACCOUNT ROLE (Register Mode Only) -->
       <div class="form-group register-only" id="group-role">
         <label for="account-role">Account Type</label>
@@ -281,10 +242,6 @@
       <span id="toggle-prompt">Don't have an account?</span>
       <button type="button" id="btn-toggle-mode">Register here</button>
     </div>
-
-    <div class="footer-link admin-toggle-wrapper">
-      <button type="button" id="btn-toggle-admin">Educator / Admin Sign In</button>
-    </div>
   </div>
 
 <script>
@@ -294,46 +251,42 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
   let isRegisterMode = false;
-  let isAdminMode = false;
 
   const authForm = document.getElementById('auth-form');
   const alertMsg = document.getElementById('alert-msg');
   const btnSubmit = document.getElementById('btn-submit');
   const btnToggleMode = document.getElementById('btn-toggle-mode');
-  const btnToggleAdmin = document.getElementById('btn-toggle-admin');
   
   const formTitle = document.getElementById('form-title');
   const formSubtitle = document.getElementById('form-subtitle');
   const togglePrompt = document.getElementById('toggle-prompt');
-  const adminBadge = document.getElementById('admin-badge');
-  const registerToggleRow = document.getElementById('register-toggle-row');
   
   const registerFields = document.querySelectorAll('.register-only');
-  const groupLoginRole = document.getElementById('group-login-role');
   const parentNameInput = document.getElementById('parent-name');
   const learnerNameInput = document.getElementById('learner-name');
   const gradeInput = document.getElementById('grade');
   const roleInput = document.getElementById('account-role');
-  const loginRoleInput = document.getElementById('login-role');
-  const emailLabel = document.getElementById('label-email');
 
-  // Central Role Router
-  function redirectUserByRole(role) {
-    if (role === "parent") {
-      window.location.href = "parent-dashboard.html";
-    } else if (role === "admin" || role === "educator") {
+  // Strict central router based on user's persistent metadata/email
+  function redirectUserByRole(user) {
+    const userRole = user?.user_metadata?.role;
+    
+    // Explicit admin check
+    if (userRole === "admin" || userRole === "educator") {
       window.location.href = "admin.html";
+    } else if (userRole === "parent") {
+      window.location.href = "parent-dashboard.html";
     } else {
       window.location.href = "dashboard.html";
     }
   }
 
-  // Auto-redirect if already logged in + handle URL parameters
+  // Auto-redirect if already logged in
   document.addEventListener("DOMContentLoaded", async () => {
     if (supabaseClient) {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session?.user) {
-        redirectUserByRole(session.user.user_metadata?.role || "student");
+        redirectUserByRole(session.user);
         return;
       }
     }
@@ -341,12 +294,10 @@
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('mode') === 'register') {
       btnToggleMode.click();
-    } else if (urlParams.get('mode') === 'admin') {
-      btnToggleAdmin.click();
     }
   });
 
-  // Dynamic field toggling for Registration Role Selection
+  // Dynamic field toggling for Registration
   roleInput.addEventListener('change', () => {
     if (roleInput.value === 'parent') {
       learnerNameInput.required = false;
@@ -357,42 +308,9 @@
     }
   });
 
-  // Toggle Admin / Educator Specific View
-  btnToggleAdmin.addEventListener('click', () => {
-    isAdminMode = !isAdminMode;
-    isRegisterMode = false;
-    hideAlert();
-
-    if (isAdminMode) {
-      adminBadge.style.display = 'inline-block';
-      formTitle.textContent = "Educator Command Access";
-      formSubtitle.textContent = "Sign in with your admin credentials to access teacher controls.";
-      btnSubmit.textContent = "Sign In as Admin";
-      groupLoginRole.style.display = 'none';
-      registerToggleRow.style.display = 'none';
-      registerFields.forEach(el => el.style.display = 'none');
-      btnToggleAdmin.textContent = "← Switch to Learner / Parent Login";
-      if (emailLabel) emailLabel.textContent = "Admin Email Address";
-    } else {
-      adminBadge.style.display = 'none';
-      formTitle.textContent = "Portal Login";
-      formSubtitle.textContent = "Welcome back! Choose your account type and sign in.";
-      btnSubmit.textContent = "Sign In";
-      groupLoginRole.style.display = 'block';
-      registerToggleRow.style.display = 'block';
-      togglePrompt.textContent = "Don't have an account?";
-      btnToggleMode.textContent = "Register here";
-      btnToggleAdmin.textContent = "Educator / Admin Sign In";
-      if (emailLabel) emailLabel.textContent = "Email Address";
-    }
-  });
-
   // Toggle between Login & Registration view
   btnToggleMode.addEventListener('click', () => {
     isRegisterMode = !isRegisterMode;
-    isAdminMode = false;
-    adminBadge.style.display = 'none';
-    btnToggleAdmin.textContent = "Educator / Admin Sign In";
     hideAlert();
 
     if (isRegisterMode) {
@@ -402,7 +320,6 @@
       togglePrompt.textContent = "Already registered?";
       btnToggleMode.textContent = "Sign in here";
 
-      groupLoginRole.style.display = 'none';
       registerFields.forEach(el => el.style.display = 'block');
       
       parentNameInput.required = true;
@@ -410,27 +327,22 @@
         learnerNameInput.required = true;
         gradeInput.required = true;
       }
-
-      if (emailLabel) emailLabel.textContent = "Email Address";
     } else {
       formTitle.textContent = "Portal Login";
-      formSubtitle.textContent = "Welcome back! Choose your account type and sign in.";
+      formSubtitle.textContent = "Welcome back! Please sign in to continue.";
       btnSubmit.textContent = "Sign In";
       togglePrompt.textContent = "Don't have an account?";
       btnToggleMode.textContent = "Register here";
 
-      groupLoginRole.style.display = 'block';
       registerFields.forEach(el => el.style.display = 'none');
       
       parentNameInput.required = false;
       learnerNameInput.required = false;
       gradeInput.required = false;
-
-      if (emailLabel) emailLabel.textContent = "Email Address";
     }
   });
 
-  // Handle Form Submission (Login, Register, or Admin)
+  // Handle Form Submission
   authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideAlert();
@@ -445,37 +357,13 @@
 
     btnSubmit.disabled = true;
 
-    if (isAdminMode) {
-      // --- ADMIN LOGIN LOGIC ---
-      btnSubmit.textContent = "Authenticating Admin...";
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-        if (error) throw error;
-
-        // Force-update user's metadata role to admin
-        await supabaseClient.auth.updateUser({
-          data: { role: "admin" }
-        });
-
-        redirectUserByRole("admin");
-
-      } catch (err) {
-        showAlert(err.message || "Invalid educator credentials.", "error");
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = "Sign In as Admin";
-      }
-
-    } else if (isRegisterMode) {
+    if (isRegisterMode) {
       // --- REGISTRATION LOGIC ---
       btnSubmit.textContent = "Creating Account...";
       const parentName = parentNameInput.value.trim();
       const learnerName = learnerNameInput.value.trim();
       const grade = gradeInput.value;
-      const role = roleInput.value;
+      const role = roleInput.value; // Only allows 'student' or 'parent'
 
       if (role === 'student' && !grade) {
         showAlert("Please select a grade.", "error");
@@ -503,7 +391,7 @@
 
         if (data.session) {
           showAlert("Account created! Redirecting...", "success");
-          setTimeout(() => { redirectUserByRole(role); }, 800);
+          setTimeout(() => { redirectUserByRole(data.session.user); }, 800);
         } else {
           const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
             email: email,
@@ -515,7 +403,7 @@
             btnSubmit.disabled = false;
             btnSubmit.textContent = "Register Account";
           } else {
-            redirectUserByRole(role);
+            redirectUserByRole(signInData.user);
           }
         }
 
@@ -526,9 +414,8 @@
       }
 
     } else {
-      // --- STANDARD LOGIN LOGIC (Learner / Parent) ---
+      // --- STANDARD LOGIN LOGIC ---
       btnSubmit.textContent = "Signing in...";
-      const selectedLoginRole = loginRoleInput.value;
 
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -538,13 +425,8 @@
 
         if (error) throw error;
 
-        // Force-update user's metadata role to match their dropdown selection
-        await supabaseClient.auth.updateUser({
-          data: { role: selectedLoginRole }
-        });
-
-        // Redirect directly based on the dropdown selection
-        redirectUserByRole(selectedLoginRole);
+        // Redirect based strictly on the role saved in Supabase
+        redirectUserByRole(data.user);
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
