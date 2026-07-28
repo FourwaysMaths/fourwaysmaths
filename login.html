@@ -279,8 +279,7 @@
   const emailLabel = document.getElementById('label-email');
 
   // Central Role Router
-  function redirectUserByRole(user, selectedRoleOverride) {
-    const role = selectedRoleOverride || user?.user_metadata?.role || "student";
+  function redirectUserByRole(role) {
     if (role === "parent") {
       window.location.href = "parent-dashboard.html";
     } else if (role === "admin") {
@@ -295,12 +294,11 @@
     if (supabaseClient) {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session?.user) {
-        redirectUserByRole(session.user);
+        redirectUserByRole(session.user.user_metadata?.role || "student");
         return;
       }
     }
 
-    // Auto-switch to Register mode if URL contains ?mode=register
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('mode') === 'register') {
       btnToggleMode.click();
@@ -330,7 +328,6 @@
       togglePrompt.textContent = "Already registered?";
       btnToggleMode.textContent = "Sign in here";
 
-      // Hide login-specific role selector, show registration fields
       groupLoginRole.style.display = 'none';
       registerFields.forEach(el => el.style.display = 'block');
       
@@ -348,7 +345,6 @@
       togglePrompt.textContent = "Don't have an account?";
       btnToggleMode.textContent = "Register here";
 
-      // Show login-specific role selector, hide registration fields
       groupLoginRole.style.display = 'block';
       registerFields.forEach(el => el.style.display = 'none');
       
@@ -399,7 +395,7 @@
               full_name: role === 'student' ? learnerName : parentName,
               learner_name: learnerName || parentName,
               parent_name: parentName,
-              role: role,                 // Saves 'parent' or 'student'
+              role: role,
               grade: grade || "N/A"
             }
           }
@@ -409,9 +405,8 @@
 
         if (data.session) {
           showAlert("Account created! Redirecting...", "success");
-          setTimeout(() => { redirectUserByRole(data.user, role); }, 800);
+          setTimeout(() => { redirectUserByRole(role); }, 800);
         } else {
-          // Auto sign-in fallback
           const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
@@ -422,7 +417,7 @@
             btnSubmit.disabled = false;
             btnSubmit.textContent = "Register Account";
           } else {
-            redirectUserByRole(signInData.user, role);
+            redirectUserByRole(role);
           }
         }
 
@@ -445,16 +440,13 @@
 
         if (error) throw error;
 
-        // If metadata role is missing, dynamically set it to user's dropdown choice
-        if (!data.user.user_metadata?.role) {
-          await supabaseClient.auth.updateUser({
-            data: { role: selectedLoginRole }
-          });
-        }
+        // Force-update user's metadata role to match their current login dropdown selection
+        await supabaseClient.auth.updateUser({
+          data: { role: selectedLoginRole }
+        });
 
-        // Redirect based on selected login role or stored metadata
-        const finalRole = data.user.user_metadata?.role || selectedLoginRole;
-        redirectUserByRole(data.user, finalRole);
+        // Redirect directly based on the dropdown selection
+        redirectUserByRole(selectedLoginRole);
 
       } catch (err) {
         showAlert(err.message || "Invalid login credentials.", "error");
