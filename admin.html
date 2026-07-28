@@ -382,7 +382,7 @@
   }
 
   function createAdminMessageBubble(msg) {
-    const isEducator = msg.sender_role === "educator" || msg.sender_role === "admin";
+    const isEducator = msg.sender_role === "admin" || msg.sender_role === "educator";
     const bg = isEducator ? "#EAB308" : "#1E293B";
     const color = isEducator ? "#1E293B" : "#FFF";
     const align = isEducator ? "flex-end" : "flex-start";
@@ -394,27 +394,27 @@
     `;
   }
 
-  async function handleSendAdminMessage() {
-    const text = adminChatInput.value.trim();
-    if (!text || !activeChatStudentId) return;
+async function handleSendAdminMessage() {
+  const text = adminChatInput.value.trim();
+  if (!text || !activeChatStudentId) return;
 
-    adminChatInput.value = "";
+  adminChatInput.value = "";
 
-    const { error } = await supabaseClient
-      .from("messages")
-      .insert([
-        {
-          student_id: activeChatStudentId,
-          sender_role: "educator",
-          message_text: text
-        }
-      ]);
+  const { error } = await supabaseClient
+    .from("messages")
+    .insert([
+      {
+        student_id: activeChatStudentId,
+        sender_role: "admin", // ✅ Changed from "educator" to "admin"
+        message_text: text
+      }
+    ]);
 
-    if (error) {
-      console.error("Error sending educator message:", error);
-      alert("Failed to send message: " + error.message);
-    }
+  if (error) {
+    console.error("Error sending educator message:", error);
+    alert("Failed to send message: " + error.message);
   }
+}
 
   btnSendAdminChat.addEventListener("click", handleSendAdminMessage);
   adminChatInput.addEventListener("keypress", (e) => {
