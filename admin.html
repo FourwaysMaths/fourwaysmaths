@@ -273,7 +273,6 @@
     const isAdminOrEducator = userRole === "admin" || userRole === "educator" || userEmail === "info@fourwaysmaths.co.za";
 
     if (!isAdminOrEducator) {
-      // Instantly evict unauthorized accounts
       await supabaseClient.auth.signOut();
       window.location.href = "login.html";
       return;
@@ -308,7 +307,6 @@
     chatSelect.innerHTML = defaultOption;
 
     students.forEach(student => {
-      // Filter out admin users from student selection dropdowns
       if (student.role === 'admin' || student.role === 'educator') return;
 
       const option = document.createElement("option");
@@ -332,7 +330,6 @@
   chatStudentSelect.addEventListener("change", async (e) => {
     activeChatStudentId = e.target.value;
 
-    // Clean up existing Supabase Realtime channel subscription if switched
     if (activeChannel) {
       supabaseClient.removeChannel(activeChannel);
       activeChannel = null;
@@ -349,7 +346,6 @@
     btnSendAdminChat.disabled = false;
     adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.85rem;">Fetching chat history...</p>`;
 
-    // Fetch message history for selected student
     const { data: messages, error } = await supabaseClient
       .from("messages")
       .select("*")
@@ -365,7 +361,6 @@
     renderAdminChatMessages(messages);
     adminChatBox.scrollTop = adminChatBox.scrollHeight;
 
-    // Subscribe to incoming messages for this selected student
     activeChannel = supabaseClient
       .channel(`admin-chat-${activeChatStudentId}`)
       .on(
@@ -439,34 +434,79 @@
   });
 
   /* ----------------------------------------------------
-      STUDENT FILE SUBMISSIONS
+      STUDENT FILE SUBMISSIONS (RECURSIVE / BUCKET SCAN)
   ---------------------------------------------------- */
   async function loadStudentUploads() {
     const tableBody = document.getElementById("student-files-table");
 
-    const { data, error } = await supabaseClient.storage
-      .from("student-files")
-      .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+    try {
+      // 1. Fetch all top-level items
+      const { data: items, error } = await supabaseClient.storage
+        .from("student-files")
+        .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
 
-    if (error || !data || data.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="3" style="color: #64748B;">No student test submissions or reports found yet.</td></tr>`;
-      return;
+      if (error) throw error;
+
+      let allFiles = [];
+
+      // 2. Traversal: If item has no id or metadata, check as folder
+      for (const item of items || []) {
+        if (!item.id && !item.metadata) {
+          // It's a folder, search inside
+          const { data: subFiles } = await supabaseClient.storage
+            .from("student-files")
+            .list(item.name, { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+
+          if (subFiles && subFiles.length > 0) {
+            subFiles.forEach(f => {
+              if (f.id || f.metadata) {
+                allFiles.push({
+                  path: `${item.name}/${f.name}`,
+                  name: f.name,
+                  created_at: f.created_at || f.updated_at || item.created_at
+                });
+              }
+            });
+          }
+        } else {
+          // Direct file in root
+          allFiles.push({
+            path: item.name,
+            name: item.name,
+            created_at: item.created_at || item.updated_at
+          });
+        }
+      }
+
+      if (allFiles.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="color: #64748B;">No student test submissions or reports found yet.</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = allFiles.map(file => {
+        // Generate signed URL (expires in 1 hour) for secure bucket access
+        const encodedPath = encodeURIComponent(file.path).replace(/%2F/g, "/");
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/student-files/${encodedPath}`;
+        
+        const fileDate = file.created_at ? new Date(file.created_at).toLocaleDateString() : "Recent";
+
+        return `
+          <tr>
+            <td style="font-weight: 600;">${file.path}</td>
+            <td style="color: #64748B;">${fileDate}</td>
+            <td>
+              <a href="${publicUrl}" target="_blank" class="btn" style="padding: 5px 12px; font-size: 0.8rem;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open File
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+    } catch (err) {
+      console.error("Storage scan error:", err);
+      tableBody.innerHTML = `<tr><td colspan="3" style="color: #EF4444;">Error scanning storage bucket: ${err.message}</td></tr>`;
     }
-
-    tableBody.innerHTML = data.map(file => {
-      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/student-files/${file.name}`;
-      return `
-        <tr>
-          <td style="font-weight: 600;">${file.name}</td>
-          <td style="color: #64748B;">${new Date(file.created_at).toLocaleDateString()}</td>
-          <td>
-            <a href="${publicUrl}" target="_blank" class="btn" style="padding: 5px 12px; font-size: 0.8rem;">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open File
-            </a>
-          </td>
-        </tr>
-      `;
-    }).join("");
   }
 
   /* ----------------------------------------------------
@@ -491,15 +531,14 @@
     submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Mark...`;
     statusEl.textContent = "";
 
+    // Cleaned insert payload to match database schema columns: student_id, title, score
     const { data, error } = await supabaseClient
       .from("grades")
       .insert([
         {
           student_id: studentId,
           title: title,
-          assessment_name: title,
-          score: score,
-          score_percentage: score
+          score: score
         }
       ]);
 
