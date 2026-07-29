@@ -116,7 +116,6 @@
       transition: grid-template-columns 0.2s ease;
     }
 
-    /* Layout override when viewing non-dashboard tabs */
     .portal-container.full-width-view {
       grid-template-columns: 1fr;
     }
@@ -190,7 +189,6 @@
       font-weight: 700;
     }
 
-    /* Upload Box */
     .upload-card {
       background: #FFFFFF;
       border: 2px dashed #CBD5E1;
@@ -313,6 +311,138 @@
       font-weight: 700;
     }
 
+    /* --- STUDY CONTENT STYLING --- */
+    .paper-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .paper-card {
+      background: #FFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .paper-card:hover {
+      border-color: #EAB308;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(234, 179, 8, 0.15);
+    }
+
+    .paper-card i {
+      font-size: 2.8rem;
+      color: #EAB308;
+      margin-bottom: 15px;
+    }
+
+    .paper-card h3 {
+      font-size: 1.3rem;
+      color: #0F172A;
+      margin-bottom: 8px;
+    }
+
+    .paper-card p {
+      font-size: 0.85rem;
+      color: #64748B;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: #FFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .topic-header {
+      margin-bottom: 12px;
+    }
+
+    .topic-section-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #854D0E;
+      background: #FEF08A;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+      margin: 12px 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .btn-pdf {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #1E293B;
+      color: #FFF;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-pdf:hover {
+      background-color: #0F172A;
+      color: #EAB308;
+    }
+
+    .btn-back-paper {
+      background: #E2E8F0;
+      color: #1E293B;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back-paper:hover {
+      background: #CBD5E1;
+    }
+
     /* --- ANALYTICS PANEL --- */
     .analytics-panel {
       background: #FFF;
@@ -397,7 +527,7 @@
     </a>
     <ul class="nav-menu">
       <li class="nav-item active" data-tooltip="Dashboard"><a href="#" class="nav-link-item" data-target="view-dashboard"><i class="fa-solid fa-house"></i></a></li>
-      <li class="nav-item" data-tooltip="Subjects & Modules"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
+      <li class="nav-item" data-tooltip="Study Content"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
       <li class="nav-item" data-tooltip="Chat to Educator"><a href="#" class="nav-link-item" data-target="view-chat"><i class="fa-solid fa-comments"></i></a></li>
       <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#" class="nav-link-item" data-target="view-calendar"><i class="fa-solid fa-calendar-days"></i></a></li>
       <li class="nav-item" data-tooltip="Grades"><a href="#" class="nav-link-item" data-target="view-grades"><i class="fa-solid fa-graduation-cap"></i></a></li>
@@ -464,16 +594,38 @@
         </div>
       </div>
 
-      <!-- VIEW 2: SUBJECTS -->
+      <!-- VIEW 2: STUDY CONTENT (REPLACED SUBJECTS & MODULES) -->
       <div id="view-subjects" class="app-view" style="display: none;">
-        <h2>Subjects & Study Modules</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Access your curriculum resources and past papers.</p>
-        <div id="personalized-modules-container">
-          <!-- Dynamically populated based on student's registered subject -->
+        <h2>Study Content</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Select a paper to view video lessons, ATP topics, and downloadable study notes.</p>
+        
+        <!-- Paper Selection Landing View -->
+        <div id="paper-selection-view">
+          <div class="paper-cards-grid">
+            <div class="paper-card" onclick="selectPaper('Paper 1')">
+              <i class="fa-solid fa-file-invoice"></i>
+              <h3>Paper 1</h3>
+              <p>Algebra, Equations, Patterns, Functions & Financial Maths</p>
+            </div>
+            <div class="paper-card" onclick="selectPaper('Paper 2')">
+              <i class="fa-solid fa-draw-polygon"></i>
+              <h3>Paper 2</h3>
+              <p>Geometry, Trigonometry, Measurement, Transformation & Data Handling</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paper Topics View (Hidden by default) -->
+        <div id="paper-topics-view" style="display: none;">
+          <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
+          <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
+          <div class="topic-grid" id="topics-container">
+            <!-- Dynamic Topics Grid Rendered Here -->
+          </div>
         </div>
       </div>
 
-      <!-- VIEW 3: CHAT (UPDATED INTERFACE) -->
+      <!-- VIEW 3: CHAT -->
       <div id="view-chat" class="app-view" style="display: none;">
         <h2>Chat to Educator</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
@@ -481,12 +633,10 @@
         </p>
 
         <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
-          <!-- Chat Messages Container -->
           <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
             <p style="color: #94A3B8; text-align: center; font-size: 0.85rem;">Loading chat history...</p>
           </div>
 
-          <!-- Message Input Controls -->
           <div style="display: flex; gap: 10px;">
             <input type="text" id="chat-input" placeholder="Type a message (e.g., 'Sir, please upload today's paper')..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
             <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
@@ -562,6 +712,33 @@
   let currentUser = null;
   let myPerformanceChart = null;
 
+  // Grade 9 Fallback ATP Curriculum Content (Used if Supabase table is empty)
+  const fallbackStudyData = [
+    // Paper 1
+    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, and scientific notation.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Number types', description: 'Real numbers, rational numbers, and irrational numbers.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic expressions', description: 'Simplifying, multiplying polynomials, products of binomials, and factorisation.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic equations', description: 'Solving linear equations, bracket equations, and simple exponential equations.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Algebra', topic: 'Financial mathematics', description: 'Profit, loss, simple interest, and rate/speed/distance/time problems.', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: '' },
+    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
+    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
+    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Gradient', description: 'Understanding and calculating the steepness of straight-line graphs.', youtube_url: 'https://www.youtube.com/watch?v=D-NjUNgKcgM' },
+    
+    // Paper 2
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles', description: 'Properties of equilateral, isosceles, and right-angled triangles, interior/exterior angles.', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Congruency and similarity', description: 'Conditions for congruent triangles (SSS, SAS, AAS, RHS) and rules for similar triangles.', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Quadrilaterals', description: 'Properties of parallelograms, rectangles, rhombuses, squares, kites, and trapeziums.', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: '' },
+    { paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: '' }
+  ];
+
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
@@ -599,10 +776,8 @@
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(learnerName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
 
-    // 4. Render Personalized Subjects
+    // 4. Render Personalized Subjects on Main Dashboard
     const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
-    const personalizedModulesContainer = document.getElementById("personalized-modules-container");
-
     const isMathLit = selectedSubject.toLowerCase().includes("lit");
 
     if (isMathLit) {
@@ -613,34 +788,12 @@
           <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
         </div>
       `;
-
-      personalizedModulesContainer.innerHTML = `
-        <div class="subject-card" style="margin-bottom: 15px;">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Financial Mathematics & Taxation</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Personal budgeting, interest calculations, and tariffs.</p>
-        </div>
-        <div class="subject-card">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Data Handling & Statistics</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Data interpretation, probability, and real-world trends.</p>
-        </div>
-      `;
     } else {
       dashboardSubjectContainer.innerHTML = `
         <div class="subject-card">
           <i class="fa-solid fa-calculator"></i>
           <h4>Core Mathematics</h4>
           <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-        </div>
-      `;
-
-      personalizedModulesContainer.innerHTML = `
-        <div class="subject-card" style="margin-bottom: 15px;">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Functions & Calculus</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Algebraic graphs, derivatives, and optimization problems.</p>
-        </div>
-        <div class="subject-card">
-          <h4><i class="fa-solid fa-book" style="color: #EAB308; margin-right: 8px;"></i> Trigonometry & Geometry</h4>
-          <p style="font-size: 0.85rem; color: #64748B; margin-top: 8px;">Euclidean Geometry, Sine/Cosine rules, and proofs.</p>
         </div>
       `;
     }
@@ -684,6 +837,89 @@
       }
     });
   });
+
+  /* ----------------------------------------------------
+      STUDY CONTENT LOGIC (PAPER 1 & PAPER 2)
+  ---------------------------------------------------- */
+  function showPaperSelection() {
+    document.getElementById("paper-selection-view").style.display = "block";
+    document.getElementById("paper-topics-view").style.display = "none";
+  }
+
+  async function selectPaper(paperName) {
+    document.getElementById("paper-selection-view").style.display = "none";
+    document.getElementById("paper-topics-view").style.display = "block";
+    document.getElementById("selected-paper-title").textContent = `${paperName} Topics & Resources`;
+
+    const container = document.getElementById("topics-container");
+    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;">Loading content for ${paperName}...</p>`;
+
+    const studentGrade = currentUser?.user_metadata?.grade || "Grade 9";
+
+    // Attempt to load from Supabase database
+    let topicsToRender = [];
+    if (supabaseClient) {
+      const { data, error } = await supabaseClient
+        .from('study_content')
+        .select('*')
+        .eq('paper', paperName)
+        .eq('grade', studentGrade);
+
+      if (!error && data && data.length > 0) {
+        topicsToRender = data;
+      }
+    }
+
+    // Fallback if Supabase table has no rows for this grade/paper
+    if (topicsToRender.length === 0) {
+      topicsToRender = fallbackStudyData.filter(item => item.paper === paperName);
+    }
+
+    if (topicsToRender.length === 0) {
+      container.innerHTML = `<p style="color: #64748B;">No topics uploaded for ${paperName} yet.</p>`;
+      return;
+    }
+
+    container.innerHTML = topicsToRender.map(topic => {
+      const embedUrl = topic.youtube_url ? getYouTubeEmbedUrl(topic.youtube_url) : null;
+      
+      return `
+        <div class="topic-card">
+          <div class="topic-header">
+            <span class="topic-section-tag">${topic.section}</span>
+            <h4 style="font-size: 1rem; color: #0F172A; margin-bottom: 6px;">${topic.topic}</h4>
+            <p style="font-size: 0.85rem; color: #64748B; line-height: 1.4;">${topic.description || ''}</p>
+          </div>
+
+          ${embedUrl ? `
+            <div class="video-container">
+              <iframe src="${embedUrl}" title="${topic.topic}" allowfullscreen></iframe>
+            </div>
+          ` : ''}
+
+          ${topic.pdf_url ? `
+            <a href="${topic.pdf_url}" target="_blank" class="btn-pdf">
+              <i class="fa-solid fa-file-pdf"></i> Download PDF Notes
+            </a>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Helper function to convert standard YouTube links/playlists into clean embed URLs
+  function getYouTubeEmbedUrl(url) {
+    if (!url) return null;
+    let videoId = "";
+    
+    if (url.includes("v=")) {
+      videoId = url.split("v=")[1].split("&")[0];
+    } else if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+  }
 
   // Fetch Dynamic Upcoming Classes from Supabase
   async function loadUpcomingClasses(studentId) {
@@ -738,7 +974,6 @@
 
     const chatBox = document.getElementById("chat-box");
 
-    // Fetch initial chat messages
     const { data: messages, error } = await supabaseClient
       .from("messages")
       .select("*")
@@ -754,7 +989,6 @@
     renderChatMessages(messages);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Listen for incoming messages live via Supabase Realtime
     supabaseClient
       .channel("public:messages")
       .on(
@@ -802,7 +1036,6 @@
     `;
   }
 
-  // Send Message Handler
   async function handleSendMessage() {
     const input = document.getElementById("chat-input");
     const text = input.value.trim();
@@ -970,21 +1203,17 @@
           borderColor: '#EAB308',
           backgroundColor: 'rgba(234, 179, 8, 0.1)',
           fill: true,
-          tension: 0.3,
-          pointBackgroundColor: '#1E293B',
-          pointRadius: 5
+          tension: 0.3
         }]
       },
       options: {
         responsive: true,
-        scales: {
-          y: {
-            min: 0,
-            max: 100,
-            ticks: { callback: value => value + '%' }
-          }
+        plugins: {
+          legend: { display: false }
         },
-        plugins: { legend: { display: false } }
+        scales: {
+          y: { min: 0, max: 100 }
+        }
       }
     });
   }
