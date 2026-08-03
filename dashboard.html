@@ -312,6 +312,45 @@
     }
 
     /* --- STUDY CONTENT STYLING --- */
+    .grade-select-wrapper {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .grade-select-wrapper label {
+      font-weight: 700;
+      color: #0F172A;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grade-dropdown {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 2px solid #EAB308;
+      background: #FFF;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1E293B;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .grade-dropdown:focus {
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.3);
+    }
+
     .paper-cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -553,7 +592,7 @@
       <p class="user-grade" id="display-grade">High School Learner</p>
 
       <div class="badges-container">
-        <span class="badge-icon" id="display-subject-tag">📚 Mathematics</span>
+        <span class="badge-icon" id="display-subject-tag"> Mathematics</span>
       </div>
 
       <!-- Upload File Box -->
@@ -574,7 +613,7 @@
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -597,20 +636,33 @@
       <!-- VIEW 2: STUDY CONTENT (REPLACED SUBJECTS & MODULES) -->
       <div id="view-subjects" class="app-view" style="display: none;">
         <h2>Study Content</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Select a paper to view video lessons, ATP topics, and downloadable study notes.</p>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your grade and choose a paper to view video lessons, ATP topics, and downloadable study notes.</p>
         
+        <!-- GRADE SELECTOR BAR -->
+        <div class="grade-select-wrapper">
+          <label for="study-grade-select">
+            <i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Select Your Academic Grade:
+          </label>
+          <select id="study-grade-select" class="grade-dropdown" onchange="onGradeChange()">
+            <option value="Grade 8 & 9">Grade 8 & 9</option>
+            <option value="Grade 10">Grade 10</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+          </select>
+        </div>
+
         <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
             <div class="paper-card" onclick="selectPaper('Paper 1')">
               <i class="fa-solid fa-file-invoice"></i>
-              <h3>Paper 1</h3>
-              <p>Algebra, Equations, Patterns, Functions & Financial Maths</p>
+              <h3 id="p1-card-title">Paper 1</h3>
+              <p id="p1-card-desc">Algebra, Equations, Patterns, Functions & Financial Maths</p>
             </div>
             <div class="paper-card" onclick="selectPaper('Paper 2')">
               <i class="fa-solid fa-draw-polygon"></i>
-              <h3>Paper 2</h3>
-              <p>Geometry, Trigonometry, Measurement, Transformation & Data Handling</p>
+              <h3 id="p2-card-title">Paper 2</h3>
+              <p id="p2-card-desc">Geometry, Trigonometry, Measurement, Transformation & Data Handling</p>
             </div>
           </div>
         </div>
@@ -698,7 +750,7 @@
       <canvas id="performanceChart" width="100" height="100"></canvas>
 
       <div class="stat-box" id="stat-avg-box">
-        🚀 Current Mark Average: <strong>--%</strong>
+         Current Mark Average: <strong>--%</strong>
       </div>
     </section>
 
@@ -711,32 +763,64 @@
 
   let currentUser = null;
   let myPerformanceChart = null;
+  let currentActivePaper = null;
 
-  // Grade 9 Fallback ATP Curriculum Content (Used if Supabase table is empty)
+  // Grade-by-Grade Fallback ATP Curriculum Structure (Grade 8 & 9 Combined, Grade 10, Grade 11, Grade 12)
   const fallbackStudyData = [
-    // Paper 1
-    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, and scientific notation.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Number types', description: 'Real numbers, rational numbers, and irrational numbers.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic expressions', description: 'Simplifying, multiplying polynomials, products of binomials, and factorisation.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic equations', description: 'Solving linear equations, bracket equations, and simple exponential equations.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Algebra', topic: 'Financial mathematics', description: 'Profit, loss, simple interest, and rate/speed/distance/time problems.', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: '' },
-    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
-    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
-    { paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Gradient', description: 'Understanding and calculating the steepness of straight-line graphs.', youtube_url: 'https://www.youtube.com/watch?v=D-NjUNgKcgM' },
-    
-    // Paper 2
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles', description: 'Properties of equilateral, isosceles, and right-angled triangles, interior/exterior angles.', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Congruency and similarity', description: 'Conditions for congruent triangles (SSS, SAS, AAS, RHS) and rules for similar triangles.', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Quadrilaterals', description: 'Properties of parallelograms, rectangles, rhombuses, squares, kites, and trapeziums.', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: '' },
-    { paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: '' }
+    // --- GRADE 8 & 9 (COMBINED SENIOR PHASE) ---
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, square/cube roots, and scientific notation.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic expressions', description: 'Simplifying, multiplying polynomials, products of binomials, and factorisation.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic equations', description: 'Solving linear equations, bracket equations, and simple exponential equations.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Financial mathematics', description: 'Profit, loss, simple interest, and rate/speed/distance/time problems.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
+
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles & Congruency', description: 'Properties of equilateral/isosceles triangles and conditions for congruency/similarity.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: '' },
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: '' },
+
+    // --- GRADE 10 ---
+    { grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic Expressions & Exponents', description: 'Products, factorisation (difference of squares, trinomials, grouping), simplifying algebraic fractions, rational exponents.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Equations & Inequalities', description: 'Linear equations, quadratic equations by factorisation, simultaneous equations, literal equations.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 1', section: 'Patterns', topic: 'Number Patterns', description: 'Linear number patterns with constant first differences.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Graphs', description: 'Linear f(x)=mx+c, Quadratic f(x)=ax²+q, Hyperbola f(x)=a/x+q, Exponential f(x)=ab^x+q.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Finance & Growth', description: 'Simple interest A=P(1+in), compound interest A=P(1+i)^n, inflation, exchange rates.', youtube_url: '' },
+
+    { grade: 'Grade 10', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trigonometric Ratios & Equations', description: 'Sine, Cosine, Tangent definitions in right triangles, unit circle, solving simple trig equations.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Cartesian Coordinate Geometry', description: 'Distance formula, gradient of line, midpoint formula, parallel and perpendicular lines.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Quadrilaterals & Midpoint Theorem', description: 'Properties of parallelograms, mid-point theorem proofs and applications.', youtube_url: '' },
+    { grade: 'Grade 10', paper: 'Paper 2', section: 'Statistics', topic: 'Measures of Central Tendency & Dispersion', description: 'Grouped data, mean, median, mode, five-number summary, box and whisker plots.', youtube_url: '' },
+
+    // --- GRADE 11 ---
+    { grade: 'Grade 11', paper: 'Paper 1', section: 'Algebra', topic: 'Exponents, Surds & Equations', description: 'Surd equations, solving quadratics using completing the square and quadratic formula, inequalities.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 1', section: 'Patterns', topic: 'Quadratic Number Patterns', description: 'Second differences, general term Tn = an² + bn + c.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Transformations', description: 'Parabola, Hyperbola, Exponential functions with horizontal and vertical shifts, axes of symmetry.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Depreciation & Nominal/Effective Rates', description: 'Straight-line and reducing balance depreciation, interest rate conversions.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Probability Rules & Venn Diagrams', description: 'Mutually exclusive & independent events, tree diagrams, Venn diagrams.', youtube_url: '' },
+
+    { grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Identities, Reduction & Equations', description: 'sin²/cos² identities, reduction formulas for all quadrants, general solution of trig equations.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Sine, Cosine & Area Rules', description: 'Non-right-angled trigonometry for 2D problems.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan(θ)=m.', youtube_url: '' },
+    { grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: '' },
+
+    // --- GRADE 12 ---
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Patterns', topic: 'Arithmetic & Geometric Sequences & Series', description: 'General terms, sum formulas Sn, sum to infinity for convergent geometric series, sigma notation.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f⁻¹, logarithmic function as inverse of exponential.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Calculus', topic: 'Differential Calculus & Curve Sketching', description: 'Limits, first principles derivative, rules of differentiation, tangents to curves, cubic graphs, maxima & minima optimization.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Annuities & Loan Repayments', description: 'Present value PVA, future value FVA, deferred annuities, sinking funds.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Counting Principles & Probability', description: 'Fundamental counting principle, factorials, permutations, combinations.', youtube_url: '' },
+
+    { grade: 'Grade 12', paper: 'Paper 2', section: 'Trigonometry', topic: 'Compound & Double Angle Identities', description: 'cos(A±B), sin(A±B), double angle identities, solving 3D trig problems.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Circles & Tangents', description: 'Equation of circle (x-a)²+(y-b)²=r², equations of tangent lines to circles.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Proportionality & Similarity Theorems', description: 'Line parallel to one side of triangle divides other sides proportionally, similar triangles ratio theorems.', youtube_url: '' },
+    { grade: 'Grade 12', paper: 'Paper 2', section: 'Statistics', topic: 'Bivariate Data & Regression', description: 'Scatter plots, line of best fit, least squares regression line, correlation coefficient r.', youtube_url: '' }
   ];
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -764,13 +848,27 @@
     // 3. Hydrate User Details
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
-    const grade = meta.grade || "High School Learner";
+    const userGrade = meta.grade || "Grade 8 & 9";
     const selectedSubject = meta.subject || "Mathematics";
 
     document.getElementById("display-name").textContent = learnerName;
     document.getElementById("welcome-name").textContent = learnerName;
-    document.getElementById("display-grade").textContent = grade;
-    document.getElementById("display-subject-tag").textContent = `📚 ${selectedSubject}`;
+    document.getElementById("display-grade").textContent = userGrade;
+    document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
+
+    // Pre-select user's grade in study content dropdown
+    const gradeDropdown = document.getElementById("study-grade-select");
+    if (gradeDropdown) {
+      const gLower = userGrade.toLowerCase();
+      if (gLower.includes("8") || gLower.includes("9")) {
+        gradeDropdown.value = "Grade 8 & 9";
+      } else {
+        const matchingOption = Array.from(gradeDropdown.options).find(opt => 
+          gLower.includes(opt.value.toLowerCase())
+        );
+        if (matchingOption) gradeDropdown.value = matchingOption.value;
+      }
+    }
 
     // Fallback Profile Avatar
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(learnerName)}&background=1E293B&color=EAB308`;
@@ -839,22 +937,30 @@
   });
 
   /* ----------------------------------------------------
-      STUDY CONTENT LOGIC (PAPER 1 & PAPER 2)
+      STUDY CONTENT LOGIC (GRADE & PAPER 1/2 FILTERING)
   ---------------------------------------------------- */
+  function onGradeChange() {
+    if (currentActivePaper) {
+      selectPaper(currentActivePaper);
+    }
+  }
+
   function showPaperSelection() {
+    currentActivePaper = null;
     document.getElementById("paper-selection-view").style.display = "block";
     document.getElementById("paper-topics-view").style.display = "none";
   }
 
   async function selectPaper(paperName) {
+    currentActivePaper = paperName;
+    const selectedGrade = document.getElementById("study-grade-select").value;
+
     document.getElementById("paper-selection-view").style.display = "none";
     document.getElementById("paper-topics-view").style.display = "block";
-    document.getElementById("selected-paper-title").textContent = `${paperName} Topics & Resources`;
+    document.getElementById("selected-paper-title").textContent = `${selectedGrade} - ${paperName} Topics & Resources`;
 
     const container = document.getElementById("topics-container");
-    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;">Loading content for ${paperName}...</p>`;
-
-    const studentGrade = currentUser?.user_metadata?.grade || "Grade 9";
+    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;">Loading content for ${selectedGrade} ${paperName}...</p>`;
 
     // Attempt to load from Supabase database
     let topicsToRender = [];
@@ -863,7 +969,7 @@
         .from('study_content')
         .select('*')
         .eq('paper', paperName)
-        .eq('grade', studentGrade);
+        .eq('grade', selectedGrade);
 
       if (!error && data && data.length > 0) {
         topicsToRender = data;
@@ -872,11 +978,13 @@
 
     // Fallback if Supabase table has no rows for this grade/paper
     if (topicsToRender.length === 0) {
-      topicsToRender = fallbackStudyData.filter(item => item.paper === paperName);
+      topicsToRender = fallbackStudyData.filter(item => 
+        item.paper === paperName && item.grade === selectedGrade
+      );
     }
 
     if (topicsToRender.length === 0) {
-      container.innerHTML = `<p style="color: #64748B;">No topics uploaded for ${paperName} yet.</p>`;
+      container.innerHTML = `<p style="color: #64748B;">No topics uploaded for ${selectedGrade} ${paperName} yet.</p>`;
       return;
     }
 
@@ -1080,7 +1188,7 @@
       if (error) throw error;
 
       uploadStatus.style.color = "#059669";
-      uploadStatus.textContent = "✅ File uploaded successfully!";
+      uploadStatus.textContent = " File uploaded successfully!";
     } catch (err) {
       console.error("Upload error:", err);
       uploadStatus.style.color = "#EF4444";
@@ -1158,7 +1266,7 @@
 
     if (!grades || grades.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No graded assessments recorded yet.</td></tr>`;
-      statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>--%</strong>`;
+      statAvgBox.innerHTML = ` Current Mark Average: <strong>--%</strong>`;
       renderPerformanceChart(['No Data'], [0]);
       return;
     }
@@ -1181,7 +1289,7 @@
     const sum = scores.reduce((acc, curr) => acc + curr, 0);
     const avg = Math.round(sum / scores.length);
 
-    statAvgBox.innerHTML = `🚀 Current Mark Average: <strong>${avg}%</strong>`;
+    statAvgBox.innerHTML = ` Current Mark Average: <strong>${avg}%</strong>`;
 
     renderPerformanceChart(labels, scores);
   }
