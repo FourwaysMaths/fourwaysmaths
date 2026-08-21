@@ -455,7 +455,7 @@
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-top: 10px;
+      margin-top: 5px;
       transition: background 0.2s;
     }
 
@@ -633,7 +633,7 @@
         </div>
       </div>
 
-      <!-- VIEW 2: STUDY CONTENT (REPLACED SUBJECTS & MODULES) -->
+      <!-- VIEW 2: STUDY CONTENT -->
       <div id="view-subjects" class="app-view" style="display: none;">
         <h2>Study Content</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your grade and choose a paper to view video lessons, ATP topics, and downloadable study notes.</p>
@@ -760,12 +760,13 @@
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+  const BUCKET_NAME = "study-notes";
 
   let currentUser = null;
   let myPerformanceChart = null;
   let currentActivePaper = null;
 
-  // Grade-by-Grade Fallback ATP Curriculum Structure (Grade 8 & 9 Combined, Grade 10, Grade 11, Grade 12)
+  // Grade-by-Grade Fallback ATP Curriculum Structure
   const fallbackStudyData = [
     // --- GRADE 8 & 9 (COMBINED SENIOR PHASE) ---
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
@@ -806,12 +807,12 @@
 
     { grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Identities, Reduction & Equations', description: 'sin²/cos² identities, reduction formulas for all quadrants, general solution of trig equations.', youtube_url: 'https://www.youtube.com/watch?v=XXwMYNorbaI&list=PLU_DCVXL8MyM3bl71J1E8w_LWRVGt8IXI' },
     { grade: 'Grade 11', paper: 'Paper 2', section: 'Trig Functions', topic: 'Sine, Cosine & Tan graphs', description: 'Trig functions horizontal shift, determining the equation and, sketching the graphs', youtube_url: 'https://www.youtube.com/watch?v=aqaWbNqM0aU&list=PLU_DCVXL8MyNSenwlz0mdinXYwl-3myMU' },
-    { grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan(θ)=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
+    { grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan()=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
     { grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: 'https://www.youtube.com/watch?v=KjVc1xdh78Q&list=PLU_DCVXL8MyPk4vSIOKfS1Gk3C9dsOYWA' },
 
     // --- GRADE 12 ---
     { grade: 'Grade 12', paper: 'Paper 1', section: 'Patterns', topic: 'Arithmetic & Geometric Sequences & Series', description: 'General terms, sum formulas Sn, sum to infinity for convergent geometric series, sigma notation.', youtube_url: 'https://www.youtube.com/watch?v=B8dKyX9g7Fk&list=PLU_DCVXL8MyPIXj7twby7-xtcs9hekRVn' },
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f⁻¹, logarithmic function as inverse of exponential.', youtube_url: 'https://www.youtube.com/watch?v=9jT3q9CCc2Y' },
+    { grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f¹, logarithmic function as inverse of exponential.', youtube_url: 'https://www.youtube.com/watch?v=9jT3q9CCc2Y' },
     { grade: 'Grade 12', paper: 'Paper 1', section: 'Calculus', topic: 'Differential Calculus & Curve Sketching', description: 'Limits, first principles derivative, rules of differentiation, tangents to curves, cubic graphs, maxima & minima optimization.', youtube_url: 'https://www.youtube.com/watch?v=4VUWIiudCk0&list=PLU_DCVXL8MyP_xzgHLGl89rWRiS2jLHNk' },
     { grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Annuities & Loan Repayments', description: 'Present value PVA, future value FVA, deferred annuities, sinking funds.', youtube_url: 'https://www.youtube.com/watch?v=KbFqPQZyQ0g&list=PLU_DCVXL8MyPZRWmE6MVzwuBlg2hfuvoT' },
     { grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Counting Principles & Probability', description: 'Fundamental counting principle, factorials, permutations, combinations.', youtube_url: 'https://www.youtube.com/watch?v=loYKqFQcksY&list=PLU_DCVXL8MyPJINt5go5JRtKhcEGc2bz5' },
@@ -821,6 +822,27 @@
     { grade: 'Grade 12', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Proportionality & Similarity Theorems', description: 'Line parallel to one side of triangle divides other sides proportionally, similar triangles ratio theorems.', youtube_url: 'https://www.youtube.com/watch?v=DHDKaIuUGnA&list=PLU_DCVXL8MyMfSj1cUq05oB6enr8aVRGg' },
     { grade: 'Grade 12', paper: 'Paper 2', section: 'Statistics', topic: 'Bivariate Data & Regression', description: 'Scatter plots, line of best fit, least squares regression line, correlation coefficient r.', youtube_url: 'https://www.youtube.com/watch?v=yXbx5EHE1ag&list=PLU_DCVXL8MyPUhwqhNcdwUxXCG7_BSZMw' }
   ];
+
+  // Helper to generate public download URLs directly from Supabase Storage
+  function getStorageFileUrl(filePath) {
+    const { data } = supabaseClient.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(filePath);
+    return data ? data.publicUrl : "#";
+  }
+
+  // Folder mapping matching your exact path in Supabase Storage:
+  // study-notes / Gr8&9 / Paper1_worksheets / [Folder]
+  const gr89Paper1FolderMap = {
+    'Whole numbers and integers': '1Whole numbers',
+    'Fractions and decimals': '3Fractions',
+    'Exponents': '4Exponents',
+    'Algebraic expressions': '5Expressions',
+    'Algebraic equations': '6Equations',
+    'Financial mathematics': '7Financial',
+    'Patterns': '8Patterns',
+    'Functions and relationships': '9Functions'
+  };
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
@@ -959,9 +981,9 @@
     document.getElementById("selected-paper-title").textContent = `${selectedGrade} - ${paperName} Topics & Resources`;
 
     const container = document.getElementById("topics-container");
-    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;">Loading content for ${selectedGrade} ${paperName}...</p>`;
+    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching files from Supabase bucket...</p>`;
 
-    // Attempt to load from Supabase database
+    // 1. Fetch metadata from Supabase database table or fallback ATP structure
     let topicsToRender = [];
     if (supabaseClient) {
       const { data, error } = await supabaseClient
@@ -975,7 +997,6 @@
       }
     }
 
-    // Fallback if Supabase table has no rows for this grade/paper
     if (topicsToRender.length === 0) {
       topicsToRender = fallbackStudyData.filter(item => 
         item.paper === paperName && item.grade === selectedGrade
@@ -987,10 +1008,47 @@
       return;
     }
 
-    container.innerHTML = topicsToRender.map(topic => {
+    // 2. Build Card List with Dynamic Supabase Bucket PDF File Discovery
+    let cardsHtml = '';
+
+    for (const topic of topicsToRender) {
       const embedUrl = topic.youtube_url ? getYouTubeEmbedUrl(topic.youtube_url) : null;
-      
-      return `
+      let pdfButtonsHtml = '';
+
+      // Check if folder mapping exists for Grade 8 & 9 Paper 1
+      if (selectedGrade === 'Grade 8 & 9' && paperName === 'Paper 1' && gr89Paper1FolderMap[topic.topic]) {
+        const folderName = gr89Paper1FolderMap[topic.topic];
+        const storageFolderPath = `Gr8&9/Paper1_worksheets/${folderName}`;
+
+        // Dynamic listing directly from your Supabase Storage Bucket
+        const { data: fileList, error: fileErr } = await supabaseClient.storage
+          .from(BUCKET_NAME)
+          .list(storageFolderPath);
+
+        if (!fileErr && fileList && fileList.length > 0) {
+          const pdfFiles = fileList.filter(f => f.name.endsWith('.pdf'));
+
+          pdfButtonsHtml = pdfFiles.map(file => {
+            const fileUrl = getStorageFileUrl(`${storageFolderPath}/${file.name}`);
+            return `
+              <a href="${fileUrl}" target="_blank" class="btn-pdf" style="margin-right: 6px; margin-bottom: 6px;">
+                <i class="fa-solid fa-file-pdf" style="color: #EAB308;"></i> ${file.name}
+              </a>
+            `;
+          }).join('');
+        }
+      }
+
+      // If database provided explicit pdf_url, append it as fallback
+      if (!pdfButtonsHtml && topic.pdf_url) {
+        pdfButtonsHtml = `
+          <a href="${topic.pdf_url}" target="_blank" class="btn-pdf">
+            <i class="fa-solid fa-file-pdf"></i> Download PDF Notes
+          </a>
+        `;
+      }
+
+      cardsHtml += `
         <div class="topic-card">
           <div class="topic-header">
             <span class="topic-section-tag">${topic.section}</span>
@@ -1004,14 +1062,48 @@
             </div>
           ` : ''}
 
-          ${topic.pdf_url ? `
-            <a href="${topic.pdf_url}" target="_blank" class="btn-pdf">
-              <i class="fa-solid fa-file-pdf"></i> Download PDF Notes
-            </a>
-          ` : ''}
+          <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+            ${pdfButtonsHtml || '<span style="font-size: 0.75rem; color: #94A3B8; italic;">No PDF notes attached yet</span>'}
+          </div>
         </div>
       `;
-    }).join('');
+    }
+
+    // 3. Render Past Papers Section if displaying Grade 8 & 9 Paper 1
+    if (selectedGrade === 'Grade 8 & 9' && paperName === 'Paper 1') {
+      const pastPapersFolderPath = `Gr8&9/Paper1_worksheets/Past papers`;
+      const { data: pastPaperFiles } = await supabaseClient.storage
+        .from(BUCKET_NAME)
+        .list(pastPapersFolderPath);
+
+      if (pastPaperFiles && pastPaperFiles.length > 0) {
+        const validPastPapers = pastPaperFiles.filter(f => f.name.endsWith('.pdf'));
+
+        const pastPaperButtons = validPastPapers.map(file => {
+          const fileUrl = getStorageFileUrl(`${pastPapersFolderPath}/${file.name}`);
+          return `
+            <a href="${fileUrl}" target="_blank" class="btn-pdf" style="background-color: #0F172A; border: 1px solid #EAB308;">
+              <i class="fa-solid fa-file-lines" style="color: #EAB308;"></i> ${file.name}
+            </a>
+          `;
+        }).join('');
+
+        cardsHtml += `
+          <div class="topic-card" style="grid-column: 1 / -1; background: #FEF3C7; border: 2px solid #EAB308;">
+            <div class="topic-header">
+              <span class="topic-section-tag" style="background: #1E293B; color: #EAB308;">Past Papers & Revision Packs</span>
+              <h4 style="font-size: 1.1rem; color: #0F172A; margin-top: 6px;">Grade 8 & 9 Examination Past Papers</h4>
+              <p style="font-size: 0.85rem; color: #64748B;">Download official June, September, and Final examination papers directly below:</p>
+            </div>
+            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
+              ${pastPaperButtons}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    container.innerHTML = cardsHtml;
   }
 
   // Helper function to convert standard YouTube links/playlists into clean embed URLs
