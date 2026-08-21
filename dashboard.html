@@ -78,7 +78,6 @@
       background-color: rgba(234, 179, 8, 0.15);
     }
 
-    /* Hover Tooltips */
     .nav-item::after {
       content: attr(data-tooltip);
       position: absolute;
@@ -120,7 +119,6 @@
       grid-template-columns: 1fr;
     }
 
-    /* --- PROFILE PANEL --- */
     .profile-panel {
       background-color: #F8FAFC;
       border-right: 1px solid #E2E8F0;
@@ -227,7 +225,6 @@
       font-weight: 600;
     }
 
-    /* --- CENTER PANEL --- */
     .main-panel {
       padding: 30px;
       overflow-y: auto;
@@ -311,7 +308,6 @@
       font-weight: 700;
     }
 
-    /* --- STUDY CONTENT STYLING --- */
     .grade-select-wrapper {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -426,7 +422,7 @@
 
     .video-container {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
       border-radius: 10px;
@@ -443,24 +439,84 @@
       border: 0;
     }
 
-    .btn-pdf {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background-color: #1E293B;
-      color: #FFF;
-      text-decoration: none;
-      padding: 10px 15px;
+    /* Dynamic Content Pills & Tab Switcher */
+    .resource-tabs {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0;
+      background: #F1F5F9;
+      padding: 4px;
       border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-top: 5px;
-      transition: background 0.2s;
     }
 
-    .btn-pdf:hover {
-      background-color: #0F172A;
+    .tab-btn {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      color: #64748B;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #FFF;
+      color: #0F172A;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    /* Minimalist PDF Chip Card */
+    .pdf-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: #1E293B;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .pdf-chip:hover {
+      background: #FFF;
+      border-color: #EAB308;
+      color: #854D0E;
+      transform: translateX(2px);
+    }
+
+    .pdf-chip-title {
+      flex: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .pdf-chip i.fa-file-pdf {
+      color: #EF4444;
+      font-size: 1rem;
+    }
+
+    .pdf-chip i.download-icon {
+      color: #94A3B8;
+      font-size: 0.85rem;
+    }
+
+    .pdf-chip:hover i.download-icon {
       color: #EAB308;
     }
 
@@ -482,7 +538,6 @@
       background: #CBD5E1;
     }
 
-    /* --- ANALYTICS PANEL --- */
     .analytics-panel {
       background: #FFF;
       border-left: 1px solid #E2E8F0;
@@ -504,9 +559,6 @@
       display: none;
     }
 
-    /* ----------------------------------
-        3. MOBILE RESPONSIBILITY
-    ----------------------------------- */
     @media (max-width: 900px) {
       body {
         flex-direction: column;
@@ -613,7 +665,7 @@
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -623,9 +675,7 @@
         </div>
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">My Enrolled Subject</h3>
-        <div class="subject-grid" id="dashboard-subject-container">
-          <!-- Dynamic Personalized Subject Rendered via JavaScript -->
-        </div>
+        <div class="subject-grid" id="dashboard-subject-container"></div>
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
         <div id="upcoming-classes-container">
@@ -667,13 +717,11 @@
           </div>
         </div>
 
-        <!-- Paper Topics View (Hidden by default) -->
+        <!-- Paper Topics View -->
         <div id="paper-topics-view" style="display: none;">
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
-          <div class="topic-grid" id="topics-container">
-            <!-- Dynamic Topics Grid Rendered Here -->
-          </div>
+          <div class="topic-grid" id="topics-container"></div>
         </div>
       </div>
 
@@ -690,7 +738,7 @@
           </div>
 
           <div style="display: flex; gap: 10px;">
-            <input type="text" id="chat-input" placeholder="Type a message (e.g., 'Sir, please upload today's paper')..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
+            <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
             <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
               <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -766,9 +814,7 @@
   let myPerformanceChart = null;
   let currentActivePaper = null;
 
-  // Grade-by-Grade Fallback ATP Curriculum Structure
   const fallbackStudyData = [
-    // --- GRADE 8 & 9 (COMBINED SENIOR PHASE) ---
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: 'https://www.youtube.com/watch?v=c3DJOLPqWWo&list=PLU_DCVXL8MyPUSphd-e9Ckr3ac8ngd1-Q' },
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, square/cube roots, and scientific notation.', youtube_url: 'https://www.youtube.com/watch?v=36weQD824_E&list=PLU_DCVXL8MyNQOL3wJBrPkFzV0vi6Mj5t' },
@@ -778,61 +824,28 @@
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
     { grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
-
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles & Congruency', description: 'Properties of equilateral/isosceles triangles and conditions for congruency/similarity.', youtube_url: 'https://www.youtube.com/watch?v=MN5Rc-XhXa4' },
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: 'https://www.youtube.com/watch?v=uotYHqVV_HU&list=PLU_DCVXL8MyOLCVUwioubl7uZxay9byvd' },
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: 'https://www.youtube.com/watch?v=GqHWdTLL8Qw' },
     { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: 'https://www.youtube.com/watch?v=sS_ZQLvi48Y&list=PLU_DCVXL8MyPktNF2TpVe5ur4qg3vFkTm' },
-    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
-
-    // --- GRADE 10 ---
-    { grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic Expressions & Exponents', description: 'Products, factorisation (difference of squares, trinomials, grouping), simplifying algebraic fractions, rational exponents.', youtube_url: 'https://www.youtube.com/watch?v=UV8Dbcf_3tw&list=PLU_DCVXL8MyNr7EoF0EH3uyyxwMWIxi14' },
-    { grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Equations & Inequalities', description: 'Linear equations, quadratic equations by factorisation, simultaneous equations, literal equations.', youtube_url: 'https://www.youtube.com/watch?v=AQ0FCi3oOYA&list=PLU_DCVXL8MyMtMwjJzx34zo33GQv2jUqK&index=15' },
-    { grade: 'Grade 10', paper: 'Paper 1', section: 'Patterns', topic: 'Number Patterns', description: 'Linear number patterns with constant first differences.', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
-    { grade: 'Grade 10', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Graphs', description: 'Linear f(x)=mx+c, Quadratic f(x)=ax²+q, Hyperbola f(x)=a/x+q, Exponential f(x)=ab^x+q.', youtube_url: 'https://www.youtube.com/watch?v=OnIcV_pbM1s&list=PLU_DCVXL8MyNoRvpcydTNNpvbll692iGd' },
-    { grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Finance & Growth', description: 'Simple interest A=P(1+in), compound interest A=P(1+i)^n, inflation, exchange rates.', youtube_url: 'https://www.youtube.com/watch?v=AKU4lSQvrnI&list=PLU_DCVXL8MyOEf7oWx4CjrP33KWNKv04O' },
-
-    { grade: 'Grade 10', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trigonometric Ratios & Equations', description: 'Sine, Cosine, Tangent definitions in right triangles, unit circle, solving simple trig equations.', youtube_url: 'https://www.youtube.com/watch?v=4jSqFXdmKR0&list=PLU_DCVXL8MyOCpoTstYOBnYEwpdBun3pX' },
-    { grade: 'Grade 10', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Cartesian Coordinate Geometry', description: 'Distance formula, gradient of line, midpoint formula, parallel and perpendicular lines.', youtube_url: 'https://www.youtube.com/watch?v=H5hq7wkldj8&list=PLU_DCVXL8MyMzOFmSNyQH9rq3oh8Y0lU_' },
-    { grade: 'Grade 10', paper: 'Paper 2', section: 'Statistics', topic: 'Measures of Central Tendency & Dispersion', description: 'Grouped data, mean, median, mode, five-number summary, box and whisker plots.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
-
-    // --- GRADE 11 ---
-    { grade: 'Grade 11', paper: 'Paper 1', section: 'Algebra', topic: 'Exponents, Surds & Equations', description: 'Surd equations, solving quadratics using completing the square and quadratic formula, inequalities.', youtube_url: 'https://www.youtube.com/watch?v=XofwHRrFKNE&list=PLU_DCVXL8MyN3WecirANwTB3e8Ooy3x4_&pp=0gcJCf4COCosWNin' },
-    { grade: 'Grade 11', paper: 'Paper 1', section: 'Patterns', topic: 'Quadratic Number Patterns', description: 'Second differences, general term Tn = an² + bn + c.', youtube_url: 'https://www.youtube.com/watch?v=Ws_tyxB-Xyo&list=PLU_DCVXL8MyM5gt1mH6iq1E33WcpJ3eTH' },
-    { grade: 'Grade 11', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Transformations', description: 'Parabola, Hyperbola, Exponential functions with horizontal and vertical shifts, axes of symmetry.', youtube_url: 'https://www.youtube.com/watch?v=VEFdT971Tzs&list=PLU_DCVXL8MyPIaFDwQITXenLPVzPLM7B7' },
-    { grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Depreciation & Nominal/Effective Rates', description: 'Straight-line and reducing balance depreciation, interest rate conversions.', youtube_url: 'https://www.youtube.com/watch?v=odpS_jVL-zM&list=PLU_DCVXL8MyPvtfGcmsJxC3w0eR07C6QQ' },
-    { grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Probability Rules & Venn Diagrams', description: 'Mutually exclusive & independent events, tree diagrams, Venn diagrams.', youtube_url: 'https://www.youtube.com/watch?v=PZpZBlqDEmE&list=PLU_DCVXL8MyMwNbYOh_R-4kSp8G0BavW8' },
-
-    { grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Identities, Reduction & Equations', description: 'sin²/cos² identities, reduction formulas for all quadrants, general solution of trig equations.', youtube_url: 'https://www.youtube.com/watch?v=XXwMYNorbaI&list=PLU_DCVXL8MyM3bl71J1E8w_LWRVGt8IXI' },
-    { grade: 'Grade 11', paper: 'Paper 2', section: 'Trig Functions', topic: 'Sine, Cosine & Tan graphs', description: 'Trig functions horizontal shift, determining the equation and, sketching the graphs', youtube_url: 'https://www.youtube.com/watch?v=aqaWbNqM0aU&list=PLU_DCVXL8MyNSenwlz0mdinXYwl-3myMU' },
-    { grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan()=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
-    { grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: 'https://www.youtube.com/watch?v=KjVc1xdh78Q&list=PLU_DCVXL8MyPk4vSIOKfS1Gk3C9dsOYWA' },
-
-    // --- GRADE 12 ---
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Patterns', topic: 'Arithmetic & Geometric Sequences & Series', description: 'General terms, sum formulas Sn, sum to infinity for convergent geometric series, sigma notation.', youtube_url: 'https://www.youtube.com/watch?v=B8dKyX9g7Fk&list=PLU_DCVXL8MyPIXj7twby7-xtcs9hekRVn' },
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f¹, logarithmic function as inverse of exponential.', youtube_url: 'https://www.youtube.com/watch?v=9jT3q9CCc2Y' },
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Calculus', topic: 'Differential Calculus & Curve Sketching', description: 'Limits, first principles derivative, rules of differentiation, tangents to curves, cubic graphs, maxima & minima optimization.', youtube_url: 'https://www.youtube.com/watch?v=4VUWIiudCk0&list=PLU_DCVXL8MyP_xzgHLGl89rWRiS2jLHNk' },
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Annuities & Loan Repayments', description: 'Present value PVA, future value FVA, deferred annuities, sinking funds.', youtube_url: 'https://www.youtube.com/watch?v=KbFqPQZyQ0g&list=PLU_DCVXL8MyPZRWmE6MVzwuBlg2hfuvoT' },
-    { grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Counting Principles & Probability', description: 'Fundamental counting principle, factorials, permutations, combinations.', youtube_url: 'https://www.youtube.com/watch?v=loYKqFQcksY&list=PLU_DCVXL8MyPJINt5go5JRtKhcEGc2bz5' },
-
-    { grade: 'Grade 12', paper: 'Paper 2', section: 'Trigonometry', topic: 'Compound & Double Angle Identities', description: 'cos(A±B), sin(A±B), double angle identities, solving 3D trig problems.', youtube_url: 'https://www.youtube.com/watch?v=yq76CaYxPWc&list=PLU_DCVXL8MyNp2vqZjZvDTRDxf6oCuf7l' },
-    { grade: 'Grade 12', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Circles & Tangents', description: 'Equation of circle (x-a)²+(y-b)²=r², equations of tangent lines to circles.', youtube_url: 'https://www.youtube.com/watch?v=cjP4tmQtxEs&list=PLU_DCVXL8MyPiQexgRohpf0G0o_DEHpQH' },
-    { grade: 'Grade 12', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Proportionality & Similarity Theorems', description: 'Line parallel to one side of triangle divides other sides proportionally, similar triangles ratio theorems.', youtube_url: 'https://www.youtube.com/watch?v=DHDKaIuUGnA&list=PLU_DCVXL8MyMfSj1cUq05oB6enr8aVRGg' },
-    { grade: 'Grade 12', paper: 'Paper 2', section: 'Statistics', topic: 'Bivariate Data & Regression', description: 'Scatter plots, line of best fit, least squares regression line, correlation coefficient r.', youtube_url: 'https://www.youtube.com/watch?v=yXbx5EHE1ag&list=PLU_DCVXL8MyPUhwqhNcdwUxXCG7_BSZMw' }
+    { grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' }
   ];
 
-  // Helper to generate public download URLs directly from Supabase Storage
+  function formatFilename(filename) {
+    return filename
+      .replace(/\.pdf$/i, '')
+      .replace(/_/g, ' ')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, char => char.toUpperCase());
+  }
+
   function getStorageFileUrl(filePath) {
-    const { data } = supabaseClient.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(filePath);
+    const { data } = supabaseClient.storage.from(BUCKET_NAME).getPublicUrl(filePath);
     return data ? data.publicUrl : "#";
   }
 
-  // Folder mapping matching your exact path in Supabase Storage:
-  // study-notes / Gr8&9 / Paper1_worksheets / [Folder]
   const gr89Paper1FolderMap = {
     'Whole numbers and integers': '1Whole numbers',
     'Fractions and decimals': '3Fractions',
@@ -847,7 +860,6 @@
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
-    // 1. Verify User Authentication Session
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       window.location.href = "login.html";
@@ -856,7 +868,6 @@
 
     currentUser = session.user;
 
-    // 2. PORTAL GUARD CLAUSE: Keep Parents out of student portal
     const userRole = currentUser.user_metadata?.role || "student";
     if (userRole === "parent") {
       window.location.href = "parent-dashboard.html";
@@ -866,7 +877,6 @@
       return;
     }
 
-    // 3. Hydrate User Details
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
     const userGrade = meta.grade || "Grade 8 & 9";
@@ -877,7 +887,6 @@
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
-    // Pre-select user's grade in study content dropdown
     const gradeDropdown = document.getElementById("study-grade-select");
     if (gradeDropdown) {
       const gLower = userGrade.toLowerCase();
@@ -891,39 +900,25 @@
       }
     }
 
-    // Fallback Profile Avatar
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(learnerName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
 
-    // 4. Render Personalized Subjects on Main Dashboard
     const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
     const isMathLit = selectedSubject.toLowerCase().includes("lit");
 
-    if (isMathLit) {
-      dashboardSubjectContainer.innerHTML = `
-        <div class="subject-card">
-          <i class="fa-solid fa-chart-line"></i>
-          <h4>Mathematical Literacy</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-        </div>
-      `;
-    } else {
-      dashboardSubjectContainer.innerHTML = `
-        <div class="subject-card">
-          <i class="fa-solid fa-calculator"></i>
-          <h4>Core Mathematics</h4>
-          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-        </div>
-      `;
-    }
+    dashboardSubjectContainer.innerHTML = `
+      <div class="subject-card">
+        <i class="fa-solid ${isMathLit ? 'fa-chart-line' : 'fa-calculator'}"></i>
+        <h4>${isMathLit ? 'Mathematical Literacy' : 'Core Mathematics'}</h4>
+        <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
+      </div>
+    `;
 
-    // 5. Fetch Dynamic Schedules, Performance & Chat
     loadUpcomingClasses(currentUser.id);
     loadStudentGrades(currentUser.id);
     loadStudentChat(currentUser.id);
   });
 
-  // SPA Navigation Switcher
   const navLinks = document.querySelectorAll('.nav-link-item');
   const appViews = document.querySelectorAll('.app-view');
   const dashboardOnlyPanels = document.querySelectorAll('.dashboard-only');
@@ -934,17 +929,11 @@
       e.preventDefault();
       const targetViewId = link.getAttribute('data-target');
 
-      document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
-        item.classList.remove('active');
-      });
+      document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
       link.parentElement.classList.add('active');
 
       appViews.forEach(view => {
-        if (view.id === targetViewId) {
-          view.style.display = 'block';
-        } else {
-          view.style.display = 'none';
-        }
+        view.style.display = (view.id === targetViewId) ? 'block' : 'none';
       });
 
       if (targetViewId === 'view-dashboard') {
@@ -957,19 +946,33 @@
     });
   });
 
-  /* ----------------------------------------------------
-      STUDY CONTENT LOGIC (GRADE & PAPER 1/2 FILTERING)
-  ---------------------------------------------------- */
   function onGradeChange() {
-    if (currentActivePaper) {
-      selectPaper(currentActivePaper);
-    }
+    if (currentActivePaper) selectPaper(currentActivePaper);
   }
 
   function showPaperSelection() {
     currentActivePaper = null;
     document.getElementById("paper-selection-view").style.display = "block";
     document.getElementById("paper-topics-view").style.display = "none";
+  }
+
+  function switchTab(topicIdx, tabName) {
+    const card = document.getElementById(`topic-card-${topicIdx}`);
+    const tabs = card.querySelectorAll('.tab-btn');
+    tabs.forEach(t => t.classList.remove('active'));
+
+    event.target.classList.add('active');
+
+    const worksheetsList = card.querySelector('.list-worksheets');
+    const memosList = card.querySelector('.list-memos');
+
+    if (tabName === 'worksheets') {
+      worksheetsList.style.display = 'flex';
+      memosList.style.display = 'none';
+    } else if (tabName === 'memos') {
+      worksheetsList.style.display = 'none';
+      memosList.style.display = 'flex';
+    }
   }
 
   async function selectPaper(paperName) {
@@ -981,75 +984,75 @@
     document.getElementById("selected-paper-title").textContent = `${selectedGrade} - ${paperName} Topics & Resources`;
 
     const container = document.getElementById("topics-container");
-    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching files from Supabase bucket...</p>`;
+    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading materials...</p>`;
 
-    // 1. Fetch metadata from Supabase database table or fallback ATP structure
     let topicsToRender = [];
     if (supabaseClient) {
-      const { data, error } = await supabaseClient
+      const { data } = await supabaseClient
         .from('study_content')
         .select('*')
         .eq('paper', paperName)
         .eq('grade', selectedGrade);
 
-      if (!error && data && data.length > 0) {
-        topicsToRender = data;
-      }
+      if (data && data.length > 0) topicsToRender = data;
     }
 
     if (topicsToRender.length === 0) {
-      topicsToRender = fallbackStudyData.filter(item => 
-        item.paper === paperName && item.grade === selectedGrade
-      );
+      topicsToRender = fallbackStudyData.filter(item => item.paper === paperName && item.grade === selectedGrade);
     }
 
     if (topicsToRender.length === 0) {
-      container.innerHTML = `<p style="color: #64748B;">No topics uploaded for ${selectedGrade} ${paperName} yet.</p>`;
+      container.innerHTML = `<p style="color: #64748B;">No topics found for ${selectedGrade} ${paperName}.</p>`;
       return;
     }
 
-    // 2. Build Card List with Dynamic Supabase Bucket PDF File Discovery
     let cardsHtml = '';
 
-    for (const topic of topicsToRender) {
+    for (let idx = 0; idx < topicsToRender.length; idx++) {
+      const topic = topicsToRender[idx];
       const embedUrl = topic.youtube_url ? getYouTubeEmbedUrl(topic.youtube_url) : null;
-      let pdfButtonsHtml = '';
+      let worksheets = [];
+      let memos = [];
 
-      // Check if folder mapping exists for Grade 8 & 9 Paper 1
       if (selectedGrade === 'Grade 8 & 9' && paperName === 'Paper 1' && gr89Paper1FolderMap[topic.topic]) {
         const folderName = gr89Paper1FolderMap[topic.topic];
         const storageFolderPath = `Gr8&9/Paper1_worksheets/${folderName}`;
 
-        // Dynamic listing directly from your Supabase Storage Bucket
-        const { data: fileList, error: fileErr } = await supabaseClient.storage
-          .from(BUCKET_NAME)
-          .list(storageFolderPath);
+        const { data: fileList } = await supabaseClient.storage.from(BUCKET_NAME).list(storageFolderPath);
 
-        if (!fileErr && fileList && fileList.length > 0) {
-          const pdfFiles = fileList.filter(f => f.name.endsWith('.pdf'));
-
-          pdfButtonsHtml = pdfFiles.map(file => {
+        if (fileList && fileList.length > 0) {
+          fileList.filter(f => f.name.endsWith('.pdf')).forEach(file => {
             const fileUrl = getStorageFileUrl(`${storageFolderPath}/${file.name}`);
-            return `
-              <a href="${fileUrl}" target="_blank" class="btn-pdf" style="margin-right: 6px; margin-bottom: 6px;">
-                <i class="fa-solid fa-file-pdf" style="color: #EAB308;"></i> ${file.name}
+            const cleanName = formatFilename(file.name);
+            const chipHtml = `
+              <a href="${fileUrl}" target="_blank" class="pdf-chip">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="pdf-chip-title">${cleanName}</span>
+                <i class="fa-solid fa-arrow-down-long download-icon"></i>
               </a>
             `;
-          }).join('');
+
+            if (file.name.toLowerCase().includes('memo') || file.name.toLowerCase().includes('memorandum')) {
+              memos.push(chipHtml);
+            } else {
+              worksheets.push(chipHtml);
+            }
+          });
         }
       }
 
-      // If database provided explicit pdf_url, append it as fallback
-      if (!pdfButtonsHtml && topic.pdf_url) {
-        pdfButtonsHtml = `
-          <a href="${topic.pdf_url}" target="_blank" class="btn-pdf">
-            <i class="fa-solid fa-file-pdf"></i> Download PDF Notes
+      if (worksheets.length === 0 && memos.length === 0 && topic.pdf_url) {
+        worksheets.push(`
+          <a href="${topic.pdf_url}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">Download Study Notes</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
           </a>
-        `;
+        `);
       }
 
       cardsHtml += `
-        <div class="topic-card">
+        <div class="topic-card" id="topic-card-${idx}">
           <div class="topic-header">
             <span class="topic-section-tag">${topic.section}</span>
             <h4 style="font-size: 1rem; color: #0F172A; margin-bottom: 6px;">${topic.topic}</h4>
@@ -1062,87 +1065,47 @@
             </div>
           ` : ''}
 
-          <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
-            ${pdfButtonsHtml || '<span style="font-size: 0.75rem; color: #94A3B8; italic;">No PDF notes attached yet</span>'}
+          <div class="resource-tabs">
+            <button class="tab-btn active" onclick="switchTab(${idx}, 'worksheets')">Worksheets (${worksheets.length})</button>
+            <button class="tab-btn" onclick="switchTab(${idx}, 'memos')">Memos (${memos.length})</button>
+          </div>
+
+          <div class="resource-list list-worksheets">
+            ${worksheets.length > 0 ? worksheets.join('') : '<span style="font-size: 0.75rem; color: #94A3B8;">No worksheets attached</span>'}
+          </div>
+
+          <div class="resource-list list-memos" style="display: none;">
+            ${memos.length > 0 ? memos.join('') : '<span style="font-size: 0.75rem; color: #94A3B8;">No memos attached</span>'}
           </div>
         </div>
       `;
     }
 
-    // 3. Render Past Papers Section if displaying Grade 8 & 9 Paper 1
-    if (selectedGrade === 'Grade 8 & 9' && paperName === 'Paper 1') {
-      const pastPapersFolderPath = `Gr8&9/Paper1_worksheets/Past papers`;
-      const { data: pastPaperFiles } = await supabaseClient.storage
-        .from(BUCKET_NAME)
-        .list(pastPapersFolderPath);
-
-      if (pastPaperFiles && pastPaperFiles.length > 0) {
-        const validPastPapers = pastPaperFiles.filter(f => f.name.endsWith('.pdf'));
-
-        const pastPaperButtons = validPastPapers.map(file => {
-          const fileUrl = getStorageFileUrl(`${pastPapersFolderPath}/${file.name}`);
-          return `
-            <a href="${fileUrl}" target="_blank" class="btn-pdf" style="background-color: #0F172A; border: 1px solid #EAB308;">
-              <i class="fa-solid fa-file-lines" style="color: #EAB308;"></i> ${file.name}
-            </a>
-          `;
-        }).join('');
-
-        cardsHtml += `
-          <div class="topic-card" style="grid-column: 1 / -1; background: #FEF3C7; border: 2px solid #EAB308;">
-            <div class="topic-header">
-              <span class="topic-section-tag" style="background: #1E293B; color: #EAB308;">Past Papers & Revision Packs</span>
-              <h4 style="font-size: 1.1rem; color: #0F172A; margin-top: 6px;">Grade 8 & 9 Examination Past Papers</h4>
-              <p style="font-size: 0.85rem; color: #64748B;">Download official June, September, and Final examination papers directly below:</p>
-            </div>
-            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
-              ${pastPaperButtons}
-            </div>
-          </div>
-        `;
-      }
-    }
-
     container.innerHTML = cardsHtml;
   }
 
-  // Helper function to convert standard YouTube links/playlists into clean embed URLs
   function getYouTubeEmbedUrl(url) {
     if (!url) return null;
     let videoId = "";
-    
-    if (url.includes("v=")) {
-      videoId = url.split("v=")[1].split("&")[0];
-    } else if (url.includes("youtu.be/")) {
-      videoId = url.split("youtu.be/")[1].split("?")[0];
-    }
-
+    if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
+    else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
   }
 
-  // Fetch Dynamic Upcoming Classes from Supabase
   async function loadUpcomingClasses(studentId) {
     if (!supabaseClient) return;
 
     const dashboardContainer = document.getElementById("upcoming-classes-container");
     const calendarContainer = document.getElementById("calendar-classes-container");
 
-    const { data: schedules, error } = await supabaseClient
+    const { data: schedules } = await supabaseClient
       .from("schedules")
       .select("*")
       .eq("student_id", studentId)
       .order("class_date", { ascending: true });
 
-    if (error) {
-      console.error("Error loading schedule:", error);
-      const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
-      dashboardContainer.innerHTML = errMarkup;
-      calendarContainer.innerHTML = errMarkup;
-      return;
-    }
-
     if (!schedules || schedules.length === 0) {
-      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled at this time.</p></div>`;
+      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
       dashboardContainer.innerHTML = emptyMarkup;
       calendarContainer.innerHTML = emptyMarkup;
       return;
@@ -1165,40 +1128,18 @@
     calendarContainer.innerHTML = htmlContent;
   }
 
-  /* ----------------------------------------------------
-      STUDENT CHAT SUPPORT (SUPABASE + REALTIME)
-  ---------------------------------------------------- */
   async function loadStudentChat(studentId) {
     if (!supabaseClient) return;
 
     const chatBox = document.getElementById("chat-box");
-
-    const { data: messages, error } = await supabaseClient
+    const { data: messages } = await supabaseClient
       .from("messages")
       .select("*")
       .eq("student_id", studentId)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      console.error("Error fetching chat:", error);
-      chatBox.innerHTML = `<p style="color:#EF4444; text-align:center; font-size: 0.85rem;">Failed to load messages.</p>`;
-      return;
-    }
-
     renderChatMessages(messages);
     chatBox.scrollTop = chatBox.scrollHeight;
-
-    supabaseClient
-      .channel("public:messages")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", filter: `student_id=eq.${studentId}`, schema: "public", table: "messages" },
-        (payload) => {
-          appendSingleMessage(payload.new);
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }
-      )
-      .subscribe();
   }
 
   function renderChatMessages(messages) {
@@ -1209,17 +1150,6 @@
     }
 
     chatBox.innerHTML = messages.map(msg => createMessageBubble(msg)).join("");
-  }
-
-  function appendSingleMessage(msg) {
-    const chatBox = document.getElementById("chat-box");
-    if (chatBox.querySelector('p')) {
-      const pText = chatBox.querySelector('p').innerText;
-      if (pText.includes("No messages") || pText.includes("Loading")) {
-        chatBox.innerHTML = "";
-      }
-    }
-    chatBox.innerHTML += createMessageBubble(msg);
   }
 
   function createMessageBubble(msg) {
@@ -1241,105 +1171,43 @@
     if (!text || !currentUser) return;
 
     input.value = "";
-
-    const { error } = await supabaseClient
-      .from("messages")
-      .insert([
-        { student_id: currentUser.id, sender_role: "student", message_text: text }
-      ]);
-
-    if (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message: " + error.message);
-    }
+    await supabaseClient.from("messages").insert([{ student_id: currentUser.id, sender_role: "student", message_text: text }]);
+    loadStudentChat(currentUser.id);
   }
 
   document.getElementById("btn-send-chat").addEventListener("click", handleSendMessage);
-  document.getElementById("chat-input").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleSendMessage();
-  });
 
-  // File Upload Handler
-  const fileInput = document.getElementById("file-input");
-  const uploadStatus = document.getElementById("upload-status");
-
-  fileInput.addEventListener("change", async (e) => {
+  // File Upload Handlers
+  document.getElementById("file-input").addEventListener("change", async (e) => {
     const file = e.target.files[0];
+    const uploadStatus = document.getElementById("upload-status");
     if (!file || !currentUser) return;
 
     uploadStatus.style.color = "#0F172A";
     uploadStatus.textContent = "Uploading file...";
 
-    try {
-      const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage
-        .from("student-files")
-        .upload(filePath, file);
+    const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
+    const { error } = await supabaseClient.storage.from("student-files").upload(filePath, file);
 
-      if (error) throw error;
-
-      uploadStatus.style.color = "#059669";
-      uploadStatus.textContent = " File uploaded successfully!";
-    } catch (err) {
-      console.error("Upload error:", err);
+    if (error) {
       uploadStatus.style.color = "#EF4444";
-      uploadStatus.textContent = "Upload failed: " + (err.message || "Error uploading file.");
+      uploadStatus.textContent = "Upload failed.";
+    } else {
+      uploadStatus.style.color = "#059669";
+      uploadStatus.textContent = "Uploaded successfully!";
     }
   });
 
-  // Profile Picture Upload Handler
-  const avatarInput = document.getElementById("avatar-input");
-  const userAvatarImg = document.getElementById("user-avatar");
-
-  avatarInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file || !currentUser) return;
-
-    try {
-      const fileExt = file.name.split('.').pop();
-      const filePath = `avatars/${currentUser.id}_${Date.now()}.${fileExt}`;
-
-      const { data, error } = await supabaseClient.storage
-        .from("student-files")
-        .upload(filePath, file, { upsert: true });
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabaseClient.storage
-        .from("student-files")
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicUrlData.publicUrl;
-
-      const { error: updateError } = await supabaseClient.auth.updateUser({
-        data: { avatar_url: publicUrl }
-      });
-
-      if (updateError) throw updateError;
-
-      userAvatarImg.src = publicUrl;
-      alert("Profile picture updated successfully!");
-
-    } catch (err) {
-      console.error("Avatar upload error:", err);
-      alert("Failed to update profile picture: " + err.message);
-    }
-  });
-
-  // Logout Handler
   document.getElementById("btn-logout").addEventListener("click", async (e) => {
     e.preventDefault();
-    if (supabaseClient) {
-      await supabaseClient.auth.signOut();
-    }
+    if (supabaseClient) await supabaseClient.auth.signOut();
     window.location.href = "login.html";
   });
 
-  // Dynamic Performance Fetching
   async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
-    const { data: grades, error } = await supabaseClient
+    const { data: grades } = await supabaseClient
       .from('grades')
       .select('*')
       .eq('student_id', studentId)
@@ -1348,49 +1216,31 @@
     const tbody = document.getElementById('grades-table-body');
     const statAvgBox = document.getElementById('stat-avg-box');
 
-    if (error) {
-      console.error("Error loading grades:", error);
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Unable to load grades.</td></tr>`;
-      renderPerformanceChart(['No Data'], [0]);
-      return;
-    }
-
     if (!grades || grades.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No graded assessments recorded yet.</td></tr>`;
-      statAvgBox.innerHTML = ` Current Mark Average: <strong>--%</strong>`;
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
       renderPerformanceChart(['No Data'], [0]);
       return;
     }
 
-    tbody.innerHTML = grades.map(g => {
-      const dateStr = new Date(g.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
-      return `
-        <tr>
-          <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.title}</td>
-          <td style="padding: 12px 10px; color: #64748B;">${dateStr}</td>
-          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
-          <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-        </tr>
-      `;
-    }).join('');
+    tbody.innerHTML = grades.map(g => `
+      <tr>
+        <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.title}</td>
+        <td style="padding: 12px 10px; color: #64748B;">${new Date(g.created_at).toLocaleDateString('en-ZA')}</td>
+        <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
+        <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+      </tr>
+    `).join('');
 
-    const labels = grades.map(g => g.assessment_name || g.title);
     const scores = grades.map(g => Number(g.score || g.score_percentage));
-    
-    const sum = scores.reduce((acc, curr) => acc + curr, 0);
-    const avg = Math.round(sum / scores.length);
+    const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
-    statAvgBox.innerHTML = ` Current Mark Average: <strong>${avg}%</strong>`;
-
-    renderPerformanceChart(labels, scores);
+    statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+    renderPerformanceChart(grades.map(g => g.assessment_name || g.title), scores);
   }
 
   function renderPerformanceChart(labels, dataPoints) {
     const ctx = document.getElementById('performanceChart').getContext('2d');
-
-    if (myPerformanceChart) {
-      myPerformanceChart.destroy();
-    }
+    if (myPerformanceChart) myPerformanceChart.destroy();
 
     myPerformanceChart = new Chart(ctx, {
       type: 'line',
@@ -1407,12 +1257,8 @@
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: { min: 0, max: 100 }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { min: 0, max: 100 } }
       }
     });
   }
