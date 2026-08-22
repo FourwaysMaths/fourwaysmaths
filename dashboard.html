@@ -619,6 +619,7 @@
     <ul class="nav-menu">
       <li class="nav-item active" data-tooltip="Dashboard"><a href="#" class="nav-link-item" data-target="view-dashboard"><i class="fa-solid fa-house"></i></a></li>
       <li class="nav-item" data-tooltip="Study Content"><a href="#" class="nav-link-item" data-target="view-subjects"><i class="fa-solid fa-book-open"></i></a></li>
+      <li class="nav-item" data-tooltip="Past Papers"><a href="#" class="nav-link-item" data-target="view-past-papers" onclick="loadPastPapers()"><i class="fa-solid fa-file-pdf"></i></a></li>
       <li class="nav-item" data-tooltip="Chat to Educator"><a href="#" class="nav-link-item" data-target="view-chat"><i class="fa-solid fa-comments"></i></a></li>
       <li class="nav-item" data-tooltip="Upcoming Schedule"><a href="#" class="nav-link-item" data-target="view-calendar"><i class="fa-solid fa-calendar-days"></i></a></li>
       <li class="nav-item" data-tooltip="Grades"><a href="#" class="nav-link-item" data-target="view-grades"><i class="fa-solid fa-graduation-cap"></i></a></li>
@@ -665,7 +666,7 @@
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -722,6 +723,46 @@
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
           <div class="topic-grid" id="topics-container"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 2B: PAST PAPERS -->
+      <div id="view-past-papers" class="app-view" style="display: none;">
+        <h2>Past Exam Papers & Memos</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Access full past examination papers and memorandums structured by Paper 1 and Paper 2.</p>
+
+        <div class="grade-select-wrapper">
+          <label for="past-paper-grade-select">
+            <i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Select Grade:
+          </label>
+          <select id="past-paper-grade-select" class="grade-dropdown" onchange="loadPastPapers()">
+            <option value="Grade 8 & 9">Grade 8 & 9</option>
+            <option value="Grade 10">Grade 10</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+          </select>
+        </div>
+
+        <div class="paper-cards-grid" style="margin-top: 20px;">
+          <!-- Paper 1 Past Papers Card -->
+          <div class="subject-card">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h3 style="margin-bottom: 10px;">Paper 1 Past Papers</h3>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 1.</p>
+            <div id="past-paper-1-list" class="resource-list">
+              <p style="color: #94A3B8; font-size: 0.85rem;">Loading Paper 1 exams...</p>
+            </div>
+          </div>
+
+          <!-- Paper 2 Past Papers Card -->
+          <div class="subject-card">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h3 style="margin-bottom: 10px;">Paper 2 Past Papers</h3>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 2.</p>
+            <div id="past-paper-2-list" class="resource-list">
+              <p style="color: #94A3B8; font-size: 0.85rem;">Loading Paper 2 exams...</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -846,6 +887,7 @@
     return data ? data.publicUrl : "#";
   }
 
+  // Storage Maps for Grade 8 & 9 Paper 1 and Paper 2 folders
   const gr89Paper1FolderMap = {
     'Whole numbers and integers': '1Whole numbers',
     'Fractions and decimals': '3Fractions',
@@ -854,7 +896,18 @@
     'Algebraic equations': '6Equations',
     'Financial mathematics': '7Financial',
     'Patterns': '8Patterns',
-    'Functions and relationships': '9Functions'
+    'Functions and relationships': '9Functions',
+    'Graphs': '10Graphs'
+  };
+
+  const gr89Paper2FolderMap = {
+    'Geometry Introduction & Lines': '10Intro Geometry lines',
+    'Geometry of parallel lines': '11Parallel lines',
+    'Triangles & Congruency': '12Triangles & Congruency',
+    'Pythagoras theorem': '13Pythagoras theorem',
+    'Translations, Reflections, Rotations': '14Transformations_graph',
+    'Perimeter, Area & Volume': '15Perimeter Area',
+    'Data Collection & Statistics': '16Statistics'
   };
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -888,15 +941,21 @@
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
     const gradeDropdown = document.getElementById("study-grade-select");
+    const pastGradeDropdown = document.getElementById("past-paper-grade-select");
+    
     if (gradeDropdown) {
       const gLower = userGrade.toLowerCase();
       if (gLower.includes("8") || gLower.includes("9")) {
         gradeDropdown.value = "Grade 8 & 9";
+        if (pastGradeDropdown) pastGradeDropdown.value = "Grade 8 & 9";
       } else {
         const matchingOption = Array.from(gradeDropdown.options).find(opt => 
           gLower.includes(opt.value.toLowerCase())
         );
-        if (matchingOption) gradeDropdown.value = matchingOption.value;
+        if (matchingOption) {
+          gradeDropdown.value = matchingOption.value;
+          if (pastGradeDropdown) pastGradeDropdown.value = matchingOption.value;
+        }
       }
     }
 
@@ -1014,10 +1073,16 @@
       let worksheets = [];
       let memos = [];
 
-      if (selectedGrade === 'Grade 8 & 9' && paperName === 'Paper 1' && gr89Paper1FolderMap[topic.topic]) {
-        const folderName = gr89Paper1FolderMap[topic.topic];
-        const storageFolderPath = `Gr8&9/Paper1_worksheets/${folderName}`;
+      let storageFolderPath = null;
+      if (selectedGrade === 'Grade 8 & 9') {
+        if (paperName === 'Paper 1' && gr89Paper1FolderMap[topic.topic]) {
+          storageFolderPath = `Gr8&9/Paper1_worksheets/${gr89Paper1FolderMap[topic.topic]}`;
+        } else if (paperName === 'Paper 2' && gr89Paper2FolderMap[topic.topic]) {
+          storageFolderPath = `Gr8&9/Paper2_worksheets/${gr89Paper2FolderMap[topic.topic]}`;
+        }
+      }
 
+      if (storageFolderPath) {
         const { data: fileList } = await supabaseClient.storage.from(BUCKET_NAME).list(storageFolderPath);
 
         if (fileList && fileList.length > 0) {
@@ -1082,6 +1147,54 @@
     }
 
     container.innerHTML = cardsHtml;
+  }
+
+  /* Dynamically load Past Papers directly from Supabase Storage */
+  async function loadPastPapers() {
+    const selectedGrade = document.getElementById("past-paper-grade-select").value;
+    const p1Container = document.getElementById("past-paper-1-list");
+    const p2Container = document.getElementById("past-paper-2-list");
+
+    p1Container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</p>`;
+    p2Container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</p>`;
+
+    // Query Paper 1 Past Papers
+    const p1FolderPath = selectedGrade === 'Grade 8 & 9' ? `Gr8&9/Paper1_worksheets/Past papers` : `${selectedGrade}/Paper1/Past papers`;
+    const { data: p1Files } = await supabaseClient.storage.from(BUCKET_NAME).list(p1FolderPath);
+
+    if (p1Files && p1Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
+      p1Container.innerHTML = p1Files.filter(f => f.name.endsWith('.pdf')).map(f => {
+        const fileUrl = getStorageFileUrl(`${p1FolderPath}/${f.name}`);
+        return `
+          <a href="${fileUrl}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
+          </a>
+        `;
+      }).join('');
+    } else {
+      p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
+    }
+
+    // Query Paper 2 Past Papers
+    const p2FolderPath = selectedGrade === 'Grade 8 & 9' ? `Gr8&9/Paper2_worksheets/Past papers` : `${selectedGrade}/Paper2/Past papers`;
+    const { data: p2Files } = await supabaseClient.storage.from(BUCKET_NAME).list(p2FolderPath);
+
+    if (p2Files && p2Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
+      p2Container.innerHTML = p2Files.filter(f => f.name.endsWith('.pdf')).map(f => {
+        const fileUrl = getStorageFileUrl(`${p2FolderPath}/${f.name}`);
+        return `
+          <a href="${fileUrl}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
+          </a>
+        `;
+      }).join('');
+    } else {
+      p2Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 2 past exam papers available yet.</p>`;
+    }
   }
 
   function getYouTubeEmbedUrl(url) {
