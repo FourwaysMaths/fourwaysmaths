@@ -191,15 +191,15 @@
       background: #FFFFFF;
       border: 2px dashed #CBD5E1;
       border-radius: 16px;
-      padding: 25px 15px;
+      padding: 20px 15px;
       margin-top: auto;
       width: 100%;
     }
 
     .upload-card i {
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: #EAB308;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .btn-upload {
@@ -207,10 +207,10 @@
       color: #1E293B;
       border: none;
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
       font-weight: 700;
-      margin-top: 15px;
+      margin-top: 10px;
       cursor: pointer;
       transition: background 0.2s;
     }
@@ -220,9 +220,46 @@
     }
 
     .upload-status {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 0.8rem;
       font-weight: 600;
+    }
+
+    /* UPGRADE 2: Upload History Container */
+    .uploaded-files-container {
+      margin-top: 12px;
+      text-align: left;
+      width: 100%;
+      max-height: 120px;
+      overflow-y: auto;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 8px;
+    }
+
+    .uploaded-files-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748B;
+      margin-bottom: 6px;
+    }
+
+    .file-history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #1E293B;
+      background: #F1F5F9;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+
+    .file-history-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 170px;
     }
 
     .main-panel {
@@ -416,6 +453,13 @@
       margin-bottom: 12px;
     }
 
+    .topic-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
     .topic-section-tag {
       font-size: 0.75rem;
       font-weight: 700;
@@ -424,7 +468,26 @@
       padding: 3px 8px;
       border-radius: 6px;
       display: inline-block;
-      margin-bottom: 8px;
+    }
+
+    /* UPGRADE 4: Ask Question Button */
+    .btn-ask-topic {
+      background: #1E293B;
+      color: #EAB308;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+
+    .btn-ask-topic:hover {
+      background: #0F172A;
     }
 
     .video-container {
@@ -446,7 +509,6 @@
       border: 0;
     }
 
-    /* Dynamic Content Pills & Tab Switcher */
     .resource-tabs {
       display: flex;
       gap: 6px;
@@ -482,7 +544,6 @@
       margin-top: 8px;
     }
 
-    /* Minimalist PDF Chip Card */
     .pdf-chip {
       display: flex;
       align-items: center;
@@ -566,6 +627,122 @@
       display: none;
     }
 
+    /* UPGRADE 5: Skeleton Loader Animation */
+    .skeleton-box {
+      background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* UPGRADE 1: Floating Action Button & Formula Sheet Drawer */
+    .fab-formula-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #1E293B;
+      color: #EAB308;
+      border: 2px solid #EAB308;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .fab-formula-btn:hover {
+      transform: translateY(-3px);
+      background: #0F172A;
+    }
+
+    .formula-drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      height: 100vh;
+      background: #FFF;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+    }
+
+    .formula-drawer.open {
+      right: 0;
+    }
+
+    .formula-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .close-drawer-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #64748B;
+      cursor: pointer;
+    }
+
+    .formula-section {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .formula-section h4 {
+      font-size: 0.9rem;
+      color: #854D0E;
+      margin-bottom: 8px;
+    }
+
+    .formula-item {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #0F172A;
+      background: #FFF;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px dashed #CBD5E1;
+      margin-bottom: 6px;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.4);
+      z-index: 999;
+      display: none;
+    }
+
+    .drawer-overlay.active {
+      display: block;
+    }
+
     @media (max-width: 900px) {
       body {
         flex-direction: column;
@@ -613,6 +790,18 @@
       .main-panel {
         padding: 20px 15px;
       }
+
+      .fab-formula-btn {
+        bottom: 75px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 0.8rem;
+      }
+
+      .formula-drawer {
+        width: 100%;
+        right: -100%;
+      }
     }
   </style>
 </head>
@@ -637,6 +826,22 @@
     </div>
   </nav>
 
+  <!-- UPGRADE 1: Floating Action Button & Formula Drawer -->
+  <button class="fab-formula-btn" onclick="toggleFormulaDrawer()">
+    <i class="fa-solid fa-square-root-variable"></i> Formula Sheet
+  </button>
+
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleFormulaDrawer()"></div>
+  <aside class="formula-drawer" id="formula-drawer">
+    <div class="formula-drawer-header">
+      <h3 id="drawer-title" style="font-size: 1.1rem; color: #0F172A;"><i class="fa-solid fa-book-bookmark" style="color: #EAB308;"></i> Quick Formula Reference</h3>
+      <button class="close-drawer-btn" onclick="toggleFormulaDrawer()">&times;</button>
+    </div>
+    <div id="drawer-content" style="overflow-y: auto; flex: 1;">
+      <!-- Content populated dynamically based on Stream -->
+    </div>
+  </aside>
+
   <!-- 2. MAIN DASHBOARD CONTAINER -->
   <div class="portal-container" id="portal-container">
 
@@ -659,10 +864,18 @@
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
         <h4 style="font-size: 0.95rem;">Upload Files</h4>
-        <p style="font-size: 0.75rem; color: #64748B; margin-top: 5px;">Share any file with your educator. Ensure correct file name.</p>
+        <p style="font-size: 0.75rem; color: #64748B; margin-top: 5px;">Share homework or tests with your educator.</p>
         <button class="btn-upload" id="btn-select-file" onclick="document.getElementById('file-input').click()">Choose File</button>
         <input type="file" id="file-input" />
         <p id="upload-status" class="upload-status"></p>
+
+        <!-- UPGRADE 2: Uploaded Files Log -->
+        <div class="uploaded-files-container">
+          <div class="uploaded-files-title">My Uploaded Homework</div>
+          <div id="uploaded-files-list">
+            <span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -673,7 +886,7 @@
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -687,7 +900,8 @@
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
         <div id="upcoming-classes-container">
-          <p style="color: #64748B; font-size: 0.85rem;">Loading schedule...</p>
+          <!-- UPGRADE 5: Skeleton Loader Default -->
+          <div class="class-item skeleton-box" style="height: 60px;"></div>
         </div>
       </div>
 
@@ -781,7 +995,8 @@
             <h3 style="margin-bottom: 10px;" id="past-p1-title">Paper 1 Past Papers</h3>
             <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 1.</p>
             <div id="past-paper-1-list" class="resource-list">
-              <p style="color: #94A3B8; font-size: 0.85rem;">Loading Paper 1 exams...</p>
+              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
+              <div class="skeleton-box" style="height: 38px;"></div>
             </div>
           </div>
 
@@ -791,7 +1006,8 @@
             <h3 style="margin-bottom: 10px;" id="past-p2-title">Paper 2 Past Papers</h3>
             <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 2.</p>
             <div id="past-paper-2-list" class="resource-list">
-              <p style="color: #94A3B8; font-size: 0.85rem;">Loading Paper 2 exams...</p>
+              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
+              <div class="skeleton-box" style="height: 38px;"></div>
             </div>
           </div>
         </div>
@@ -806,7 +1022,8 @@
 
         <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
           <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-            <p style="color: #94A3B8; text-align: center; font-size: 0.85rem;">Loading chat history...</p>
+            <div class="skeleton-box" style="height: 40px; width: 60%; align-self: flex-start;"></div>
+            <div class="skeleton-box" style="height: 40px; width: 60%; align-self: flex-end;"></div>
           </div>
 
           <div style="display: flex; gap: 10px;">
@@ -823,7 +1040,7 @@
         <h2>Class Schedule & Calendar</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
         <div id="calendar-classes-container">
-          <p style="color: #64748B; font-size: 0.85rem;">Loading schedule...</p>
+          <div class="class-item skeleton-box" style="height: 60px;"></div>
         </div>
       </div>
 
@@ -844,7 +1061,10 @@
             </thead>
             <tbody id="grades-table-body">
               <tr>
-                <td colspan="4" style="padding: 15px; text-align: center; color: #64748B;">Loading grades...</td>
+                <td colspan="4" style="padding: 15px;">
+                  <div class="skeleton-box" style="height: 30px; margin-bottom: 6px;"></div>
+                  <div class="skeleton-box" style="height: 30px;"></div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1025,20 +1245,23 @@
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
+    // UPGRADE 3: Load Saved Preferences from localStorage or user metadata
+    const savedStream = localStorage.getItem('4wm_stream') || (selectedSubject.toLowerCase().includes("lit") ? "Mathematical Literacy" : "Mathematics");
+    const savedGrade = localStorage.getItem('4wm_grade') || userGrade;
+
     const streamDropdown = document.getElementById("study-stream-select");
     const pastStreamDropdown = document.getElementById("past-paper-stream-select");
-    const isMathLit = selectedSubject.toLowerCase().includes("lit");
 
     if (streamDropdown) {
-      streamDropdown.value = isMathLit ? "Mathematical Literacy" : "Mathematics";
-      if (pastStreamDropdown) pastStreamDropdown.value = streamDropdown.value;
+      streamDropdown.value = savedStream;
+      if (pastStreamDropdown) pastStreamDropdown.value = savedStream;
     }
 
     const gradeDropdown = document.getElementById("study-grade-select");
     const pastGradeDropdown = document.getElementById("past-paper-grade-select");
     
     if (gradeDropdown) {
-      const gLower = userGrade.toLowerCase();
+      const gLower = savedGrade.toLowerCase();
       if (gLower.includes("8") || gLower.includes("9")) {
         gradeDropdown.value = "Grade 8 & 9";
         if (pastGradeDropdown) pastGradeDropdown.value = "Grade 8 & 9";
@@ -1054,11 +1277,13 @@
     }
 
     updatePaperCardUI();
+    renderFormulaDrawerContent();
 
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(learnerName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
 
     const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
+    const isMathLit = savedStream === "Mathematical Literacy";
 
     dashboardSubjectContainer.innerHTML = `
       <div class="subject-card">
@@ -1071,6 +1296,7 @@
     loadUpcomingClasses(currentUser.id);
     loadStudentGrades(currentUser.id);
     loadStudentChat(currentUser.id);
+    loadStudentUploadedFiles(currentUser.id);
   });
 
   const navLinks = document.querySelectorAll('.nav-link-item');
@@ -1123,18 +1349,100 @@
   }
 
   function onStreamChange() {
+    const currentStream = document.getElementById("study-stream-select").value;
+    localStorage.setItem('4wm_stream', currentStream);
+
     updatePaperCardUI();
+    renderFormulaDrawerContent();
+
     const pastStream = document.getElementById("past-paper-stream-select");
-    if (pastStream) pastStream.value = document.getElementById("study-stream-select").value;
+    if (pastStream) pastStream.value = currentStream;
 
     if (currentActivePaper) selectPaper(currentActivePaper);
   }
 
   function onGradeChange() {
+    const currentGrade = document.getElementById("study-grade-select").value;
+    localStorage.setItem('4wm_grade', currentGrade);
+
     const pastGrade = document.getElementById("past-paper-grade-select");
-    if (pastGrade) pastGrade.value = document.getElementById("study-grade-select").value;
+    if (pastGrade) pastGrade.value = currentGrade;
 
     if (currentActivePaper) selectPaper(currentActivePaper);
+  }
+
+  /* UPGRADE 1: Formula Sheet Drawer Toggle & Content Generator */
+  function toggleFormulaDrawer() {
+    const drawer = document.getElementById("formula-drawer");
+    const overlay = document.getElementById("drawer-overlay");
+    drawer.classList.toggle("open");
+    overlay.classList.toggle("active");
+  }
+
+  function renderFormulaDrawerContent() {
+    const currentStream = document.getElementById("study-stream-select").value;
+    const contentBox = document.getElementById("drawer-content");
+
+    if (currentStream === "Mathematical Literacy") {
+      contentBox.innerHTML = `
+        <div class="formula-section">
+          <h4>Finance & Inflation</h4>
+          <div class="formula-item">VAT = Price x 15%</div>
+          <div class="formula-item">Simple Interest A = P(1 + i x n)</div>
+          <div class="formula-item">Percentage Increase = [(New - Old)/Old] x 100</div>
+        </div>
+        <div class="formula-section">
+          <h4>Measurement & Health</h4>
+          <div class="formula-item">BMI = Mass(kg) / [Height(m)]²</div>
+          <div class="formula-item">Area Rectangle = l x b</div>
+          <div class="formula-item">Area Circle = π x r²</div>
+          <div class="formula-item">Volume Cylinder = π x r² x h</div>
+        </div>
+        <div class="formula-section">
+          <h4>Scale & Conversions</h4>
+          <div class="formula-item">1 m = 1 000 mm | 1 cm = 10 mm</div>
+          <div class="formula-item">1 kg = 1 000 g | 1 L = 1 000 ml</div>
+        </div>
+      `;
+    } else {
+      contentBox.innerHTML = `
+        <div class="formula-section">
+          <h4>Algebra & Calculus</h4>
+          <div class="formula-item">x = [-b ± √(b² - 4ac)] / 2a</div>
+          <div class="formula-item">f'(x) = lim[h→0] (f(x+h) - f(x)) / h</div>
+        </div>
+        <div class="formula-section">
+          <h4>Sequences & Series</h4>
+          <div class="formula-item">Tn = a + (n-1)d | Sn = n/2[2a+(n-1)d]</div>
+          <div class="formula-item">Tn = a.r^(n-1) | Sn = a(r^n - 1)/(r - 1)</div>
+          <div class="formula-item">S∞ = a / (1 - r)  [-1 < r < 1]</div>
+        </div>
+        <div class="formula-section">
+          <h4>Finance Formulas</h4>
+          <div class="formula-item">Compound A = P(1 + i)^n</div>
+          <div class="formula-item">FVA = x[(1 + i)^n - 1] / i</div>
+          <div class="formula-item">PVA = x[1 - (1 + i)^-n] / i</div>
+        </div>
+        <div class="formula-section">
+          <h4>Analytical Geometry & Trig</h4>
+          <div class="formula-item">d = √[(x2 - x1)² + (y2 - y1)²]</div>
+          <div class="formula-item">m = tan(θ) = (y2 - y1)/(x2 - x1)</div>
+          <div class="formula-item">sin²θ + cos²θ = 1</div>
+        </div>
+      `;
+    }
+  }
+
+  /* UPGRADE 4: Ask Question Integration */
+  function askAboutTopic(topicTitle, grade, stream) {
+    const chatTabLink = document.querySelector('[data-target="view-chat"]');
+    if (chatTabLink) chatTabLink.click();
+
+    const chatInput = document.getElementById("chat-input");
+    if (chatInput) {
+      chatInput.value = `Hi Gcina, I have a question regarding ${stream} (${grade}) - ${topicTitle}: `;
+      chatInput.focus();
+    }
   }
 
   function showPaperSelection() {
@@ -1172,7 +1480,11 @@
     document.getElementById("selected-paper-title").textContent = `${selectedStream} | ${selectedGrade} - ${paperName} Topics & Resources`;
 
     const container = document.getElementById("topics-container");
-    container.innerHTML = `<p style="color: #64748B; font-size: 0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading materials...</p>`;
+    // UPGRADE 5: Skeleton Loader Grid
+    container.innerHTML = `
+      <div class="topic-card skeleton-box" style="height: 250px;"></div>
+      <div class="topic-card skeleton-box" style="height: 250px;"></div>
+    `;
 
     let topicsToRender = [];
     if (supabaseClient) {
@@ -1255,7 +1567,13 @@
       cardsHtml += `
         <div class="topic-card" id="topic-card-${idx}">
           <div class="topic-header">
-            <span class="topic-section-tag">${topic.section}</span>
+            <div class="topic-header-flex">
+              <span class="topic-section-tag">${topic.section}</span>
+              <!-- UPGRADE 4: Ask Question Button -->
+              <button class="btn-ask-topic" onclick="askAboutTopic('${topic.topic.replace(/'/g, "\\'")}', '${selectedGrade}', '${selectedStream}')">
+                <i class="fa-solid fa-comment-dots"></i> Ask Question
+              </button>
+            </div>
             <h4 style="font-size: 1rem; color: #0F172A; margin-bottom: 6px;">${topic.topic}</h4>
             <p style="font-size: 0.85rem; color: #64748B; line-height: 1.4;">${topic.description || ''}</p>
           </div>
@@ -1285,19 +1603,18 @@
     container.innerHTML = cardsHtml;
   }
 
-  /* Dynamically load Past Papers directly from Supabase Storage */
   async function loadPastPapers() {
     const selectedGrade = document.getElementById("past-paper-grade-select").value;
     const selectedStream = document.getElementById("past-paper-stream-select").value;
     const p1Container = document.getElementById("past-paper-1-list");
     const p2Container = document.getElementById("past-paper-2-list");
 
-    p1Container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</p>`;
-    p2Container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</p>`;
+    // UPGRADE 5: Skeleton Loader Animation
+    p1Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div><div class="skeleton-box" style="height: 38px;"></div>`;
+    p2Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div><div class="skeleton-box" style="height: 38px;"></div>`;
 
     let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
 
-    // Query Paper 1 Past Papers
     const p1FolderPath = selectedGrade === 'Grade 8 & 9' 
       ? `Gr8&9/Paper1_worksheets/Past papers` 
       : `${streamPrefix}${selectedGrade}/Paper1/Past papers`;
@@ -1319,7 +1636,6 @@
       p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
     }
 
-    // Query Paper 2 Past Papers
     const p2FolderPath = selectedGrade === 'Grade 8 & 9' 
       ? `Gr8&9/Paper2_worksheets/Past papers` 
       : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
@@ -1435,6 +1751,28 @@
 
   document.getElementById("btn-send-chat").addEventListener("click", handleSendMessage);
 
+  /* UPGRADE 2: Query and render uploaded student files */
+  async function loadStudentUploadedFiles(studentId) {
+    if (!supabaseClient) return;
+    const listContainer = document.getElementById("uploaded-files-list");
+
+    const { data: files } = await supabaseClient.storage.from("student-files").list(studentId);
+
+    if (files && files.length > 0) {
+      listContainer.innerHTML = files.map(f => {
+        const cleanName = f.name.replace(/^\d+_/, '');
+        return `
+          <div class="file-history-item">
+            <span title="${cleanName}"><i class="fa-solid fa-paperclip" style="color: #EAB308;"></i> ${cleanName}</span>
+            <i class="fa-solid fa-check" style="color: #059669;"></i>
+          </div>
+        `;
+      }).join('');
+    } else {
+      listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
+    }
+  }
+
   // File Upload Handlers
   document.getElementById("file-input").addEventListener("change", async (e) => {
     const file = e.target.files[0];
@@ -1453,6 +1791,7 @@
     } else {
       uploadStatus.style.color = "#059669";
       uploadStatus.textContent = "Uploaded successfully!";
+      loadStudentUploadedFiles(currentUser.id);
     }
   });
 
