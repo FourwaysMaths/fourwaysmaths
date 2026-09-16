@@ -1240,17 +1240,6 @@
       return;
     }
 
-    currentUser = session.user;
-
-    const userRole = currentUser.user_metadata?.role || "student";
-    if (userRole === "parent") {
-      window.location.href = "parent-dashboard.html";
-      return;
-    } else if (userRole === "admin") {
-      window.location.href = "admin.html";
-      return;
-    }
-
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
     const userGrade = meta.grade || "Grade 8 & 9";
