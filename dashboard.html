@@ -886,7 +886,7 @@
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -1240,6 +1240,17 @@
       return;
     }
 
+    currentUser = session.user;
+
+    const userRole = currentUser.user_metadata?.role || "student";
+    if (userRole === "parent") {
+      window.location.href = "parent-dashboard.html";
+      return;
+    } else if (userRole === "admin") {
+      window.location.href = "admin.html";
+      return;
+    }
+    
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
     const userGrade = meta.grade || "Grade 8 & 9";
