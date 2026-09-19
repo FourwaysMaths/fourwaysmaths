@@ -342,15 +342,6 @@
       border: 1px solid #E2E8F0;
     }
 
-    .class-status {
-      background: #ECFDF5;
-      color: #059669;
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: 700;
-    }
-
     .grade-select-wrapper {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -391,10 +382,6 @@
       cursor: pointer;
       outline: none;
       transition: all 0.2s;
-    }
-
-    .grade-dropdown:focus {
-      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.3);
     }
 
     .paper-cards-grid {
@@ -579,20 +566,6 @@
       overflow: hidden;
     }
 
-    .pdf-chip i.fa-file-pdf {
-      color: #EF4444;
-      font-size: 1rem;
-    }
-
-    .pdf-chip i.download-icon {
-      color: #94A3B8;
-      font-size: 0.85rem;
-    }
-
-    .pdf-chip:hover i.download-icon {
-      color: #EAB308;
-    }
-
     .btn-back-paper {
       background: #E2E8F0;
       color: #1E293B;
@@ -632,7 +605,6 @@
       display: none;
     }
 
-    /* Skeleton Loader */
     .skeleton-box {
       background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
       background-size: 200% 100%;
@@ -645,7 +617,6 @@
       100% { background-position: -200% 0; }
     }
 
-    /* Floating Formula Button & Drawer */
     .fab-formula-btn {
       position: fixed;
       bottom: 25px;
@@ -745,10 +716,6 @@
       margin-left: 8px;
     }
 
-    .formula-copy-btn:hover {
-      color: #EAB308;
-    }
-
     .drawer-overlay {
       position: fixed;
       top: 0;
@@ -764,7 +731,6 @@
       display: block;
     }
 
-    /* Dashboard Countdown Banner */
     .countdown-banner {
       background: #1E293B;
       color: #FFF;
@@ -783,7 +749,6 @@
       font-size: 1.05rem;
     }
 
-    /* Quick Upload Area */
     .quick-upload {
       background: #FFF;
       border: 2px dashed #CBD5E1;
@@ -816,11 +781,6 @@
       font-size: 0.85rem;
     }
 
-    .quick-upload-btn:hover {
-      background: #0F172A;
-    }
-
-    /* Enhancements Grid (Formulas & Gemini AI Quiz) */
     .enhancement-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -857,10 +817,6 @@
       font-size: 0.88rem;
       margin-bottom: 12px;
       outline: none;
-    }
-
-    .formula-search:focus, .quiz-topic-input:focus {
-      border-color: #EAB308;
     }
 
     .quiz-controls {
@@ -900,58 +856,6 @@
       gap: 6px;
     }
 
-    .btn-primary-gold:hover {
-      background: #CA8A04;
-    }
-
-    .quiz-status {
-      font-size: 0.8rem;
-      color: #64748B;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    .quiz-question {
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-
-    .quiz-option {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 10px 12px;
-      border: 1px solid #CBD5E1;
-      background: #FFF;
-      border-radius: 8px;
-      margin-top: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .quiz-option:hover {
-      border-color: #EAB308;
-      background: #FEFCE8;
-    }
-
-    .quiz-option.correct {
-      background: #DCFCE7 !important;
-      border-color: #22C55E !important;
-      color: #15803D !important;
-      font-weight: 700;
-    }
-
-    .quiz-option.incorrect {
-      background: #FEE2E2 !important;
-      border-color: #EF4444 !important;
-      color: #B91C1C !important;
-    }
-
-    /* Past Papers Section */
     .resource-filter-bar {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -965,96 +869,6 @@
       font-size: 0.85rem;
     }
 
-    .resource-filter-bar select {
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid #CBD5E1;
-      font-size: 0.82rem;
-      outline: none;
-    }
-
-    .past-paper-category {
-      background: #FFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .past-paper-category-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      border-bottom: 2px solid #F1F5F9;
-      padding-bottom: 10px;
-    }
-
-    .past-paper-category-header i {
-      color: #EAB308;
-      font-size: 1.2rem;
-    }
-
-    .term-block {
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .term-title {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #0F172A;
-      margin-bottom: 10px;
-    }
-
-    .paper-memo-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .paper-memo-column {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .paper-memo-label {
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: #64748B;
-      letter-spacing: 0.5px;
-    }
-
-    .paper-pair-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .paper-pair-row input[type="checkbox"] {
-      margin-top: 10px;
-      accent-color: #EAB308;
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    .completion-note {
-      font-size: 0.72rem;
-      color: #64748B;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    /* Chat Attachment Bar */
     .chat-attachment-bar {
       display: flex;
       gap: 8px;
@@ -1076,17 +890,6 @@
       gap: 6px;
     }
 
-    .chat-attach-btn:hover {
-      background: #E2E8F0;
-    }
-
-    .chat-attachment-preview {
-      font-size: 0.75rem;
-      color: #059669;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
     @media (max-width: 900px) {
       body {
         flex-direction: column;
@@ -1103,20 +906,11 @@
         bottom: 0;
         left: 0;
         z-index: 1000;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
       }
 
       .nav-menu {
         flex-direction: row;
         gap: 12px;
-      }
-
-      .nav-item::after {
-        display: none;
-      }
-
-      .brand-logo-img {
-        width: 36px;
       }
 
       .portal-container {
@@ -1125,37 +919,16 @@
         padding-bottom: 70px;
       }
 
-      .profile-panel, .analytics-panel {
-        border-right: none;
-        border-left: none;
-        border-bottom: 1px solid #E2E8F0;
-      }
-
-      .main-panel {
-        padding: 20px 15px;
-      }
-
-      .fab-formula-btn {
-        bottom: 75px;
-        right: 15px;
-        padding: 10px 16px;
-        font-size: 0.8rem;
-      }
-
       .formula-drawer {
         width: 100%;
         right: -100%;
-      }
-
-      .paper-memo-grid {
-        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. LEFT SIDEBAR WITH TOOLTIPS -->
+  <!-- 1. LEFT SIDEBAR -->
   <nav class="sidebar-nav">
     <a href="index.html">
       <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
@@ -1186,9 +959,7 @@
       <button class="close-drawer-btn" onclick="toggleFormulaDrawer()">&times;</button>
     </div>
     <input id="formula-search-drawer" class="formula-search" type="search" placeholder="Search drawer formulas..." oninput="filterFormulaDrawerItems(this.value)">
-    <div id="drawer-content" style="overflow-y: auto; flex: 1;">
-      <!-- Content populated dynamically -->
-    </div>
+    <div id="drawer-content" style="overflow-y: auto; flex: 1;"></div>
   </aside>
 
   <!-- 2. MAIN DASHBOARD CONTAINER -->
@@ -1209,7 +980,6 @@
         <span class="badge-icon" id="display-subject-tag"> Mathematics</span>
       </div>
 
-      <!-- Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
         <h4 style="font-size: 0.95rem;">Upload Files</h4>
@@ -1218,7 +988,6 @@
         <input type="file" id="file-input" />
         <p id="upload-status" class="upload-status"></p>
 
-        <!-- Uploaded Files Log -->
         <div class="uploaded-files-container">
           <div class="uploaded-files-title">My Uploaded Homework</div>
           <div id="uploaded-files-list">
@@ -1228,7 +997,7 @@
       </div>
     </section>
 
-    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
+    <!-- CENTER PANEL: DYNAMIC VIEWS -->
     <section class="main-panel">
 
       <!-- VIEW 1: DASHBOARD -->
@@ -1299,7 +1068,6 @@
           </div>
         </div>
 
-        <!-- GRADE & SUBJECT STREAM SELECTOR BAR -->
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
             <label for="study-stream-select">
@@ -1324,7 +1092,6 @@
           </div>
         </div>
 
-        <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
             <div class="paper-card" onclick="selectPaper('Paper 1')">
@@ -1340,7 +1107,6 @@
           </div>
         </div>
 
-        <!-- Paper Topics View -->
         <div id="paper-topics-view" style="display: none;">
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
@@ -1348,7 +1114,6 @@
             <strong><i class="fa-solid fa-filter" style="color:#EAB308;"></i> Filter Topics:</strong>
             <input type="text" id="topic-search-filter" placeholder="Search topic titles..." oninput="filterStudyTopics(this.value)" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #CBD5E1; font-size: 0.82rem; flex: 1;">
           </div>
-          
           <div class="topic-grid" id="topics-container"></div>
         </div>
       </div>
@@ -1920,6 +1685,62 @@
       });
     }
 
+    function getFolderPath(grade, paper) {
+      const gradeClean = grade.replace(/[^a-zA-Z0-9]/g, '');
+      const paperClean = paper.replace(/\s+/g, '');
+      return `PastPapers/${gradeClean}/${paperClean}`;
+    }
+
+    async function loadPastPapers() {
+      const container = document.getElementById("past-paper-categories");
+      const status = document.getElementById("past-paper-status");
+      const selectedGrade = document.getElementById("past-paper-grade-select").value;
+      const selectedStream = document.getElementById("past-paper-stream-select").value;
+
+      if (!container) return;
+
+      container.innerHTML = '<div class="skeleton-box" style="height: 120px;"></div>';
+      if (status) status.textContent = "Loading past papers...";
+
+      const folderPath = getFolderPath(selectedGrade, "Paper 1");
+      
+      try {
+        if (!supabaseClient) throw new Error("Supabase is not initialized.");
+        const { data: fileList, error } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
+
+        if (error || !fileList || fileList.length === 0) {
+          container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly uploaded for ${selectedStream} (${selectedGrade}) yet.</p>`;
+          if (status) status.textContent = "";
+          return;
+        }
+
+        if (status) status.textContent = `Found ${fileList.length} past paper files.`;
+        container.innerHTML = `
+          <div class="past-paper-category">
+            <div class="past-paper-category-header">
+              <i class="fa-solid fa-folder-open"></i>
+              <h3 style="font-size: 1rem;">Past Examination Archive</h3>
+            </div>
+            <div class="resource-list">
+              ${fileList.map(f => {
+                const publicUrl = getStorageFileUrl(`${folderPath}/${f.name}`);
+                return `
+                  <a href="${publicUrl}" target="_blank" class="pdf-chip">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+                    <i class="fa-solid fa-arrow-down-long download-icon"></i>
+                  </a>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `<p style="font-size:0.85rem; color:#EF4444;">Unable to load past papers at this time.</p>`;
+        if (status) status.textContent = "";
+      }
+    }
+
     async function selectPaper(paperName) {
       currentActivePaper = paperName;
       const selectedGrade = document.getElementById("study-grade-select").value;
@@ -2051,496 +1872,225 @@
       container.innerHTML = cardsHtml;
     }
 
-    // Function to dynamically build the folder path based on grade and paper number
-function getFolderPath(selectedGrade, paperNumber, streamPrefix = '') {
-  const isJuniorGrade = selectedGrade === 'Grade 8 & 9';
+    async function loadUpcomingClasses(userId) {
+      const container = document.getElementById("upcoming-classes-container");
+      const calendarContainer = document.getElementById("calendar-classes-container");
+      if (!supabaseClient) return;
 
-  if (paperNumber === 1) {
-    return isJuniorGrade
-      ? 'Gr8&9/Paper1_worksheets/Past papers'
-      : `${streamPrefix}${selectedGrade}/Paper1/Past papers`;
-  } else if (paperNumber === 2) {
-    return isJuniorGrade
-      ? 'Gr8&9/Paper2_worksheets/Past papers'
-      : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
-  }
+      const { data } = await supabaseClient.from('schedules').select('*').order('class_time', { ascending: true });
 
-  return '';
-}
-
-// Example function to load and render papers for a given grade and paper
-async function loadPastPapers(selectedGrade, streamPrefix = '') {
-  let catHtml = '';
-
-  // Get paths for both Paper 1 and Paper 2
-  const p1FolderPath = getFolderPath(selectedGrade, 1, streamPrefix);
-  const p2FolderPath = getFolderPath(selectedGrade, 2, streamPrefix);
-
-  const folderPaths = [p1FolderPath, p2FolderPath];
-
-  for (const folderPath of folderPaths) {
-    if (!folderPath) continue;
-
-    // Fetch list of files from Supabase Storage bucket
-    const { data: fileList, error } = await supabaseClient
-      .storage
-      .from(BUCKET_NAME)
-      .list(folderPath, {
-        limit: 100,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' }
-      });
-
-    if (error) {
-      console.error(`Error fetching files from ${folderPath}:`, error.message);
-      continue;
-    }
-
-    const paperList = fileList || [];
-    const papers = paperList.filter(f => !f.name.toLowerCase().includes('memo'));
-    const memos = paperList.filter(f => f.name.toLowerCase().includes('memo'));
-
-    if (papers.length === 0 && memos.length === 0) {
-      catHtml += `<p style="font-size:0.78rem;color:#94A3B8;grid-column:1/-1;">No exam files uploaded yet.</p>`;
-    } else {
-      catHtml += `<div class="paper-memo-column"><div class="paper-memo-label">Questions</div>`;
-
-      if (papers.length === 0) {
-        catHtml += `<span style="font-size:0.75rem;color:#94A3B8;">None</span>`;
-      } else {
-        papers.forEach(p => {
-          // Construct full object path for public URL resolution
-          const fullFilePath = `${folderPath}/${p.name}`.replace(/\/+/g, '/');
-          const url = getStorageFileUrl(fullFilePath);
-          const key = fullFilePath;
-          const checked = completedMap[key] ? 'checked' : '';
-
-          catHtml += `
-            <div class="paper-pair-row">
-              <input type="checkbox" ${checked} onchange="togglePastPaperDone('${key}', this.checked)" title="Mark as completed">
-              <a href="${url}" target="_blank" class="pdf-chip">
-                <i class="fa-solid fa-file-pdf"></i>
-                <span class="pdf-chip-title">${formatFilename(p.name)}</span>
-                <i class="fa-solid fa-arrow-down-long download-icon"></i>
-              </a>
-            </div>
-          `;
-        });
+      if (!data || data.length === 0) {
+        const noClasses = `<p style="font-size: 0.85rem; color: #64748B;">No upcoming classes scheduled.</p>`;
+        if (container) container.innerHTML = noClasses;
+        if (calendarContainer) calendarContainer.innerHTML = noClasses;
+        return;
       }
 
-      catHtml += `</div>`; // Close column div
-    }
-  }
-
-  return catHtml;
-}
-
-// Helper function to resolve public URL from Supabase Storage
-function getStorageFileUrl(filePath) {
-  const { data } = supabaseClient
-    .storage
-    .from(BUCKET_NAME)
-    .getPublicUrl(filePath);
-
-  return data.publicUrl;
-}
-
-    async function generateGeminiQuiz() {
-      const topic = document.getElementById("quiz-topic-input")?.value.trim() || "Mathematics";
-      const difficulty = document.getElementById("quiz-difficulty")?.value || "medium";
-      const grade = document.getElementById("study-grade-select")?.value || "Grade 10";
-      const statusEl = document.getElementById("quiz-status");
-      const container = document.getElementById("quiz-container");
-
-      if (!statusEl || !container) return;
-      statusEl.textContent = "Asking Gemini AI to compose a question...";
-      container.innerHTML = '<div class="skeleton-box" style="height:120px;"></div>';
-
-      try {
-        if (!supabaseClient) throw new Error("Supabase is not initialized.");
-        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
-          body: { topic, difficulty, grade }
-        });
-
-        if (error || !data) {
-          throw new Error(error ? error.message : "Failed to receive response from Edge Function.");
-        }
-
-        statusEl.textContent = "Quiz ready! Select an option below:";
-        renderQuizQuestion(data, container);
-      } catch (err) {
-        statusEl.textContent = "Could not fetch dynamic quiz. Rendering fallback practice question:";
-        renderFallbackQuiz(topic, container);
-      }
-    }
-
-    function renderQuizQuestion(data, container) {
-      const optionsHtml = (data.options || []).map((opt, i) => `
-        <button class="quiz-option" onclick="checkQuizAnswer(this, ${i === data.correct_index}, '${(data.explanation || '').replace(/'/g, "\\'")}')">
-          ${String.fromCharCode(65 + i)}. ${opt}
-        </button>
+      const classItems = data.map(item => `
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">${item.title || 'Maths Lesson'}</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">${new Date(item.class_time).toLocaleString()}</p>
+          </div>
+          <span class="class-status">Confirmed</span>
+        </div>
       `).join('');
 
-      container.innerHTML = `
-        <div class="quiz-question">
-          <p style="font-weight:700;font-size:0.9rem;margin-bottom:8px;">${data.question || "Solve the problem:"}</p>
-          ${optionsHtml}
-          <div class="quiz-explanation" style="display:none;margin-top:10px;font-size:0.8rem;color:#475569;background:#FFF;padding:8px;border-radius:6px;border:1px solid #E2E8F0;"></div>
-        </div>
-      `;
-      if (window.MathJax) MathJax.typesetPromise([container]).catch(() => {});
+      if (container) container.innerHTML = classItems;
+      if (calendarContainer) calendarContainer.innerHTML = classItems;
     }
 
-    function renderFallbackQuiz(topic, container) {
-      const fallback = {
-        question: `Sample Question (${topic}): What is the value of x if 2x + 4 = 12?`,
-        options: ["x = 2", "x = 4", "x = 6", "x = 8"],
-        correct_index: 1,
-        explanation: "Subtract 4 from both sides (2x = 8), then divide by 2 to get x = 4."
-      };
-      renderQuizQuestion(fallback, container);
-    }
-
-    function checkQuizAnswer(btn, isCorrect, explanation) {
-      const parent = btn.parentElement;
-      const options = parent.querySelectorAll('.quiz-option');
-      options.forEach(o => o.style.pointerEvents = 'none');
-
-      if (isCorrect) {
-        btn.classList.add('correct');
-      } else {
-        btn.classList.add('incorrect');
-      }
-
-      const expEl = parent.querySelector('.quiz-explanation');
-      if (expEl && explanation) {
-        expEl.style.display = 'block';
-        expEl.innerHTML = `<strong>Explanation:</strong> ${explanation}`;
-      }
-    }
-
-    async function loadUpcomingClasses(studentId) {
-      const container = document.getElementById("upcoming-classes-container");
-      const countdownBanner = document.getElementById("next-class-countdown");
-      const countdownVal = document.getElementById("countdown-value");
-
-      if (!container || !supabaseClient) return;
-
-      const { data: schedules  } = await supabaseClient
-        .from("schedules")
-        .select("*")
-        ..eq("student_id", studentId)
-        .gte('start_time', new Date().toISOString())
-        .order('start_time', { ascending: true })
-        .limit(3);
-
-      if (!schedules || schedules.length === 0) {
-        container.innerHTML = '<p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p>';
-        if (countdownBanner) countdownBanner.style.display = "none";
-        return;
-      }
-
-      container.innerHTML = data.map(c => {
-        const dt = new Date(c.start_time);
-        return `
-          <div class="class-item">
-            <div>
-              <strong style="font-size: 0.95rem; color: #0F172A;">${c.title || 'Maths Live Lesson'}</strong>
-              <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
-                <i class="fa-regular fa-calendar"></i> ${dt.toLocaleDateString()} at ${dt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-              </div>
-            </div>
-            <span class="class-status">${c.status || 'Confirmed'}</span>
-          </div>
-        `;
-      }).join('');
-
-      if (data[0] && countdownBanner && countdownVal) {
-        countdownBanner.style.display = "flex";
-        const targetTime = new Date(data[0].start_time).getTime();
-        
-        const updateCountdown = () => {
-          const now = new Date().getTime();
-          const diff = targetTime - now;
-
-          if (diff <= 0) {
-            countdownVal.textContent = "Class starting now!";
-            return;
-          }
-
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const secs = Math.floor((diff % (1000 * 60)) / 1000);
-          countdownVal.textContent = `${hours}h ${mins}m ${secs}s`;
-        };
-
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-      }
-    }
-
-    async function loadStudentGrades(studentId) {
+    async function loadStudentGrades(userId) {
       const tbody = document.getElementById("grades-table-body");
-      const avgBox = document.getElementById("stat-avg-box");
-      if (!tbody || !supabaseClient) return;
+      if (!supabaseClient || !tbody) return;
 
-      const { data } = await supabaseClient
-        .from('grades')
-        .select('*')
-        .eq('student_id', studentId)
-        .order('created_at', { ascending: false });
+      const { data } = await supabaseClient.from('grades').select('*').eq('student_id', userId);
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; text-align: center; color: #64748B;">No grades recorded yet.</td></tr>`;
-        if (avgBox) avgBox.innerHTML = `Current Mark Average: <strong>--%</strong>`;
-        renderChart([]);
+        tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; font-size: 0.85rem; color: #64748B;">No grade entries found yet.</td></tr>`;
         return;
       }
 
-      let total = 0;
-      tbody.innerHTML = data.map(g => {
-        total += Number(g.score || 0);
-        return `
-          <tr style="border-bottom: 1px solid #F1F5F9; font-size: 0.85rem;">
-            <td style="padding: 12px; font-weight: 600;">${g.assessment_name || 'Test'}</td>
-            <td style="padding: 12px; color: #64748B;">${new Date(g.created_at).toLocaleDateString()}</td>
-            <td style="padding: 12px; font-weight: 700; color: #0F172A;">${g.score}%</td>
-            <td style="padding: 12px;"><span style="color: #059669; font-weight: 700;">${g.status || 'Graded'}</span></td>
-          </tr>
-        `;
-      }).join('');
-
-      const avg = Math.round(total / data.length);
-      if (avgBox) avgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
-      renderChart(data);
+      tbody.innerHTML = data.map(g => `
+        <tr style="border-bottom: 1px solid #F1F5F9; font-size: 0.85rem;">
+          <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_title || 'Quiz'}</td>
+          <td style="padding: 12px 10px; color: #64748B;">${g.date || 'N/A'}</td>
+          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score}%</td>
+          <td style="padding: 12px 10px;"><span style="background: #DCFCE7; color: #15803D; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;">Graded</span></td>
+        </tr>
+      `).join('');
     }
 
-    function renderChart(gradesData) {
-      const ctx = document.getElementById('performanceChart')?.getContext('2d');
-      if (!ctx) return;
-
-      if (myPerformanceChart) myPerformanceChart.destroy();
-
-      const labels = gradesData.length ? gradesData.map(g => g.assessment_name || 'Test').reverse() : ['Term 1', 'Term 2', 'Term 3'];
-      const scores = gradesData.length ? gradesData.map(g => g.score).reverse() : [65, 72, 80];
-
-      myPerformanceChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Score %',
-            data: scores,
-            borderColor: '#EAB308',
-            backgroundColor: 'rgba(234, 179, 8, 0.1)',
-            fill: true,
-            tension: 0.3,
-            pointBackgroundColor: '#1E293B'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: { y: { min: 0, max: 100 } }
-        }
-      });
-    }
-
-    async function loadStudentChat(studentId) {
+    async function loadStudentChat(userId) {
       const chatBox = document.getElementById("chat-box");
-       if (!supabaseClient) return;
+      if (!supabaseClient || !chatBox) return;
 
-    const chatBox = document.getElementById("chat-box");
-    const { data: messages } = await supabaseClient
-      .from("messages")
-      .select("*")
-      .eq("student_id", studentId)
-      .order("created_at", { ascending: true });
+      const { data } = await supabaseClient.from('messages').select('*').or(`sender_id.eq.${userId},receiver_id.eq.${userId}`).order('created_at', { ascending: true });
 
       if (!data || data.length === 0) {
-        chatBox.innerHTML = '<p style="color: #94A3B8; font-size: 0.85rem; text-align: center; margin-auto: auto;">No message history. Type below to ask a question!</p>';
+        chatBox.innerHTML = `<p style="font-size: 0.8rem; color: #94A3B8; text-align: center; margin-auto: 0;">Start a conversation with Gcina Sithole...</p>`;
         return;
       }
 
-      chatBox.innerHTML = data.map(m => {
-        const isMe = m.sender_id === studentId;
-        const align = isMe ? 'flex-end' : 'flex-start';
-        const bg = isMe ? '#EAB308' : '#FFF';
-        const color = isMe ? '#1E293B' : '#0F172A';
-        const attachmentHtml = m.attachment_url ? `
-          <div style="margin-top:6px;">
-            ${m.attachment_url.match(/\.(mp3|wav|ogg|m4a)$/i) ? `
-              <audio controls src="${m.attachment_url}" style="max-width:200px;height:32px;"></audio>
-            ` : `
-              <a href="${m.attachment_url}" target="_blank" style="color:inherit;text-decoration:underline;font-size:0.75rem;"><i class="fa-solid fa-paperclip"></i> View Attachment</a>
-            `}
-          </div>
-        ` : '';
-
+      chatBox.innerHTML = data.map(msg => {
+        const isMe = msg.sender_id === userId;
         return `
-          <div style="align-self: ${align}; max-width: 75%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #CBD5E1;">
-            <div>${m.message || ''}</div>
-            ${attachmentHtml}
-            <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 4px; text-align: right;">${new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+          <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? '#EAB308' : '#FFFFFF'}; color: ${isMe ? '#1E293B' : '#0F172A'}; padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            ${msg.content}
           </div>
         `;
       }).join('');
-
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     async function sendChatMessage() {
       const input = document.getElementById("chat-input");
-      const message = input.value.trim();
-
-      if ((!message && !selectedChatAttachment) || !currentUser || !supabaseClient) return;
+      const msg = input.value.trim();
+      if (!msg || !currentUser || !supabaseClient) return;
 
       input.value = "";
-      let attachmentUrl = null;
-
-      if (selectedChatAttachment) {
-        const path = `chat_attachments/${currentUser.id}_${Date.now()}_${selectedChatAttachment.name}`;
-        const { data } = await supabaseClient.storage.from(messages).upload(path, selectedChatAttachment);
-        if (data) {
-          attachmentUrl = getStorageFileUrl(path);
-        }
-        selectedChatAttachment = null;
-        document.getElementById("chat-attachment-preview").textContent = "";
-      }
-
-      await supabaseClient.from('chat_messages').insert({
+      await supabaseClient.from('messages').insert({
         sender_id: currentUser.id,
-        message: message,
-        attachment_url: attachmentUrl
+        content: msg
       });
-
       loadStudentChat(currentUser.id);
     }
 
-    function handleChatImageSelect(e) {
-      const file = e.target.files[0];
-      if (file) {
-        selectedChatAttachment = file;
-        document.getElementById("chat-attachment-preview").textContent = `Attached photo: ${file.name}`;
-      }
-    }
-
-    function toggleVoiceRecorder() {
-      const recorder = document.getElementById("voice-recorder");
-      if (recorder) {
-        recorder.style.display = recorder.style.display === "none" ? "inline-flex" : "none";
-      }
-    }
-
-    async function toggleVoiceRecording() {
-      const status = document.getElementById("voice-recording-status");
-      const btn = document.getElementById("btn-record-voice");
-
-      if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-          mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-            selectedChatAttachment = new File([audioBlob], `voicenote_${Date.now()}.mp3`, { type: 'audio/mp3' });
-            if (status) status.textContent = "Voice note ready to send!";
-          };
-
-          mediaRecorder.start();
-          if (btn) btn.innerHTML = '<i class="fa-solid fa-square" style="color:#EF4444;"></i> Stop Recording';
-          if (status) status.textContent = "Recording...";
-        } catch (err) {
-          if (status) status.textContent = "Mic access denied.";
-        }
-      } else {
-        mediaRecorder.stop();
-        if (btn) btn.innerHTML = '<i class="fa-solid fa-circle" style="color:#EF4444;"></i> Start Recording';
-      }
-    }
-
-    async function loadStudentUploadedFiles(studentId) {
+    async function loadStudentUploadedFiles(userId) {
       const listContainer = document.getElementById("uploaded-files-list");
-      if (!listContainer || !supabaseClient) return;
+      if (!supabaseClient || !listContainer) return;
 
-      const folderPath = `student_uploads/${studentId}`;
-      const { data, error } = await supabaseClient.storage.from(student-files).list(folderPath);
-
-      if (error || !data || data.length === 0) {
-        listContainer.innerHTML = '<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>';
+      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(`student_uploads/${userId}`);
+      if (!data || data.length === 0) {
+        listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
         return;
       }
 
-      listContainer.innerHTML = data.map(file => {
-        const fileUrl = getStorageFileUrl(`${folderPath}/${file.name}`);
-        return `
-          <div class="file-history-item">
-            <span><i class="fa-solid fa-file" style="color:#EAB308;"></i> ${formatFilename(file.name)}</span>
-            <a href="${fileUrl}" target="_blank" style="color:#1E293B;"><i class="fa-solid fa-download"></i></a>
-          </div>
-        `;
-      }).join('');
+      listContainer.innerHTML = data.map(f => `
+        <div class="file-history-item">
+          <span>${formatFilename(f.name)}</span>
+          <i class="fa-solid fa-check" style="color: #059669;"></i>
+        </div>
+      `).join('');
     }
 
     function setupUploadListeners() {
       const fileInput = document.getElementById("file-input");
-      const dashFileInput = document.getElementById("dashboard-file-input");
-
-      if (fileInput) {
-        fileInput.addEventListener("change", (e) => handleFileUpload(e.target.files[0], "upload-status"));
-      }
-
-      if (dashFileInput) {
-        dashFileInput.addEventListener("change", (e) => handleFileUpload(e.target.files[0], "dashboard-upload-status"));
-      }
-
       const avatarInput = document.getElementById("avatar-input");
-      if (avatarInput) {
-        avatarInput.addEventListener("change", handleAvatarUpload);
+
+      fileInput?.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file || !currentUser || !supabaseClient) return;
+
+        const status = document.getElementById("upload-status");
+        status.textContent = "Uploading...";
+
+        const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
+        const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
+
+        if (error) {
+          status.textContent = "Upload failed.";
+        } else {
+          status.textContent = "Upload successful!";
+          loadStudentUploadedFiles(currentUser.id);
+        }
+      });
+
+      avatarInput?.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file || !currentUser || !supabaseClient) return;
+
+        const filePath = `avatars/${currentUser.id}`;
+        const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file, { upsert: true });
+
+        if (!error) {
+          const publicUrl = getStorageFileUrl(filePath);
+          document.getElementById("user-avatar").src = publicUrl;
+          await supabaseClient.auth.updateUser({ data: { avatar_url: publicUrl } });
+        }
+      });
+    }
+
+    function toggleVoiceRecorder() {
+      const rec = document.getElementById("voice-recorder");
+      if (rec) rec.style.display = rec.style.display === "none" ? "flex" : "none";
+    }
+
+    function toggleVoiceRecording() {
+      const status = document.getElementById("voice-recording-status");
+      const btn = document.getElementById("btn-record-voice");
+
+      if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+            selectedChatAttachment = new File([audioBlob], "voicenote.mp3", { type: 'audio/mp3' });
+            document.getElementById("chat-attachment-preview").textContent = "Voice note attached!";
+          };
+          mediaRecorder.start();
+          status.textContent = "Recording...";
+          btn.innerHTML = `<i class="fa-solid fa-square" style="color:#EF4444;"></i> Stop`;
+        });
+      } else {
+        mediaRecorder.stop();
+        status.textContent = "";
+        btn.innerHTML = `<i class="fa-solid fa-circle" style="color:#EF4444;"></i> Start Recording`;
       }
     }
 
-    async function handleFileUpload(file, statusElementId) {
-      const statusEl = document.getElementById(statusElementId);
-      if (!file || !currentUser || !supabaseClient) return;
-
-      if (statusEl) {
-        statusEl.style.color = "#EAB308";
-        statusEl.textContent = "Uploading...";
+    function handleChatImageSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        selectedChatAttachment = file;
+        document.getElementById("chat-attachment-preview").textContent = `Attached: ${file.name}`;
       }
+    }
 
-      const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage.from(student-files).upload(filePath, file);
+    async function generateGeminiQuiz() {
+      const topic = document.getElementById("quiz-topic-input").value.trim();
+      const status = document.getElementById("quiz-status");
+      const container = document.getElementById("quiz-container");
 
-      if (error) {
-        if (statusEl) {
-          statusEl.style.color = "#EF4444";
-          statusEl.textContent = "Upload failed. Try again.";
-        }
+      if (!topic) {
+        status.textContent = "Please specify a topic first.";
         return;
       }
 
-      if (statusEl) {
-        statusEl.style.color = "#059669";
-        statusEl.textContent = "Uploaded successfully!";
-      }
+      status.textContent = "Generating quiz via Gemini AI...";
+      container.innerHTML = `<div class="skeleton-box" style="height: 100px;"></div>`;
 
-      loadStudentUploadedFiles(currentUser.id);
+      try {
+        if (!supabaseClient) throw new Error("Supabase is not initialized.");
+        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
+          body: { topic: topic, difficulty: document.getElementById("quiz-difficulty").value }
+        });
+
+        if (error || !data) throw error;
+
+        status.textContent = "";
+        container.innerHTML = `
+          <div class="quiz-question">
+            <strong>Q: ${data.question}</strong>
+            ${data.options.map((opt, i) => `
+              <button class="quiz-option" onclick="checkQuizAnswer(this, ${i === data.correct_index}, '${data.explanation.replace(/'/g, "\\'")}')">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) {
+        status.textContent = "Could not generate AI quiz. Please try again.";
+        container.innerHTML = "";
+      }
     }
 
-    async function handleAvatarUpload(e) {
-      const file = e.target.files[0];
-      if (!file || !currentUser || !supabaseClient) return;
-
-      const path = `avatars/${currentUser.id}_${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage.from(student-files).upload(path, file);
-
-      if (!error) {
-        const publicUrl = getStorageFileUrl(path);
-        await supabaseClient.auth.updateUser({ data: { avatar_url: publicUrl } });
-        document.getElementById("user-avatar").src = publicUrl;
+    function checkQuizAnswer(btn, isCorrect, explanation) {
+      btn.classList.add(isCorrect ? "correct" : "incorrect");
+      if (!isCorrect) {
+        alert("Incorrect! Explanation: " + explanation);
       }
     }
   </script>
