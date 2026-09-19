@@ -1286,7 +1286,7 @@
             <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:#EAB308;"></i> Gemini AI Quiz</h3>
             <p>Generate a short multiple-choice quiz for the selected grade and topic. Wrong answers can reveal an explanation.</p>
             <div class="quiz-controls">
-              <input id="quiz-topic-input" class="quiz-topic-input" type="text" placeholder="Topic e.g. Functions">
+              <input id="quiz-topic-input" class="quiz-topic-input" type="text" placeholder="Topic e.g. Exponents Grade 9">
               <select id="quiz-difficulty" class="enhancement-select">
                 <option value="easy">Easy</option>
                 <option value="medium" selected>Medium</option>
@@ -1489,7 +1489,7 @@
   <script>
     const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    const GEMINI_FUNCTION_NAME = "generate-quiz";
+    const GEMINI_FUNCTION_NAME = "Gemini_quiz";
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
     const BUCKET_NAME = "study-notes";
 
@@ -2051,124 +2051,99 @@
       container.innerHTML = cardsHtml;
     }
 
-    const PAST_PAPER_TERMS = ["March/April", "May/June", "September", "November"];
-    const PAST_PAPER_CATEGORIES = [
-      {key:"paper1", label:"Paper 1 past papers", icon:"fa-file-invoice"},
-      {key:"paper2", label:"Paper 2 past papers", icon:"fa-file-invoice"},
-      {key:"mixed", label:"Mixed topics past papers", icon:"fa-layer-group"}
-    ];
+    // Function to dynamically build the folder path based on grade and paper number
+function getFolderPath(selectedGrade, paperNumber, streamPrefix = '') {
+  const isJuniorGrade = selectedGrade === 'Grade 8 & 9';
 
-    async function loadPastPapers() {
-      const stream = document.getElementById("past-paper-stream-select")?.value || "Mathematics";
-      const grade = document.getElementById("past-paper-grade-select")?.value || "Grade 8 & 9";
-      const statusEl = document.getElementById("past-paper-status");
-      const container = document.getElementById("past-paper-categories");
+  if (paperNumber === 1) {
+    return isJuniorGrade
+      ? 'Gr8&9/Paper1_worksheets/Past papers'
+      : `${streamPrefix}${selectedGrade}/Paper1/Past papers`;
+  } else if (paperNumber === 2) {
+    return isJuniorGrade
+      ? 'Gr8&9/Paper2_worksheets/Past papers'
+      : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
+  }
 
-      if (statusEl) statusEl.textContent = `Loading past papers for ${stream} (${grade})...`;
-      if (container) container.innerHTML = '<div class="skeleton-box" style="height:120px;margin-bottom:12px;"></div>';
+  return '';
+}
 
-      const baseFolder = stream === "Mathematical Literacy"
-        ? `PastPapers/MathsLit/${grade.replace(/\s+/g, '')}`
-        : `PastPapers/Maths/${grade.replace(/\s+/g, '')}`;
+// Example function to load and render papers for a given grade and paper
+async function loadPastPapers(selectedGrade, streamPrefix = '') {
+  let catHtml = '';
 
-      const completedMap = JSON.parse(localStorage.getItem('4wm_pastpaper_completed') || '{}');
-      let html = '';
+  // Get paths for both Paper 1 and Paper 2
+  const p1FolderPath = getFolderPath(selectedGrade, 1, streamPrefix);
+  const p2FolderPath = getFolderPath(selectedGrade, 2, streamPrefix);
 
-      for (const category of PAST_PAPER_CATEGORIES) {
-        let catHtml = `
-          <div class="past-paper-category">
-            <div class="past-paper-category-header">
-              <i class="fa-solid ${category.icon}"></i>
-              <h3 style="font-size:1.05rem;color:#0F172A;">${category.label}</h3>
-            </div>
-        `;
+  const folderPaths = [p1FolderPath, p2FolderPath];
 
-        for (const term of PAST_PAPER_TERMS) {
-          const folderPath = `${baseFolder}/${category.key}/${term.replace('/', '_')}`;
-          let paperList = [];
-          
-          if (supabaseClient) {
-            const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
-            if (data && data.length > 0) {
-              paperList = data.filter(f => f.name.endsWith('.pdf'));
-            }
-          }
+  for (const folderPath of folderPaths) {
+    if (!folderPath) continue;
 
-          catHtml += `
-            <div class="term-block">
-              <div class="term-title">${term}</div>
-              <div class="paper-memo-grid">
-          `;
+    // Fetch list of files from Supabase Storage bucket
+    const { data: fileList, error } = await supabaseClient
+      .storage
+      .from(BUCKET_NAME)
+      .list(folderPath, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' }
+      });
 
-          const papers = paperList.filter(f => !f.name.toLowerCase().includes('memo'));
-          const memos = paperList.filter(f => f.name.toLowerCase().includes('memo'));
-
-          if (papers.length === 0 && memos.length === 0) {
-            catHtml += `
-              <p style="font-size:0.78rem;color:#94A3B8;grid-column:1/-1;">No exam files uploaded for ${term} yet.</p>
-            `;
-          } else {
-            catHtml += `<div class="paper-memo-column"><div class="paper-memo-label">Questions</div>`;
-            if (papers.length === 0) {
-              catHtml += `<span style="font-size:0.75rem;color:#94A3B8;">None</span>`;
-            } else {
-              papers.forEach(p => {
-                const url = getStorageFileUrl(`${folderPath}/${p.name}`);
-                const key = `${folderPath}/${p.name}`;
-                const checked = completedMap[key] ? 'checked' : '';
-                catHtml += `
-                  <div class="paper-pair-row">
-                    <input type="checkbox" ${checked} onchange="togglePastPaperDone('${key}', this.checked)" title="Mark as completed">
-                    <a href="${url}" target="_blank" class="pdf-chip">
-                      <i class="fa-solid fa-file-pdf"></i>
-                      <span class="pdf-chip-title">${formatFilename(p.name)}</span>
-                      <i class="fa-solid fa-arrow-down-long download-icon"></i>
-                    </a>
-                  </div>
-                `;
-              });
-            }
-            catHtml += `</div><div class="paper-memo-column"><div class="paper-memo-label">Memorandums</div>`;
-            if (memos.length === 0) {
-              catHtml += `<span style="font-size:0.75rem;color:#94A3B8;">None</span>`;
-            } else {
-              memos.forEach(m => {
-                const url = getStorageFileUrl(`${folderPath}/${m.name}`);
-                catHtml += `
-                  <a href="${url}" target="_blank" class="pdf-chip">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span class="pdf-chip-title">${formatFilename(m.name)}</span>
-                    <i class="fa-solid fa-arrow-down-long download-icon"></i>
-                  </a>
-                `;
-              });
-            }
-            catHtml += `</div>`;
-          }
-
-          catHtml += `
-              </div>
-            </div>
-          `;
-        }
-
-        catHtml += `</div>`;
-        html += catHtml;
-      }
-
-      if (container) container.innerHTML = html;
-      if (statusEl) statusEl.textContent = `Showing past papers for ${stream} (${grade}).`;
+    if (error) {
+      console.error(`Error fetching files from ${folderPath}:`, error.message);
+      continue;
     }
 
-    function togglePastPaperDone(key, isDone) {
-      const completedMap = JSON.parse(localStorage.getItem('4wm_pastpaper_completed') || '{}');
-      if (isDone) {
-        completedMap[key] = true;
+    const paperList = fileList || [];
+    const papers = paperList.filter(f => !f.name.toLowerCase().includes('memo'));
+    const memos = paperList.filter(f => f.name.toLowerCase().includes('memo'));
+
+    if (papers.length === 0 && memos.length === 0) {
+      catHtml += `<p style="font-size:0.78rem;color:#94A3B8;grid-column:1/-1;">No exam files uploaded yet.</p>`;
+    } else {
+      catHtml += `<div class="paper-memo-column"><div class="paper-memo-label">Questions</div>`;
+
+      if (papers.length === 0) {
+        catHtml += `<span style="font-size:0.75rem;color:#94A3B8;">None</span>`;
       } else {
-        delete completedMap[key];
+        papers.forEach(p => {
+          // Construct full object path for public URL resolution
+          const fullFilePath = `${folderPath}/${p.name}`.replace(/\/+/g, '/');
+          const url = getStorageFileUrl(fullFilePath);
+          const key = fullFilePath;
+          const checked = completedMap[key] ? 'checked' : '';
+
+          catHtml += `
+            <div class="paper-pair-row">
+              <input type="checkbox" ${checked} onchange="togglePastPaperDone('${key}', this.checked)" title="Mark as completed">
+              <a href="${url}" target="_blank" class="pdf-chip">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="pdf-chip-title">${formatFilename(p.name)}</span>
+                <i class="fa-solid fa-arrow-down-long download-icon"></i>
+              </a>
+            </div>
+          `;
+        });
       }
-      localStorage.setItem('4wm_pastpaper_completed', JSON.stringify(completedMap));
+
+      catHtml += `</div>`; // Close column div
     }
+  }
+
+  return catHtml;
+}
+
+// Helper function to resolve public URL from Supabase Storage
+function getStorageFileUrl(filePath) {
+  const { data } = supabaseClient
+    .storage
+    .from(BUCKET_NAME)
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
 
     async function generateGeminiQuiz() {
       const topic = document.getElementById("quiz-topic-input")?.value.trim() || "Mathematics";
@@ -2244,21 +2219,22 @@
       }
     }
 
-    async function loadUpcomingClasses(userId) {
+    async function loadUpcomingClasses(studentId) {
       const container = document.getElementById("upcoming-classes-container");
       const countdownBanner = document.getElementById("next-class-countdown");
       const countdownVal = document.getElementById("countdown-value");
 
       if (!container || !supabaseClient) return;
 
-      const { data } = await supabaseClient
-        .from('classes')
-        .select('*')
+      const { data: schedules  } = await supabaseClient
+        .from("schedules")
+        .select("*")
+        ..eq("student_id", studentId)
         .gte('start_time', new Date().toISOString())
         .order('start_time', { ascending: true })
         .limit(3);
 
-      if (!data || data.length === 0) {
+      if (!schedules || schedules.length === 0) {
         container.innerHTML = '<p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p>';
         if (countdownBanner) countdownBanner.style.display = "none";
         return;
@@ -2303,7 +2279,7 @@
       }
     }
 
-    async function loadStudentGrades(userId) {
+    async function loadStudentGrades(studentId) {
       const tbody = document.getElementById("grades-table-body");
       const avgBox = document.getElementById("stat-avg-box");
       if (!tbody || !supabaseClient) return;
@@ -2311,7 +2287,7 @@
       const { data } = await supabaseClient
         .from('grades')
         .select('*')
-        .eq('student_id', userId)
+        .eq('student_id', studentId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -2370,15 +2346,16 @@
       });
     }
 
-    async function loadStudentChat(userId) {
+    async function loadStudentChat(studentId) {
       const chatBox = document.getElementById("chat-box");
-      if (!chatBox || !supabaseClient) return;
+       if (!supabaseClient) return;
 
-      const { data } = await supabaseClient
-        .from('chat_messages')
-        .select('*')
-        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
-        .order('created_at', { ascending: true });
+    const chatBox = document.getElementById("chat-box");
+    const { data: messages } = await supabaseClient
+      .from("messages")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("created_at", { ascending: true });
 
       if (!data || data.length === 0) {
         chatBox.innerHTML = '<p style="color: #94A3B8; font-size: 0.85rem; text-align: center; margin-auto: auto;">No message history. Type below to ask a question!</p>';
@@ -2386,7 +2363,7 @@
       }
 
       chatBox.innerHTML = data.map(m => {
-        const isMe = m.sender_id === userId;
+        const isMe = m.sender_id === studentId;
         const align = isMe ? 'flex-end' : 'flex-start';
         const bg = isMe ? '#EAB308' : '#FFF';
         const color = isMe ? '#1E293B' : '#0F172A';
@@ -2423,7 +2400,7 @@
 
       if (selectedChatAttachment) {
         const path = `chat_attachments/${currentUser.id}_${Date.now()}_${selectedChatAttachment.name}`;
-        const { data } = await supabaseClient.storage.from(BUCKET_NAME).upload(path, selectedChatAttachment);
+        const { data } = await supabaseClient.storage.from(messages).upload(path, selectedChatAttachment);
         if (data) {
           attachmentUrl = getStorageFileUrl(path);
         }
@@ -2484,12 +2461,12 @@
       }
     }
 
-    async function loadStudentUploadedFiles(userId) {
+    async function loadStudentUploadedFiles(studentId) {
       const listContainer = document.getElementById("uploaded-files-list");
       if (!listContainer || !supabaseClient) return;
 
-      const folderPath = `student_uploads/${userId}`;
-      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
+      const folderPath = `student_uploads/${studentId}`;
+      const { data, error } = await supabaseClient.storage.from(student-files).list(folderPath);
 
       if (error || !data || data.length === 0) {
         listContainer.innerHTML = '<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>';
@@ -2535,7 +2512,7 @@
       }
 
       const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
+      const { data, error } = await supabaseClient.storage.from(student-files).upload(filePath, file);
 
       if (error) {
         if (statusEl) {
@@ -2558,7 +2535,7 @@
       if (!file || !currentUser || !supabaseClient) return;
 
       const path = `avatars/${currentUser.id}_${Date.now()}_${file.name}`;
-      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(path, file);
+      const { data, error } = await supabaseClient.storage.from(student-files).upload(path, file);
 
       if (!error) {
         const publicUrl = getStorageFileUrl(path);
