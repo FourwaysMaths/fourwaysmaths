@@ -342,6 +342,15 @@
       border: 1px solid #E2E8F0;
     }
 
+    .class-status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #059669;
+      background: #D1FAE5;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
     .grade-select-wrapper {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -440,100 +449,6 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    }
-
-    .topic-header {
-      margin-bottom: 12px;
-    }
-
-    .topic-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .topic-section-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #854D0E;
-      background: #FEF08A;
-      padding: 3px 8px;
-      border-radius: 6px;
-      display: inline-block;
-    }
-
-    .btn-ask-topic {
-      background: #1E293B;
-      color: #EAB308;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: background 0.2s;
-    }
-
-    .btn-ask-topic:hover {
-      background: #0F172A;
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 10px;
-      background: #000;
-      margin: 12px 0;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .resource-tabs {
-      display: flex;
-      gap: 6px;
-      margin: 10px 0;
-      background: #F1F5F9;
-      padding: 4px;
-      border-radius: 8px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 6px;
-      border: none;
-      background: transparent;
-      color: #64748B;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: #FFF;
-      color: #0F172A;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .resource-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
     }
 
     .pdf-chip {
@@ -856,6 +771,32 @@
       gap: 6px;
     }
 
+    .quiz-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .quiz-option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      margin-top: 6px;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      background: #FFF;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .quiz-option-btn:hover {
+      background: #FEF08A;
+      border-color: #EAB308;
+    }
+
     .resource-filter-bar {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -888,33 +829,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .chat-msg-row {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 8px;
-    }
-
-    .chat-msg-sent {
-      align-self: flex-end;
-      background: #FEF08A;
-      color: #854D0E;
-      padding: 10px 14px;
-      border-radius: 12px 12px 0 12px;
-      max-width: 80%;
-      font-size: 0.88rem;
-    }
-
-    .chat-msg-received {
-      align-self: flex-start;
-      background: #FFF;
-      color: #0F172A;
-      border: 1px solid #E2E8F0;
-      padding: 10px 14px;
-      border-radius: 12px 12px 12px 0;
-      max-width: 80%;
-      font-size: 0.88rem;
     }
 
     @media (max-width: 900px) {
@@ -1048,11 +962,6 @@
           <div class="class-item skeleton-box" style="height: 60px;"></div>
         </div>
 
-        <div id="next-class-countdown" class="countdown-banner" style="display:none; margin-top: 15px;">
-          <span><i class="fa-solid fa-clock"></i> <strong>Next Class In:</strong></span>
-          <span id="countdown-value" class="countdown-value">Calculating...</span>
-        </div>
-
         <div class="quick-upload" id="quick-upload-zone">
           <i class="fa-solid fa-cloud-arrow-up"></i>
           <h3 style="font-size:0.95rem;">Submit Completed Work</h3>
@@ -1149,7 +1058,7 @@
       <div id="view-past-papers" class="app-view" style="display: none;">
         <h2>Past Exam Papers & Memos</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
-          Browse Paper 1, Paper 2 and mixed-topic papers by examination term. Use the checklist to track what you have completed.
+          Browse Paper 1 and Paper 2 exam papers. Use the checklist to track what you have completed.
         </p>
 
         <div class="grade-select-wrapper">
@@ -1176,8 +1085,11 @@
           </div>
         </div>
 
-        <div id="past-paper-status" style="font-size:0.8rem;color:#64748B;margin-bottom:12px;"></div>
-        <div id="past-paper-categories"></div>
+        <h3 style="margin-top: 15px; margin-bottom: 10px;">Paper 1 Past Papers</h3>
+        <div id="past-paper-1-list"></div>
+
+        <h3 style="margin-top: 25px; margin-bottom: 10px;">Paper 2 Past Papers</h3>
+        <div id="past-paper-2-list"></div>
       </div>
 
       <!-- VIEW 3: CHAT -->
@@ -1196,18 +1108,13 @@
             <button class="chat-attach-btn" type="button" onclick="document.getElementById('chat-image-input').click()">
               <i class="fa-solid fa-image"></i> Photo
             </button>
-            <button class="chat-attach-btn" type="button" onclick="toggleVoiceRecorder()">
-              <i class="fa-solid fa-microphone"></i> Voice Note
+            <button class="chat-attach-btn" type="button" id="btn-toggle-mic" onclick="toggleVoiceRecording()">
+              <i class="fa-solid fa-microphone"></i> <span id="mic-btn-label">Voice Note</span>
             </button>
             <input type="file" id="chat-image-input" accept="image/*" capture="environment" style="display:none;" onchange="handleChatImageSelect(event)">
-            <div id="voice-recorder" style="display:none; gap:7px; align-items:center;">
-              <button class="chat-attach-btn" id="btn-record-voice" type="button" onclick="toggleVoiceRecording()">
-                <i class="fa-solid fa-circle" style="color:#EF4444;"></i> Start Recording
-              </button>
-              <span id="voice-recording-status" style="font-size:0.72rem;color:#64748B;"></span>
-            </div>
+            <span id="voice-recording-status" style="font-size:0.75rem; color:#EF4444; font-weight:700;"></span>
           </div>
-          <div id="chat-attachment-preview" class="chat-attachment-preview"></div>
+          <div id="chat-attachment-preview" style="font-size: 0.8rem; color: #64748B; margin-bottom: 8px;"></div>
           <div style="display: flex; gap: 10px;">
             <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" onkeypress="if(event.key==='Enter') sendChatMessage()" />
             <button id="btn-send-chat" onclick="sendChatMessage()" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
@@ -1291,86 +1198,29 @@
     let selectedChatAttachment = null;
     let mediaRecorder = null;
     let audioChunks = [];
+    let isRecording = false;
 
-    const fallbackStudyData = [
-      // --- GRADE 8&9 ---
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: 'https://www.youtube.com/watch?v=c3DJOLPqWWo&list=PLU_DCVXL8MyPUSphd-e9Ckr3ac8ngd1-Q' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, square/cube roots, and scientific notation.', youtube_url: 'https://www.youtube.com/watch?v=36weQD824_E&list=PLU_DCVXL8MyNQOL3wJBrPkFzV0vi6Mj5t' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic expressions', description: 'Simplifying, multiplying polynomials, products of binomials, and factorisation.', youtube_url: 'https://www.youtube.com/watch?v=Yfy4wPWXHjI&list=PLU_DCVXL8MyPLoRo8i47w4clyoxm1GK4l' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic equations', description: 'Solving linear equations, bracket equations, and simple exponential equations.', youtube_url: 'https://www.youtube.com/watch?v=Yfy4wPWXHjI&list=PLU_DCVXL8MyMtMwjJzx34zo33GQv2jUqK' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Financial mathematics', description: 'Profit, loss, simple interest, and rate/speed/distance/time problems.', youtube_url: 'https://www.youtube.com/watch?v=DCSxBSwnjL0&list=PLU_DCVXL8MyMJwJ0pmUgc-oy9xMnlB097' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles & Congruency', description: 'Properties of equilateral/isosceles triangles and conditions for congruency/similarity.', youtube_url: 'https://www.youtube.com/watch?v=MN5Rc-XhXa4' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: 'https://www.youtube.com/watch?v=uotYHqVV_HU&list=PLU_DCVXL8MyOLCVUwioubl7uZxay9byvd' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: 'https://www.youtube.com/watch?v=GqHWdTLL8Qw' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: 'https://www.youtube.com/watch?v=sS_ZQLvi48Y&list=PLU_DCVXL8MyPktNF2TpVe5ur4qg3vFkTm' },
-      { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
-
-      // --- GRADE 10 (CORE MATHS) ---
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic Expressions & Exponents', description: 'Products, factorisation (difference of squares, trinomials, grouping), simplifying algebraic fractions, rational exponents.', youtube_url: 'https://www.youtube.com/watch?v=UV8Dbcf_3tw&list=PLU_DCVXL8MyNr7EoF0EH3uyyxwMWIxi14' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Equations & Inequalities', description: 'Linear equations, quadratic equations by factorisation, simultaneous equations, literal equations.', youtube_url: 'https://www.youtube.com/watch?v=AQ0FCi3oOYA&list=PLU_DCVXL8MyMtMwjJzx34zo33GQv2jUqK&index=15' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Patterns', topic: 'Number Patterns', description: 'Linear number patterns with constant first differences.', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Graphs', description: 'Linear f(x)=mx+c, Quadratic f(x)=ax²+q, Hyperbola f(x)=a/x+q, Exponential f(x)=ab^x+q.', youtube_url: 'https://www.youtube.com/watch?v=OnIcV_pbM1s&list=PLU_DCVXL8MyNoRvpcydTNNpvbll692iGd' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Finance & Growth', description: 'Simple interest A=P(1+in), compound interest A=P(1+i)^n, inflation, exchange rates.', youtube_url: 'https://www.youtube.com/watch?v=AKU4lSQvrnI&list=PLU_DCVXL8MyOEf7oWx4CjrP33KWNKv04O' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trigonometric Ratios & Equations', description: 'Sine, Cosine, Tangent definitions in right triangles, unit circle, solving simple trig equations.', youtube_url: 'https://www.youtube.com/watch?v=4jSqFXdmKR0&list=PLU_DCVXL8MyOCpoTstYOBnYEwpdBun3pX' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Cartesian Coordinate Geometry', description: 'Distance formula, gradient of line, midpoint formula, parallel and perpendicular lines.', youtube_url: 'https://www.youtube.com/watch?v=H5hq7wkldj8&list=PLU_DCVXL8MyMzOFmSNyQH9rq3oh8Y0lU_' },
-      { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Statistics', topic: 'Measures of Central Tendency & Dispersion', description: 'Grouped data, mean, median, mode, five-number summary, box and whisker plots.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
-
-      // --- GRADE 11 (CORE MATHS) ---
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Algebra', topic: 'Exponents, Surds & Equations', description: 'Surd equations, solving quadratics using completing the square and quadratic formula, inequalities.', youtube_url: 'https://www.youtube.com/watch?v=XofwHRrFKNE&list=PLU_DCVXL8MyN3WecirANwTB3e8Ooy3x4_&pp=0gcJCf4COCosWNin' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Patterns', topic: 'Quadratic Number Patterns', description: 'Second differences, general term Tn = an² + bn + c.', youtube_url: 'https://www.youtube.com/watch?v=Ws_tyxB-Xyo&list=PLU_DCVXL8MyM5gt1mH6iq1E33WcpJ3eTH' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Transformations', description: 'Parabola, Hyperbola, Exponential functions with horizontal and vertical shifts, axes of symmetry.', youtube_url: 'https://www.youtube.com/watch?v=VEFdT971Tzs&list=PLU_DCVXL8MyPIaFDwQITXenLPVzPLM7B7' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Depreciation & Nominal/Effective Rates', description: 'Straight-line and reducing balance depreciation, interest rate conversions.', youtube_url: 'https://www.youtube.com/watch?v=odpS_jVL-zM&list=PLU_DCVXL8MyPvtfGcmsJxC3w0eR07C6QQ' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Probability Rules & Venn Diagrams', description: 'Mutually exclusive & independent events, tree diagrams, Venn diagrams.', youtube_url: 'https://www.youtube.com/watch?v=PZpZBlqDEmE&list=PLU_DCVXL8MyMwNbYOh_R-4kSp8G0BavW8' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Identities, Reduction & Equations', description: 'sin²/cos² identities, reduction formulas for all quadrants, general solution of trig equations.', youtube_url: 'https://www.youtube.com/watch?v=XXwMYNorbaI&list=PLU_DCVXL8MyM3bl71J1E8w_LWRVGt8IXI' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trig Functions', topic: 'Sine, Cosine & Tan graphs', description: 'Trig functions horizontal shift, determining the equation and, sketching the graphs', youtube_url: 'https://www.youtube.com/watch?v=aqaWbNqM0aU&list=PLU_DCVXL8MyNSenwlz0mdinXYwl-3myMU' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan()=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
-      { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: 'https://www.youtube.com/watch?v=KjVc1xdh78Q&list=PLU_DCVXL8MyPk4vSIOKfS1Gk3C9dsOYWA' },
-
-      // --- GRADE 12 (CORE MATHS) ---
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Patterns', topic: 'Arithmetic & Geometric Sequences & Series', description: 'General terms, sum formulas Sn, sum to infinity for convergent geometric series, sigma notation.', youtube_url: 'https://www.youtube.com/watch?v=B8dKyX9g7Fk&list=PLU_DCVXL8MyPIXj7twby7-xtcs9hekRVn' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f¹, logarithmic function as inverse of exponential.', youtube_url: 'https://www.youtube.com/watch?v=9jT3q9CCc2Y' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Calculus', topic: 'Differential Calculus & Curve Sketching', description: 'Limits, first principles derivative, rules of differentiation, tangents to curves, cubic graphs, maxima & minima optimization.', youtube_url: 'https://www.youtube.com/watch?v=4VUWIiudCk0&list=PLU_DCVXL8MyP_xzgHLGl89rWRiS2jLHNk' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Annuities & Loan Repayments', description: 'Present value PVA, future value FVA, deferred annuities, sinking funds.', youtube_url: 'https://www.youtube.com/watch?v=KbFqPQZyQ0g&list=PLU_DCVXL8MyPZRWmE6MVzwuBlg2hfuvoT' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Counting Principles & Probability', description: 'Fundamental counting principle, factorials, permutations, combinations.', youtube_url: 'https://www.youtube.com/watch?v=loYKqFQcksY&list=PLU_DCVXL8MyPJINt5go5JRtKhcEGc2bz5' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Trigonometry', topic: 'Compound & Double Angle Identities', description: 'cos(A±B), sin(A±B), double angle identities, solving 3D trig problems.', youtube_url: 'https://www.youtube.com/watch?v=yq76CaYxPWc&list=PLU_DCVXL8MyNp2vqZjZvDTRDxf6oCuf7l' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Circles & Tangents', description: 'Equation of circle (x-a)²+(y-b)²=r², equations of tangent lines to circles.', youtube_url: 'https://www.youtube.com/watch?v=cjP4tmQtxEs&list=PLU_DCVXL8MyPiQexgRohpf0G0o_DEHpQH' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Proportionality & Similarity Theorems', description: 'Line parallel to one side of triangle divides other sides proportionally, similar triangles ratio theorems.', youtube_url: 'https://www.youtube.com/watch?v=DHDKaIuUGnA&list=PLU_DCVXL8MyMfSj1cUq05oB6enr8aVRGg' },
-      { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Statistics', topic: 'Bivariate Data & Regression', description: 'Scatter plots, line of best fit, least squares regression line, correlation coefficient r.', youtube_url: 'https://www.youtube.com/watch?v=yXbx5EHE1ag&list=PLU_DCVXL8MyPUhwqhNcdwUxXCG7_BSZMw' },
-
-      // --- MATHEMATICAL LITERACY (GRADE 10-12) ---
-      { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Financial Documents & Budgeting', description: 'Reading payslips, till slips, invoices, personal income/expenditure statements, and simple budgets.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Tariff Systems', description: 'Calculating costs for municipal water, electricity, cellphone contracts, and transport tariffs.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Data Handling', topic: 'Data Collection & Display', description: 'Organising data, tallies, bar graphs, pie charts, histograms, and interpreting statistical summaries.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 2', section: 'Measurement', topic: 'Conversions & Measuring Tools', description: 'Converting units of length, volume, mass, temperature (Celsius to Fahrenheit), and reading measuring tools.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Scale & Map Reading', description: 'Understanding bar and number scales, navigating seating plans, layout drawings, and floor plans.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Data Handling', topic: 'Box-and-Whisker & Percentiles', description: 'Interquartile range, percentiles, cumulative frequency, and comparing datasets.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Expressions of Probability', description: 'Tree diagrams, two-way contingency tables, prediction vs relative frequency in practical contexts.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Packaging', description: 'Calculating surface area and volume of complex 3D shapes, optimal packaging arrangements.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Route Maps & Elevations', description: 'Determining distance using scale on strip maps, elevation maps, and assembly plans.', youtube_url: '' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Financial Documents', description: 'Tax Documents, employee income, and loan documents e.g., statements/loan institutions showing loan agreements, etc', youtube_url: 'https://www.youtube.com/watch?v=1tW7gt497sA' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Taxation', description: 'Calculating annual taxable income, tax, tax rebates, medical tax credits, investments.', youtube_url: 'https://www.youtube.com/watch?v=Ewccl2QLwnc&list=PLrYbkqr3qrA4YSBF0RPwhyAKN3dQSOsAj' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Tariff Systems', description: 'Calculate household or company costs of electricity, water, telephone, and municipal tariffs', youtube_url: 'https://www.youtube.com/watch?v=PRQDJXVl3CA' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Income and Expenditure', description: 'Businesses: A comparison of income/expenditure/profit/loss values over a period of time', youtube_url: 'https://www.youtube.com/watch?v=bdVNXiES6Ms&t=1s' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Cost Price & Selling Price', description: 'Cost of producing/manufacturing, approppriate selling price, percentage profit, and break-even analysis', youtube_url: 'https://www.youtube.com/watch?v=lblQbJeRu9I&list=PLrYbkqr3qrA6nfeFFMS7MYgf4BlkHHo_v' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Statistics', topic: 'Data Handling', description: 'Statistical calculations, analysing and summarising data, through exam questions', youtube_url: 'https://www.youtube.com/watch?v=RgIcsLDvKhw&pp=ygUgZ3JhZGUgMTIgbWF0aHMgbGl0IGRhdGEgaGFuZGxpbmc%3D' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Statistics', topic: 'Data Handling 2', description: 'Statistical calculations, focusing on Measures of Central Tendencies (Mean, Median, and mode) etc', youtube_url: 'https://www.youtube.com/watch?v=gafrJqc0fZA' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Data Analysis & Risk Assessment', description: 'Critiquing graphical representations, identifying bias, and multi-step probability scenarios.', youtube_url: 'https://www.youtube.com/watch?v=iqWBoOfatjw' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Interest Rates', description: 'Simple Interest and Compound Interest comparisons in real life contexts.', youtube_url: 'https://www.youtube.com/watch?v=le6w0YG-ecE&pp=ygUnaW50ZXJlc3QgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN50gcJCSQMAYcqIYzv' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Financial Contexts', description: 'VAT and more exam questions that are focused on Finance', youtube_url: 'https://www.youtube.com/watch?v=TJwcA-nryzA&list=PLU_DCVXL8MyNeJQgWxUSaihehVZci17hZ' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Conversions', topic: 'Conversion factors and tables', description: 'Converting to and from Metric/Imperial systems, degrees celcius and fahrenheit, and time etc', youtube_url: 'https://www.youtube.com/watch?v=OnHUREYnzlU' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Perimeter and Area', description: 'Calculating the perimeter and Area in real life contexts', youtube_url: 'https://www.youtube.com/watch?v=CgXEPjYEZPM&pp=ygUtcGVyaW1ldGVyIGFyZWEgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN5' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Surface Area and Volume (Cube)', description: 'Calculating capacity, rate, mass, surface area, of 3d shapes', youtube_url: 'https://www.youtube.com/watch?v=15O48Ompz9s&list=PLU_DCVXL8MyOfsVTBbePMnm8Il3hxoRq3' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Surface Area and Volume (Cylinder)', description: 'Calculating capacity, rate, mass, surface area, of 3d shapes', youtube_url: 'https://www.youtube.com/watch?v=lYqzOcX4I7k&pp=ygU2dm9sdW1lIGFuZCBzdXJmYWNlIGFyZWEgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN50gcJCSQMAYcqIYzv' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Maps and Scales', description: 'Working with floor plans, elevations, grid references, scale drawings, and structural models.', youtube_url: 'https://www.youtube.com/watch?v=KhGfu0aKiYA&list=PLU_DCVXL8MyOgii-Irv0_1kj9nyWRuxhd' },
-      { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Types of Scales', description: 'Types of Scales', youtube_url: 'https://www.youtube.com/watch?v=sjPDDeeABDA&pp=ygUudHlwZXMgb2Ygc2NhbGVzIGdyYWRlIDEyIG1hdGhlbWF0aWNhbCBsaXRlcmFjeQ%3D%3D' }
-    ];
+    const formulaLibrary = {
+      "Mathematics": [
+        {section:"Algebra", name:"Quadratic Formula", latex:"x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}"},
+        {section:"Functions", name:"Gradient", latex:"m = \\frac{y_2-y_1}{x_2-x_1}"},
+        {section:"Sequences", name:"Arithmetic Term", latex:"T_n = a + (n-1)d"},
+        {section:"Sequences", name:"Arithmetic Sum", latex:"S_n = \\frac{n}{2}[2a+(n-1)d]"},
+        {section:"Finance", name:"Compound Growth", latex:"A = P(1+i)^n"},
+        {section:"Analytical Geometry", name:"Distance", latex:"d = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}"},
+        {section:"Analytical Geometry", name:"Gradient & Angle", latex:"m = \\tan(\\theta) = \\frac{y_2-y_1}{x_2-x_1}"},
+        {section:"Trigonometry", name:"Identity", latex:"\\sin^2(\\theta)+\\cos^2(\\theta)=1"}
+      ],
+      "Mathematical Literacy": [
+        {section:"Finance", name:"VAT", latex:"VAT = 0.15 \\times \\text{price}"},
+        {section:"Finance", name:"Simple Interest", latex:"A = P(1+in)"},
+        {section:"Finance", name:"Percentage Change", latex:"\\%\\text{ change} = \\frac{\\text{new}-\\text{old}}{\\text{old}}\\times100"},
+        {section:"Measurement", name:"Rectangle Area", latex:"A = l \\times b"},
+        {section:"Measurement", name:"Circle Area", latex:"A = \\pi r^2"},
+        {section:"Measurement", name:"Cylinder Volume", latex:"V = \\pi r^2h"},
+        {section:"Conversions", name:"Metric Conversion", latex:"1\\text{ m}=1000\\text{ mm},\\quad1\\text{ kg}=1000\\text{ g}"}
+      ]
+    };
 
     function formatFilename(filename) {
       return filename
@@ -1384,39 +1234,6 @@
       const { data } = supabaseClient.storage.from(BUCKET_NAME).getPublicUrl(filePath);
       return data ? data.publicUrl : "#";
     }
-
-    function getYouTubeEmbedUrl(url) {
-      if (!url) return null;
-      let videoId = "";
-      if (url.includes("v=")) {
-        videoId = url.split("v=")[1].split("&")[0];
-      } else if (url.includes("youtu.be/")) {
-        videoId = url.split("youtu.be/")[1].split("?")[0];
-      }
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-    }
-
-    const gr89Paper1FolderMap = {
-      'Whole numbers and integers': '1Whole numbers',
-      'Fractions and decimals': '3Fractions',
-      'Exponents': '4Exponents',
-      'Algebraic expressions': '5Expressions',
-      'Algebraic equations': '6Equations',
-      'Financial mathematics': '7Financial',
-      'Patterns': '8Patterns',
-      'Functions and relationships': '9Functions',
-      'Graphs': '10Graphs'
-    };
-
-    const gr89Paper2FolderMap = {
-      'Geometry Introduction & Lines': '10Intro Geometry lines',
-      'Geometry of parallel lines': '11Parallel lines',
-      'Triangles & Congruency': '12Triangles & Congruency',
-      'Pythagoras theorem': '13Pythagoras theorem',
-      'Translations, Reflections, Rotations': '14Transformations_graph',
-      'Perimeter, Area & Volume': '15Perimeter Area',
-      'Data Collection & Statistics': '16Statistics'
-    };
 
     document.addEventListener("DOMContentLoaded", async () => {
       if (!supabaseClient) return;
@@ -1592,28 +1409,6 @@
       }
     }
 
-    const formulaLibrary = {
-      "Mathematics": [
-        {section:"Algebra", name:"Quadratic Formula", latex:"x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}"},
-        {section:"Functions", name:"Gradient", latex:"m = \\frac{y_2-y_1}{x_2-x_1}"},
-        {section:"Sequences", name:"Arithmetic Term", latex:"T_n = a + (n-1)d"},
-        {section:"Sequences", name:"Arithmetic Sum", latex:"S_n = \\frac{n}{2}[2a+(n-1)d]"},
-        {section:"Finance", name:"Compound Growth", latex:"A = P(1+i)^n"},
-        {section:"Analytical Geometry", name:"Distance", latex:"d = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}"},
-        {section:"Analytical Geometry", name:"Gradient & Angle", latex:"m = \\tan(\\theta) = \\frac{y_2-y_1}{x_2-x_1}"},
-        {section:"Trigonometry", name:"Identity", latex:"\\sin^2(\\theta)+\\cos^2(\\theta)=1"}
-      ],
-      "Mathematical Literacy": [
-        {section:"Finance", name:"VAT", latex:"VAT = 0.15 \\times \\text{price}"},
-        {section:"Finance", name:"Simple Interest", latex:"A = P(1+in)"},
-        {section:"Finance", name:"Percentage Change", latex:"\\%\\text{ change} = \\frac{\\text{new}-\\text{old}}{\\text{old}}\\times100"},
-        {section:"Measurement", name:"Rectangle Area", latex:"A = l \\times b"},
-        {section:"Measurement", name:"Circle Area", latex:"A = \\pi r^2"},
-        {section:"Measurement", name:"Cylinder Volume", latex:"V = \\pi r^2h"},
-        {section:"Conversions", name:"Metric Conversion", latex:"1\\text{ m}=1000\\text{ mm},\\quad1\\text{ kg}=1000\\text{ g}"}
-      ]
-    };
-
     function renderFormulaItems(items, targetId) {
       const box = document.getElementById(targetId);
       if (!box) return;
@@ -1667,40 +1462,17 @@
       }
     }
 
-    function askAboutTopic(topicTitle, grade, stream) {
-      const chatTabLink = document.querySelector('[data-target="view-chat"]');
-      if (chatTabLink) chatTabLink.click();
-
-      const chatInput = document.getElementById("chat-input");
-      if (chatInput) {
-        chatInput.value = `Hi Gcina, I have a question regarding ${stream} (${grade}) - ${topicTitle}: `;
-        chatInput.focus();
-      }
-    }
-
     function showPaperSelection() {
       currentActivePaper = null;
       document.getElementById("paper-selection-view").style.display = "block";
       document.getElementById("paper-topics-view").style.display = "none";
     }
 
-    function switchTab(topicIdx, tabName) {
-      const card = document.getElementById(`topic-card-${topicIdx}`);
-      const tabs = card.querySelectorAll('.tab-btn');
-      tabs.forEach(t => t.classList.remove('active'));
-
-      event.target.classList.add('active');
-
-      const worksheetsList = card.querySelector('.list-worksheets');
-      const memosList = card.querySelector('.list-memos');
-
-      if (tabName === 'worksheets') {
-        worksheetsList.style.display = 'flex';
-        memosList.style.display = 'none';
-      } else if (tabName === 'memos') {
-        worksheetsList.style.display = 'none';
-        memosList.style.display = 'flex';
-      }
+    function selectPaper(paperName) {
+      currentActivePaper = paperName;
+      document.getElementById("paper-selection-view").style.display = "none";
+      document.getElementById("paper-topics-view").style.display = "block";
+      document.getElementById("selected-paper-title").textContent = `${paperName} Topics`;
     }
 
     function filterStudyTopics(query) {
@@ -1712,467 +1484,476 @@
       });
     }
 
-// ==========================================
-// 1. PAST PAPERS (Restored Paths + Checklist Upgrade)
-// ==========================================
-async function loadPastPapers() {
-  const selectedGrade = document.getElementById("past-paper-grade-select")?.value;
-  const selectedStream = document.getElementById("past-paper-stream-select")?.value;
-  const p1Container = document.getElementById("past-paper-1-list");
-  const p2Container = document.getElementById("past-paper-2-list");
+    // ==========================================
+    // 1. PAST PAPERS
+    // ==========================================
+    async function loadPastPapers() {
+      const selectedGrade = document.getElementById("past-paper-grade-select")?.value;
+      const selectedStream = document.getElementById("past-paper-stream-select")?.value;
+      const p1Container = document.getElementById("past-paper-1-list");
+      const p2Container = document.getElementById("past-paper-2-list");
 
-  if (!p1Container || !p2Container || !selectedGrade) return;
+      if (!p1Container || !p2Container || !selectedGrade) return;
 
-  p1Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
-  p2Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
+      p1Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
+      p2Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
 
-  try {
-    let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
+      try {
+        let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
 
-    const p1FolderPath = selectedGrade === 'Grade 8 & 9' 
-      ? `Gr8&9/Paper1_worksheets/Past papers` 
-      : `${streamPrefix}${selectedGrade}/Paper1/Past papers`;
+        const p1FolderPath = selectedGrade === 'Grade 8 & 9' 
+          ? `Gr8&9/Paper1_worksheets/Past papers` 
+          : `${streamPrefix}${selectedGrade}/Paper1/Past papers`;
 
-    const { data: p1Files, error: p1Err } = await supabaseClient.storage.from(BUCKET_NAME).list(p1FolderPath);
+        const { data: p1Files, error: p1Err } = await supabaseClient.storage.from(BUCKET_NAME).list(p1FolderPath);
 
-    if (!p1Err && p1Files && p1Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
-      p1Container.innerHTML = p1Files.filter(f => f.name.endsWith('.pdf')).map(f => {
-        const fileUrl = getStorageFileUrl(`${p1FolderPath}/${f.name}`);
-        const paperId = `p1_${f.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        return `
-          <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-            <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
-            <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
-              <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-              <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-              <i class="fa-solid fa-arrow-down-long download-icon"></i>
-            </a>
-          </div>
-        `;
-      }).join('');
-      loadChecklistStates();
-    } else {
-      p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
+        if (!p1Err && p1Files && p1Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
+          p1Container.innerHTML = p1Files.filter(f => f.name.endsWith('.pdf')).map(f => {
+            const fileUrl = getStorageFileUrl(`${p1FolderPath}/${f.name}`);
+            const paperId = `p1_${f.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            return `
+              <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
+                <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
+                  <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
+                  <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+                  <i class="fa-solid fa-arrow-down-long download-icon"></i>
+                </a>
+              </div>
+            `;
+          }).join('');
+          loadChecklistStates();
+        } else {
+          p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
+        }
+
+        const p2FolderPath = selectedGrade === 'Grade 8 & 9' 
+          ? `Gr8&9/Paper2_worksheets/Past papers` 
+          : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
+
+        const { data: p2Files, error: p2Err } = await supabaseClient.storage.from(BUCKET_NAME).list(p2FolderPath);
+
+        if (!p2Err && p2Files && p2Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
+          p2Container.innerHTML = p2Files.filter(f => f.name.endsWith('.pdf')).map(f => {
+            const fileUrl = getStorageFileUrl(`${p2FolderPath}/${f.name}`);
+            const paperId = `p2_${f.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            return `
+              <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
+                <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
+                  <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
+                  <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+                  <i class="fa-solid fa-arrow-down-long download-icon"></i>
+                </a>
+              </div>
+            `;
+          }).join('');
+          loadChecklistStates();
+        } else {
+          p2Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 2 past exam papers available yet.</p>`;
+        }
+      } catch (err) {
+        console.error("Error loading past papers:", err);
+        p1Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
+        p2Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
+      }
     }
 
-    const p2FolderPath = selectedGrade === 'Grade 8 & 9' 
-      ? `Gr8&9/Paper2_worksheets/Past papers` 
-      : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
-
-    const { data: p2Files, error: p2Err } = await supabaseClient.storage.from(BUCKET_NAME).list(p2FolderPath);
-
-    if (!p2Err && p2Files && p2Files.filter(f => f.name.endsWith('.pdf')).length > 0) {
-      p2Container.innerHTML = p2Files.filter(f => f.name.endsWith('.pdf')).map(f => {
-        const fileUrl = getStorageFileUrl(`${p2FolderPath}/${f.name}`);
-        const paperId = `p2_${f.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        return `
-          <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-            <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
-            <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
-              <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-              <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-              <i class="fa-solid fa-arrow-down-long download-icon"></i>
-            </a>
-          </div>
-        `;
-      }).join('');
-      loadChecklistStates();
-    } else {
-      p2Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 2 past exam papers available yet.</p>`;
-    }
-  } catch (err) {
-    console.error("Error loading past papers:", err);
-    p1Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
-    p2Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
-  }
-}
-
-// Checklist Tracker Persistence
-function togglePaperChecklist(paperId) {
-  const cb = document.getElementById(paperId);
-  if (!cb) return;
-  const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
-  saved[paperId] = cb.checked;
-  localStorage.setItem('past_paper_checklist', JSON.stringify(saved));
-}
-
-function loadChecklistStates() {
-  const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
-  Object.keys(saved).forEach(id => {
-    const cb = document.getElementById(id);
-    if (cb) cb.checked = saved[id];
-  });
-}
-
-// ==========================================
-// 2. UPCOMING CLASSES
-// ==========================================
-async function loadUpcomingClasses(studentId) {
-  const dashboardContainer = document.getElementById("upcoming-classes-container");
-  const calendarContainer = document.getElementById("calendar-classes-container");
-
-  if (!supabaseClient || !studentId) return;
-
-  try {
-    const { data: schedules, error } = await supabaseClient
-      .from("schedules")
-      .select("*")
-      .eq("student_id", studentId)
-      .order("class_date", { ascending: true });
-
-    if (error || !schedules || schedules.length === 0) {
-      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
-      if (dashboardContainer) dashboardContainer.innerHTML = emptyMarkup;
-      if (calendarContainer) calendarContainer.innerHTML = emptyMarkup;
-      return;
+    function togglePaperChecklist(paperId) {
+      const cb = document.getElementById(paperId);
+      if (!cb) return;
+      const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
+      saved[paperId] = cb.checked;
+      localStorage.setItem('past_paper_checklist', JSON.stringify(saved));
     }
 
-    const htmlContent = schedules.map(s => {
-      const dateFormatted = s.class_date ? new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Scheduled';
+    function loadChecklistStates() {
+      const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
+      Object.keys(saved).forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) cb.checked = saved[id];
+      });
+    }
+
+    // ==========================================
+    // 2. UPCOMING CLASSES ("schedules")
+    // ==========================================
+    async function loadUpcomingClasses(studentId) {
+      const dashboardContainer = document.getElementById("upcoming-classes-container");
+      const calendarContainer = document.getElementById("calendar-classes-container");
+
+      if (!supabaseClient || !studentId) return;
+
+      try {
+        const { data: schedules, error } = await supabaseClient
+          .from("schedules")
+          .select("*")
+          .eq("student_id", studentId)
+          .order("class_date", { ascending: true });
+
+        if (error || !schedules || schedules.length === 0) {
+          const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
+          if (dashboardContainer) dashboardContainer.innerHTML = emptyMarkup;
+          if (calendarContainer) calendarContainer.innerHTML = emptyMarkup;
+          return;
+        }
+
+        const htmlContent = schedules.map(s => {
+          const rawDate = s.class_date || s.date || s.scheduled_at;
+          const dateFormatted = rawDate ? new Date(rawDate).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Scheduled';
+          const timeFormatted = s.class_time || s.time || '';
+          return `
+            <div class="class-item">
+              <div>
+                <h4 style="font-size: 0.95rem;">${s.topic || s.title || 'Maths Lesson'}</h4>
+                <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} ${timeFormatted ? '| ' + timeFormatted : ''}</p>
+              </div>
+              <span class="class-status">${s.status || 'Scheduled'}</span>
+            </div>
+          `;
+        }).join('');
+
+        if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
+        if (calendarContainer) calendarContainer.innerHTML = htmlContent;
+      } catch (err) {
+        console.error("Error loading classes:", err);
+        const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
+        if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
+      }
+    }
+
+    // ==========================================
+    // 3. CHAT WITH EDUCATOR & "messages" TABLE
+    // ==========================================
+    async function loadStudentChat(studentId) {
+      const chatBox = document.getElementById("chat-box");
+      if (!supabaseClient || !chatBox || !studentId) return;
+
+      try {
+        const { data: messages, error } = await supabaseClient
+          .from("messages")
+          .select("*")
+          .eq("student_id", studentId)
+          .order("created_at", { ascending: true });
+
+        if (error || !messages || messages.length === 0) {
+          chatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; font-size: 0.85rem; margin: auto 0;">No messages yet. Send a message to your educator below!</p>`;
+          return;
+        }
+
+        chatBox.innerHTML = messages.map(msg => renderMessageBubble(msg, studentId)).join("");
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (err) {
+        console.error("Error loading chat:", err);
+        chatBox.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem; text-align: center;">Failed to load messages.</p>`;
+      }
+    }
+
+    function renderMessageBubble(msg, studentId) {
+      const isStudent = msg.sender_role === "student" || msg.sender_id === studentId;
+      const isAI = msg.sender_role === "ai_assistant";
+
+      let bg = isStudent ? "#FEF08A" : "#FFF";
+      let color = isStudent ? "#854D0E" : "#0F172A";
+      let align = isStudent ? "flex-end" : "flex-start";
+      let borderRadius = isStudent ? "12px 12px 0 12px" : "12px 12px 12px 0";
+      let border = isStudent ? "none" : "1px solid #E2E8F0";
+      let senderName = isStudent ? "You" : (isAI ? "Gemini AI Math Assistant" : "Gcina Sithole");
+
+      if (isAI) {
+        bg = "#1E293B";
+        color = "#EAB308";
+        border = "none";
+      }
+
+      let mediaHtml = "";
+      if (msg.image_url) {
+        mediaHtml += `<div style="margin-top: 6px;"><img src="${msg.image_url}" style="max-width: 100%; border-radius: 8px;" /></div>`;
+      }
+      if (msg.audio_url) {
+        mediaHtml += `<div style="margin-top: 6px;"><audio controls src="${msg.audio_url}" style="width: 100%; max-width: 250px;"></audio></div>`;
+      }
+
+      const text = msg.message_text || msg.content || "";
+
       return `
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">${s.topic || s.title || 'Maths Lesson'}</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} ${s.class_time ? '| ' + s.class_time : ''}</p>
-          </div>
-          <span class="class-status">Scheduled</span>
+        <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; border: ${border}; padding: 10px 14px; border-radius: ${borderRadius}; font-size: 0.88rem; line-height: 1.4; margin-bottom: 8px;">
+          <strong>${senderName}:</strong> ${text}
+          ${mediaHtml}
         </div>
       `;
-    }).join('');
-
-    if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
-    if (calendarContainer) calendarContainer.innerHTML = htmlContent;
-  } catch (err) {
-    console.error("Error loading classes:", err);
-    const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
-    if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
-  }
-}
-
-// ==========================================
-// 3. CHAT WITH EDUCATOR & GEMINI AI ASSISTANT
-// ==========================================
-async function loadStudentChat(studentId) {
-  const chatBox = document.getElementById("chat-box");
-  if (!supabaseClient || !chatBox || !studentId) return;
-
-  try {
-    const { data: messages, error } = await supabaseClient
-      .from("messages")
-      .select("*")
-      .eq("student_id", studentId)
-      .order("created_at", { ascending: true });
-
-    if (error || !messages || messages.length === 0) {
-      chatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; font-size: 0.85rem; margin: auto 0;">No messages yet. Send a message to your educator or ask Gemini AI below!</p>`;
-      return;
     }
 
-    chatBox.innerHTML = messages.map(msg => renderMessageBubble(msg, studentId)).join("");
-    chatBox.scrollTop = chatBox.scrollHeight;
-  } catch (err) {
-    console.error("Error loading chat:", err);
-    chatBox.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem; text-align: center;">Failed to load messages.</p>`;
-  }
-}
+    function handleChatImageSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        selectedChatAttachment = file;
+        document.getElementById("chat-attachment-preview").textContent = `Selected photo: ${file.name}`;
+      }
+    }
 
-function renderMessageBubble(msg, studentId) {
-  const isStudent = msg.sender_role === "student" || msg.sender_id === studentId;
-  const isAI = msg.sender_role === "ai_assistant";
+    async function sendChatMessage() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text && !selectedChatAttachment) return;
 
-  let bg = isStudent ? "#1E293B" : "#EAB308";
-  let color = isStudent ? "#FFF" : "#1E293B";
-  let align = isStudent ? "flex-end" : "flex-start";
-  let senderName = isStudent ? "You" : (isAI ? "Gemini AI Math Assistant" : "Gcina Sithole");
+      let imageUrl = null;
+      if (selectedChatAttachment) {
+        const filePath = `chat_photos/${currentUser.id}/${Date.now()}_${selectedChatAttachment.name}`;
+        const { error } = await supabaseClient.storage.from("student-files").upload(filePath, selectedChatAttachment);
+        if (!error) {
+          imageUrl = getStorageFileUrl(filePath);
+        }
+      }
 
-  if (isAI) {
-    bg = "#3B82F6";
-    color = "#FFF";
-  }
-
-  let mediaHtml = "";
-  if (msg.image_url) {
-    mediaHtml += `<div style="margin-top: 6px;"><img src="${msg.image_url}" style="max-width: 100%; border-radius: 8px;" /></div>`;
-  }
-  if (msg.audio_url) {
-    mediaHtml += `<div style="margin-top: 6px;"><audio controls src="${msg.audio_url}" style="width: 100%; max-width: 250px;"></audio></div>`;
-  }
-
-  const text = msg.message_text || msg.content || "";
-
-  return `
-    <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4; margin-bottom: 8px;">
-      <strong>${senderName}:</strong> ${text}
-      ${mediaHtml}
-    </div>
-  `;
-}
-
-// Photo Attachment Handler
-async function uploadChatPhoto(file) {
-  if (!file || !currentUser) return null;
-  const filePath = `chat_photos/${currentUser.id}/${Date.now()}_${file.name}`;
-  const { data, error } = await supabaseClient.storage.from("student-files").upload(filePath, file);
-  if (error) return null;
-  return getStorageFileUrl(filePath);
-}
-
-// Voice Note Handler
-let mediaRecorder;
-let audioChunks = [];
-
-async function startVoiceRecording() {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  mediaRecorder = new MediaRecorder(stream);
-  audioChunks = [];
-
-  mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-  mediaRecorder.start();
-}
-
-async function stopVoiceRecordingAndSend() {
-  if (!mediaRecorder) return;
-
-  mediaRecorder.stop();
-  mediaRecorder.onstop = async () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-    const audioFile = new File([audioBlob], `voicenote_${Date.now()}.webm`, { type: 'audio/webm' });
-
-    const filePath = `chat_audio/${currentUser.id}/${audioFile.name}`;
-    const { error } = await supabaseClient.storage.from("student-files").upload(filePath, audioFile);
-
-    if (!error) {
-      const audioUrl = getStorageFileUrl(filePath);
-      await supabaseClient.from("messages").insert([{
+      const payload = {
         student_id: currentUser.id,
         sender_role: "student",
-        message_text: "[Voice Note]",
-        audio_url: audioUrl
-      }]);
-      loadStudentChat(currentUser.id);
-    }
-  };
-}
+        message_text: text,
+        image_url: imageUrl
+      };
 
-// Gemini AI Query Integration
-async function askGeminiAI(promptText) {
-  const chatBox = document.getElementById("chat-box");
-  if (!chatBox) return;
+      input.value = "";
+      selectedChatAttachment = null;
+      document.getElementById("chat-attachment-preview").textContent = "";
 
-  chatBox.innerHTML += `
-    <div style="align-self: flex-start; max-width: 80%; background: #3B82F6; color: #FFF; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; margin-bottom: 8px;">
-      <strong>Gemini AI Math Assistant:</strong> <em>Thinking...</em>
-    </div>
-  `;
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  try {
-    const response = await fetch('/api/gemini-math-explain', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: promptText })
-    });
-    const result = await response.json();
-    const reply = result.reply || "I couldn't process that question right now.";
-
-    await supabaseClient.from("messages").insert([{
-      student_id: currentUser.id,
-      sender_role: "ai_assistant",
-      message_text: reply
-    }]);
-
-    loadStudentChat(currentUser.id);
-  } catch (err) {
-    console.error("Gemini AI Error:", err);
-  }
-}
-
-// ==========================================
-// 4. GRADES TABLE & PERFORMANCE TREND
-// ==========================================
-async function loadStudentGrades(studentId) {
-  const tbody = document.getElementById('grades-table-body');
-  const statAvgBox = document.getElementById('stat-avg-box');
-  if (!supabaseClient || !tbody || !studentId) return;
-
-  try {
-    const { data: grades, error } = await supabaseClient
-      .from('grades')
-      .select('*')
-      .eq('student_id', studentId)
-      .order('created_at', { ascending: true });
-
-    if (error || !grades || grades.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
-      if (typeof renderPerformanceChart === 'function') renderPerformanceChart(['No Data'], [0]);
-      return;
-    }
-
-    tbody.innerHTML = grades.map(g => `
-      <tr>
-        <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.assessment_title || g.title || 'Assessment'}</td>
-        <td style="padding: 12px 10px; color: #64748B;">${g.created_at ? new Date(g.created_at).toLocaleDateString('en-ZA') : (g.date || 'N/A')}</td>
-        <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
-        <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-      </tr>
-    `).join('');
-
-    const scores = grades.map(g => Number(g.score || g.score_percentage || 0));
-    const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-
-    if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
-    if (typeof renderPerformanceChart === 'function') {
-      renderPerformanceChart(grades.map(g => g.assessment_name || g.assessment_title || g.title), scores);
-    }
-  } catch (err) {
-    console.error("Error loading grades:", err);
-    tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grade entries.</td></tr>`;
-  }
-}
-
-// ==========================================
-// 5. UPGRADED FORMULA SHEET MODAL
-// ==========================================
-function openFormulaSheetModal() {
-  const selectedGrade = document.getElementById("past-paper-grade-select")?.value || "Grade 8 & 9";
-  const modal = document.getElementById("formula-sheet-modal");
-  const container = document.getElementById("formula-sheet-content");
-
-  let formulasHtml = `
-    <h4>Essential Formulas (${selectedGrade})</h4>
-    <ul>
-      <li><strong>Area of Square:</strong> $A = s^2$</li>
-      <li><strong>Area of Rectangle:</strong> $A = l \\times b$</li>
-      <li><strong>Area of Triangle:</strong> $A = \\frac{1}{2} b \\times h$</li>
-      <li><strong>Perimeter of Circle:</strong> $C = 2\\pi r$</li>
-      <li><strong>Area of Circle:</strong> $A = \\pi r^2$</li>
-      <li><strong>Pythagoras Theorem:</strong> $a^2 + b^2 = c^2$</li>
-    </ul>
-  `;
-
-  if (container) container.innerHTML = formulasHtml;
-  if (modal) modal.style.display = "block";
-}
-
-// ==========================================
-// 6. STUDENT FILE UPLOADS
-// ==========================================
-async function loadStudentUploadedFiles(userId) {
-  const listContainer = document.getElementById("uploaded-files-list");
-  if (!supabaseClient || !listContainer) return;
-
-  const userFolder = `homework/${userId}`;
-  const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(userFolder);
-
-  if (error || !data || data.length === 0) {
-    listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
-    return;
-  }
-
-  listContainer.innerHTML = data.map(f => {
-    const publicUrl = getStorageFileUrl(`${userFolder}/${f.name}`);
-    return `
-      <div class="file-history-item">
-        <span>${formatFilename(f.name)}</span>
-        <a href="${publicUrl}" target="_blank" style="color:#EAB308;"><i class="fa-solid fa-arrow-down-long"></i></a>
-      </div>
-    `;
-  }).join('');
-}
-
-function setupUploadListeners() {
-  const fileInput = document.getElementById("file-input");
-  const dashboardFileInput = document.getElementById("dashboard-file-input");
-
-  const handleUpload = async (inputElem, statusId) => {
-    const file = inputElem.files[0];
-    const status = document.getElementById(statusId);
-    if (!file || !currentUser || !supabaseClient) return;
-
-    if (status) {
-      status.textContent = "Uploading...";
-      status.style.color = "#EAB308";
-    }
-
-    const filePath = `homework/${currentUser.id}/${Date.now()}_${file.name}`;
-    const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
-
-    if (error) {
-      if (status) {
-        status.textContent = "Upload failed.";
-        status.style.color = "#EF4444";
+      const { error } = await supabaseClient.from("messages").insert([payload]);
+      if (!error) {
+        loadStudentChat(currentUser.id);
       }
-    } else {
-      if (status) {
-        status.textContent = "Uploaded successfully!";
-        status.style.color = "#10B981";
+    }
+
+    async function toggleVoiceRecording() {
+      const statusLbl = document.getElementById("voice-recording-status");
+      const micBtnLabel = document.getElementById("mic-btn-label");
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+          mediaRecorder.start();
+
+          isRecording = true;
+          statusLbl.textContent = "● Recording...";
+          micBtnLabel.textContent = "Stop Recording";
+        } catch (err) {
+          alert("Microphone access denied or unavailable.");
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        statusLbl.textContent = "";
+        micBtnLabel.textContent = "Voice Note";
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioFile = new File([audioBlob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
+
+          const filePath = `chat_audio/${currentUser.id}/${audioFile.name}`;
+          const { error } = await supabaseClient.storage.from("student-files").upload(filePath, audioFile);
+
+          if (!error) {
+            const audioUrl = getStorageFileUrl(filePath);
+            await supabaseClient.from("messages").insert([{
+              student_id: currentUser.id,
+              sender_role: "student",
+              message_text: "[Voice Note]",
+              audio_url: audioUrl
+            }]);
+            loadStudentChat(currentUser.id);
+          }
+        };
       }
-      loadStudentUploadedFiles(currentUser.id);
     }
-  };
 
-  if (fileInput) {
-    fileInput.addEventListener("change", () => handleUpload(fileInput, "upload-status"));
-  }
+    // ==========================================
+    // 4. GEMINI EDGE FUNCTION ("Gemini_quiz")
+    // ==========================================
+    async function generateGeminiQuiz() {
+      const topicInput = document.getElementById("quiz-topic-input").value || "High School Mathematics";
+      const difficulty = document.getElementById("quiz-difficulty").value;
+      const statusDiv = document.getElementById("quiz-status");
+      const containerDiv = document.getElementById("quiz-container");
 
-  if (dashboardFileInput) {
-    dashboardFileInput.addEventListener("change", () => handleUpload(dashboardFileInput, "dashboard-upload-status"));
-  }
-}
+      statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EAB308;">Generating quiz with Gemini AI...</p>`;
+      containerDiv.innerHTML = "";
 
-// ==========================================
-// 7. GEMINI QUIZ GENERATOR
-// ==========================================
-async function generateGeminiQuiz() {
-  const topicInput = document.getElementById("quiz-topic-input");
-  const difficultyInput = document.getElementById("quiz-difficulty");
-  const status = document.getElementById("quiz-status");
-  const container = document.getElementById("quiz-container");
+      try {
+        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
+          body: { topic: topicInput, difficulty: difficulty }
+        });
 
-  const topic = topicInput?.value.trim();
-  const difficulty = difficultyInput?.value || "Medium";
+        if (error) throw error;
 
-  if (!topic) {
-    if (status) {
-      status.textContent = "Please specify a topic for the quiz.";
-      status.style.color = "#EF4444";
+        statusDiv.innerHTML = "";
+        const quizList = data?.questions || [
+          {
+            question: `Sample question on ${topicInput}: Simplify 2x + 3x`,
+            options: ["5x", "6x", "5x²", "x"],
+            answer: "5x",
+            explanation: "Combine like terms: 2x + 3x = (2+3)x = 5x."
+          }
+        ];
+
+        containerDiv.innerHTML = quizList.map((q, idx) => `
+          <div class="quiz-card">
+            <p style="font-weight:700; font-size:0.9rem; margin-bottom:8px;">Q${idx+1}: ${q.question}</p>
+            ${q.options.map(opt => `
+              <button class="quiz-option-btn" onclick="checkQuizAnswer(this, '${opt}', '${q.answer}', '${q.explanation.replace(/'/g, "\\'")}')">${opt}</button>
+            `).join('')}
+            <div class="quiz-explanation" style="display:none; font-size:0.8rem; margin-top:8px; padding:8px; background:#EFF6FF; color:#1E40AF; border-radius:6px;"></div>
+          </div>
+        `).join('');
+
+        if (window.MathJax) MathJax.typesetPromise([containerDiv]).catch(() => {});
+      } catch (err) {
+        console.error("Quiz Generation Error:", err);
+        statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EF4444;">Failed to generate quiz. Try again.</p>`;
+      }
     }
-    return;
-  }
 
-  if (status) {
-    status.textContent = "Generating AI Quiz...";
-    status.style.color = "#EAB308";
-  }
-  if (container) container.innerHTML = "";
+    function checkQuizAnswer(btn, selected, correct, explanation) {
+      const parent = btn.parentElement;
+      const expDiv = parent.querySelector(".quiz-explanation");
 
-  try {
-    const { data, error } = await supabaseClient.functions.invoke('generate-gemini-quiz', {
-      body: { topic, difficulty }
-    });
+      if (selected === correct) {
+        btn.style.background = "#D1FAE5";
+        btn.style.borderColor = "#059669";
+        expDiv.style.display = "block";
+        expDiv.innerHTML = `<strong>Correct!</strong> ${explanation}`;
+      } else {
+        btn.style.background = "#FEE2E2";
+        btn.style.borderColor = "#EF4444";
+        expDiv.style.display = "block";
+        expDiv.innerHTML = `<strong>Incorrect.</strong> ${explanation}`;
+      }
+    }
 
-    if (error) throw error;
+    // ==========================================
+    // 5. GRADES TABLE & PERFORMANCE TREND ("grades")
+    // ==========================================
+    async function loadStudentGrades(studentId) {
+      const tbody = document.getElementById('grades-table-body');
+      const statAvgBox = document.getElementById('stat-avg-box');
+      if (!supabaseClient || !tbody || !studentId) return;
 
-    if (status) status.textContent = "";
-    if (container && data && data.questions) {
-      container.innerHTML = data.questions.map((q, idx) => `
-        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:10px;">
-          <p style="font-weight:700; font-size:0.85rem; margin-bottom:8px;">Q${idx + 1}: ${q.question}</p>
-          ${q.options.map(opt => `
-            <label style="display:block; font-size:0.8rem; margin-bottom:4px;">
-              <input type="radio" name="q_${idx}" value="${opt}"> ${opt}
-            </label>
-          `).join('')}
+      try {
+        const { data: grades, error } = await supabaseClient
+          .from('grades')
+          .select('*')
+          .eq('student_id', studentId)
+          .order('created_at', { ascending: true });
+
+        if (error || !grades || grades.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
+          renderPerformanceChart(['No Data'], [0]);
+          return;
+        }
+
+        tbody.innerHTML = grades.map(g => {
+          const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
+          return `
+            <tr>
+              <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.assessment_title || g.title || 'Assessment'}</td>
+              <td style="padding: 12px 10px; color: #64748B;">${g.created_at ? new Date(g.created_at).toLocaleDateString('en-ZA') : (g.date || 'N/A')}</td>
+              <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
+              <td style="padding: 12px 10px;"><span class="class-status">${g.status || 'Verified'}</span></td>
+            </tr>
+          `;
+        }).join('');
+
+        const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
+        const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+        renderPerformanceChart(grades.map(g => g.assessment_name || g.assessment_title || g.title || 'Task'), scores);
+      } catch (err) {
+        console.error("Error loading grades:", err);
+        tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grade entries.</td></tr>`;
+      }
+    }
+
+    function renderPerformanceChart(labels, data) {
+      const ctx = document.getElementById('performanceChart')?.getContext('2d');
+      if (!ctx) return;
+
+      if (myPerformanceChart) myPerformanceChart.destroy();
+
+      myPerformanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Score %',
+            data: data,
+            borderColor: '#EAB308',
+            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, max: 100 }
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // 6. UPLOADS MANAGEMENT
+    // ==========================================
+    async function loadStudentUploadedFiles(studentId) {
+      const listContainer = document.getElementById("uploaded-files-list");
+      if (!supabaseClient || !listContainer || !studentId) return;
+
+      const { data: files, error } = await supabaseClient.storage.from("student-files").list(`uploads/${studentId}`);
+
+      if (error || !files || files.length === 0) {
+        listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
+        return;
+      }
+
+      listContainer.innerHTML = files.map(f => `
+        <div class="file-history-item">
+          <span>${f.name}</span>
+          <i class="fa-solid fa-check" style="color:#059669;"></i>
         </div>
       `).join('');
     }
-  } catch (err) {
-    if (status) {
-      status.textContent = "Could not generate quiz. Using fallback system.";
-      status.style.color = "#EF4444";
+
+    function setupUploadListeners() {
+      const fileInput = document.getElementById("file-input");
+      const dashFileInput = document.getElementById("dashboard-file-input");
+
+      const handleUpload = async (inputElem, statusId) => {
+        const file = inputElem.files[0];
+        const statusElem = document.getElementById(statusId);
+        if (!file || !currentUser) return;
+
+        statusElem.textContent = "Uploading...";
+        statusElem.style.color = "#EAB308";
+
+        const filePath = `uploads/${currentUser.id}/${Date.now()}_${file.name}`;
+        const { error } = await supabaseClient.storage.from("student-files").upload(filePath, file);
+
+        if (error) {
+          statusElem.textContent = "Upload failed.";
+          statusElem.style.color = "#EF4444";
+        } else {
+          statusElem.textContent = "Upload successful!";
+          statusElem.style.color = "#059669";
+          loadStudentUploadedFiles(currentUser.id);
+        }
+      };
+
+      fileInput?.addEventListener("change", () => handleUpload(fileInput, "upload-status"));
+      dashFileInput?.addEventListener("change", () => handleUpload(dashFileInput, "dashboard-upload-status"));
     }
-  }
-}
   </script>
 </body>
 </html>
