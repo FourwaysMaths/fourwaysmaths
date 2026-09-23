@@ -1685,13 +1685,79 @@
       });
     }
 
-    function getFolderPath(grade, paper) {
-      const gradeClean = grade.replace(/[^a-zA-Z0-9]/g, '');
-      const paperClean = paper.replace(/\s+/g, '');
-      return `PastPapers/${gradeClean}/${paperClean}`;
+   async function loadPastPapers() {
+  const container = document.getElementById("past-paper-categories");
+  const status = document.getElementById("past-paper-status");
+  const selectedGrade = document.getElementById("past-paper-grade-select").value;
+  const selectedStream = document.getElementById("past-paper-stream-select").value;
+
+  if (!container) return;
+
+  container.innerHTML = '<div class="skeleton-box" style="height: 120px;"></div>';
+  if (status) status.textContent = "Loading past papers...";
+
+  // Attempt common folder naming variations inside your 'study-notes' bucket
+  const possiblePaths = [
+    `PastPapers/${selectedGrade}`,
+    `PastPapers/${selectedGrade.replace(/[^a-zA-Z0-9]/g, '')}`,
+    selectedGrade.includes("8") ? "Gr8&9" : `Grade_${selectedGrade}`,
+    "" // Root folder check
+  ];
+
+  let fileList = [];
+  let successfulPath = "";
+
+  try {
+    for (const path of possiblePaths) {
+      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(path, { limit: 100 });
+      if (!error && data && data.length > 0) {
+        // Exclude empty folder place-holders
+        const validFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
+        if (validFiles.length > 0) {
+          fileList = validFiles;
+          successfulPath = path;
+          break;
+        }
+      }
     }
 
-    async function loadPastPapers() {
+    if (fileList.length === 0) {
+      container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly found in folder for ${selectedStream} (${selectedGrade}).</p>`;
+      if (status) status.textContent = "";
+      return;
+    }
+
+    if (status) status.textContent = `Found ${fileList.length} items.`;
+
+    container.innerHTML = `
+      <div class="past-paper-category" style="background:#FFF; padding:20px; border-radius:12px; border:1px solid #E2E8F0;">
+        <div class="past-paper-category-header" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+          <i class="fa-solid fa-folder-open" style="color:#EAB308; font-size:1.2rem;"></i>
+          <h3 style="font-size: 1rem; color:#0F172A;">Past Examination Archive (${selectedGrade})</h3>
+        </div>
+        <div class="resource-list" style="display:flex; flex-direction:column; gap:8px;">
+          ${fileList.map(f => {
+            const fullPath = successfulPath ? `${successfulPath}/${f.name}` : f.name;
+            const publicUrl = getStorageFileUrl(fullPath);
+            return `
+              <a href="${publicUrl}" target="_blank" class="pdf-chip">
+                <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
+                <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+                <i class="fa-solid fa-arrow-down-long download-icon"></i>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    console.error("Error loading past papers:", err);
+    container.innerHTML = `<p style="font-size:0.85rem; color:#EF4444;">Unable to load past papers at this time.</p>`;
+    if (status) status.textContent = "";
+  }
+}
+
+async function loadPastPapers() {
       const container = document.getElementById("past-paper-categories");
       const status = document.getElementById("past-paper-status");
       const selectedGrade = document.getElementById("past-paper-grade-select").value;
@@ -1702,31 +1768,50 @@
       container.innerHTML = '<div class="skeleton-box" style="height: 120px;"></div>';
       if (status) status.textContent = "Loading past papers...";
 
-      const folderPath = getFolderPath(selectedGrade, "Paper 1");
-      
-      try {
-        if (!supabaseClient) throw new Error("Supabase is not initialized.");
-        const { data: fileList, error } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
+      const possiblePaths = [
+        `PastPapers/${selectedGrade}`,
+        `PastPapers/${selectedGrade.replace(/[^a-zA-Z0-9]/g, '')}`,
+        selectedGrade.includes("8") ? "Gr8&9" : `Grade_${selectedGrade}`,
+        ""
+      ];
 
-        if (error || !fileList || fileList.length === 0) {
-          container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly uploaded for ${selectedStream} (${selectedGrade}) yet.</p>`;
+      let fileList = [];
+      let successfulPath = "";
+
+      try {
+        for (const path of possiblePaths) {
+          const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(path, { limit: 100 });
+          if (!error && data && data.length > 0) {
+            const validFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
+            if (validFiles.length > 0) {
+              fileList = validFiles;
+              successfulPath = path;
+              break;
+            }
+          }
+        }
+
+        if (fileList.length === 0) {
+          container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly found in folder for ${selectedStream} (${selectedGrade}).</p>`;
           if (status) status.textContent = "";
           return;
         }
 
-        if (status) status.textContent = `Found ${fileList.length} past paper files.`;
+        if (status) status.textContent = `Found ${fileList.length} items.`;
+
         container.innerHTML = `
-          <div class="past-paper-category">
-            <div class="past-paper-category-header">
-              <i class="fa-solid fa-folder-open"></i>
-              <h3 style="font-size: 1rem;">Past Examination Archive</h3>
+          <div class="past-paper-category" style="background:#FFF; padding:20px; border-radius:12px; border:1px solid #E2E8F0;">
+            <div class="past-paper-category-header" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+              <i class="fa-solid fa-folder-open" style="color:#EAB308; font-size:1.2rem;"></i>
+              <h3 style="font-size: 1rem; color:#0F172A;">Past Examination Archive (${selectedGrade})</h3>
             </div>
-            <div class="resource-list">
+            <div class="resource-list" style="display:flex; flex-direction:column; gap:8px;">
               ${fileList.map(f => {
-                const publicUrl = getStorageFileUrl(`${folderPath}/${f.name}`);
+                const fullPath = successfulPath ? `${successfulPath}/${f.name}` : f.name;
+                const publicUrl = getStorageFileUrl(fullPath);
                 return `
                   <a href="${publicUrl}" target="_blank" class="pdf-chip">
-                    <i class="fa-solid fa-file-pdf"></i>
+                    <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
                     <span class="pdf-chip-title">${formatFilename(f.name)}</span>
                     <i class="fa-solid fa-arrow-down-long download-icon"></i>
                   </a>
@@ -1736,6 +1821,7 @@
           </div>
         `;
       } catch (err) {
+        console.error("Error loading past papers:", err);
         container.innerHTML = `<p style="font-size:0.85rem; color:#EF4444;">Unable to load past papers at this time.</p>`;
         if (status) status.textContent = "";
       }
@@ -1928,7 +2014,7 @@
       const { data } = await supabaseClient.from('messages').select('*').or(`sender_id.eq.${userId},receiver_id.eq.${userId}`).order('created_at', { ascending: true });
 
       if (!data || data.length === 0) {
-        chatBox.innerHTML = `<p style="font-size: 0.8rem; color: #94A3B8; text-align: center; margin-auto: 0;">Start a conversation with Gcina Sithole...</p>`;
+        chatBox.innerHTML = `<p style="font-size: 0.8rem; color: #94A3B8; text-align: center; margin: auto 0;">Start a conversation with Gcina Sithole...</p>`;
         return;
       }
 
@@ -1966,132 +2052,47 @@
         return;
       }
 
-      listContainer.innerHTML = data.map(f => `
-        <div class="file-history-item">
-          <span>${formatFilename(f.name)}</span>
-          <i class="fa-solid fa-check" style="color: #059669;"></i>
-        </div>
-      `).join('');
+      listContainer.innerHTML = data.map(file => {
+        const publicUrl = getStorageFileUrl(`student_uploads/${userId}/${file.name}`);
+        return `
+          <div class="file-history-item">
+            <span>${file.name}</span>
+            <a href="${publicUrl}" target="_blank" style="color: #EAB308;"><i class="fa-solid fa-download"></i></a>
+          </div>
+        `;
+      }).join('');
     }
 
     function setupUploadListeners() {
-      const fileInput = document.getElementById("file-input");
-      const avatarInput = document.getElementById("avatar-input");
+      const fileInputs = [
+        { id: "file-input", statusId: "upload-status" },
+        { id: "dashboard-file-input", statusId: "dashboard-upload-status" }
+      ];
 
-      fileInput?.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file || !currentUser || !supabaseClient) return;
+      fileInputs.forEach(({ id, statusId }) => {
+        const inputElem = document.getElementById(id);
+        const statusElem = document.getElementById(statusId);
 
-        const status = document.getElementById("upload-status");
-        status.textContent = "Uploading...";
+        if (inputElem) {
+          inputElem.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentUser || !supabaseClient) return;
 
-        const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
-        const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
+            if (statusElem) statusElem.textContent = "Uploading...";
+            const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
 
-        if (error) {
-          status.textContent = "Upload failed.";
-        } else {
-          status.textContent = "Upload successful!";
-          loadStudentUploadedFiles(currentUser.id);
+            const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
+
+            if (error) {
+              if (statusElem) statusElem.textContent = "Upload failed.";
+              console.error(error);
+            } else {
+              if (statusElem) statusElem.textContent = "Uploaded successfully!";
+              loadStudentUploadedFiles(currentUser.id);
+            }
+          });
         }
       });
-
-      avatarInput?.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file || !currentUser || !supabaseClient) return;
-
-        const filePath = `avatars/${currentUser.id}`;
-        const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file, { upsert: true });
-
-        if (!error) {
-          const publicUrl = getStorageFileUrl(filePath);
-          document.getElementById("user-avatar").src = publicUrl;
-          await supabaseClient.auth.updateUser({ data: { avatar_url: publicUrl } });
-        }
-      });
-    }
-
-    function toggleVoiceRecorder() {
-      const rec = document.getElementById("voice-recorder");
-      if (rec) rec.style.display = rec.style.display === "none" ? "flex" : "none";
-    }
-
-    function toggleVoiceRecording() {
-      const status = document.getElementById("voice-recording-status");
-      const btn = document.getElementById("btn-record-voice");
-
-      if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-          mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-            selectedChatAttachment = new File([audioBlob], "voicenote.mp3", { type: 'audio/mp3' });
-            document.getElementById("chat-attachment-preview").textContent = "Voice note attached!";
-          };
-          mediaRecorder.start();
-          status.textContent = "Recording...";
-          btn.innerHTML = `<i class="fa-solid fa-square" style="color:#EF4444;"></i> Stop`;
-        });
-      } else {
-        mediaRecorder.stop();
-        status.textContent = "";
-        btn.innerHTML = `<i class="fa-solid fa-circle" style="color:#EF4444;"></i> Start Recording`;
-      }
-    }
-
-    function handleChatImageSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        selectedChatAttachment = file;
-        document.getElementById("chat-attachment-preview").textContent = `Attached: ${file.name}`;
-      }
-    }
-
-    async function generateGeminiQuiz() {
-      const topic = document.getElementById("quiz-topic-input").value.trim();
-      const status = document.getElementById("quiz-status");
-      const container = document.getElementById("quiz-container");
-
-      if (!topic) {
-        status.textContent = "Please specify a topic first.";
-        return;
-      }
-
-      status.textContent = "Generating quiz via Gemini AI...";
-      container.innerHTML = `<div class="skeleton-box" style="height: 100px;"></div>`;
-
-      try {
-        if (!supabaseClient) throw new Error("Supabase is not initialized.");
-        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
-          body: { topic: topic, difficulty: document.getElementById("quiz-difficulty").value }
-        });
-
-        if (error || !data) throw error;
-
-        status.textContent = "";
-        container.innerHTML = `
-          <div class="quiz-question">
-            <strong>Q: ${data.question}</strong>
-            ${data.options.map((opt, i) => `
-              <button class="quiz-option" onclick="checkQuizAnswer(this, ${i === data.correct_index}, '${data.explanation.replace(/'/g, "\\'")}')">
-                ${opt}
-              </button>
-            `).join('')}
-          </div>
-        `;
-      } catch (err) {
-        status.textContent = "Could not generate AI quiz. Please try again.";
-        container.innerHTML = "";
-      }
-    }
-
-    function checkQuizAnswer(btn, isCorrect, explanation) {
-      btn.classList.add(isCorrect ? "correct" : "incorrect");
-      if (!isCorrect) {
-        alert("Incorrect! Explanation: " + explanation);
-      }
     }
   </script>
 </body>
