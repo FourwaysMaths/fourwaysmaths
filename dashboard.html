@@ -1716,12 +1716,12 @@
 // 1. PAST PAPERS (Restored Paths + Checklist Upgrade)
 // ==========================================
 async function loadPastPapers() {
-  const selectedGrade = document.getElementById("past-paper-grade-select").value;
-  const selectedStream = document.getElementById("past-paper-stream-select").value;
+  const selectedGrade = document.getElementById("past-paper-grade-select")?.value;
+  const selectedStream = document.getElementById("past-paper-stream-select")?.value;
   const p1Container = document.getElementById("past-paper-1-list");
   const p2Container = document.getElementById("past-paper-2-list");
 
-  if (!p1Container || !p2Container) return;
+  if (!p1Container || !p2Container || !selectedGrade) return;
 
   p1Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
   p2Container.innerHTML = `<div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>`;
@@ -1957,6 +1957,8 @@ async function stopVoiceRecordingAndSend() {
 // Gemini AI Query Integration
 async function askGeminiAI(promptText) {
   const chatBox = document.getElementById("chat-box");
+  if (!chatBox) return;
+
   chatBox.innerHTML += `
     <div style="align-self: flex-start; max-width: 80%; background: #3B82F6; color: #FFF; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; margin-bottom: 8px;">
       <strong>Gemini AI Math Assistant:</strong> <em>Thinking...</em>
@@ -1965,7 +1967,6 @@ async function askGeminiAI(promptText) {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   try {
-    // Calling internal endpoint / Cloud Function wrapping Gemini API
     const response = await fetch('/api/gemini-math-explain', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2052,104 +2053,126 @@ function openFormulaSheetModal() {
   if (container) container.innerHTML = formulasHtml;
   if (modal) modal.style.display = "block";
 }
-    async function loadStudentUploadedFiles(userId) {
-      const listContainer = document.getElementById("uploaded-files-list");
-      if (!supabaseClient || !listContainer) return;
 
-      const userFolder = `homework/${userId}`;
-      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(userFolder);
+// ==========================================
+// 6. STUDENT FILE UPLOADS
+// ==========================================
+async function loadStudentUploadedFiles(userId) {
+  const listContainer = document.getElementById("uploaded-files-list");
+  if (!supabaseClient || !listContainer) return;
 
-      if (error || !data || data.length === 0) {
-        listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
-        return;
-      }
+  const userFolder = `homework/${userId}`;
+  const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(userFolder);
 
-      listContainer.innerHTML = data.map(f => {
-        const publicUrl = getStorageFileUrl(`${userFolder}/${f.name}`);
-        return `
-          <div class="file-history-item">
-            <span>${formatFilename(f.name)}</span>
-            <a href="${publicUrl}" target="_blank" style="color:#EAB308;"><i class="fa-solid fa-arrow-down-long"></i></a>
-          </div>
-        `;
-      }).join('');
-    }
+  if (error || !data || data.length === 0) {
+    listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
+    return;
+  }
 
-    function setupUploadListeners() {
-      const fileInput = document.getElementById("file-input");
-      const dashboardFileInput = document.getElementById("dashboard-file-input");
+  listContainer.innerHTML = data.map(f => {
+    const publicUrl = getStorageFileUrl(`${userFolder}/${f.name}`);
+    return `
+      <div class="file-history-item">
+        <span>${formatFilename(f.name)}</span>
+        <a href="${publicUrl}" target="_blank" style="color:#EAB308;"><i class="fa-solid fa-arrow-down-long"></i></a>
+      </div>
+    `;
+  }).join('');
+}
 
-      const handleUpload = async (inputElem, statusId) => {
-        const file = inputElem.files[0];
-        const status = document.getElementById(statusId);
-        if (!file || !currentUser || !supabaseClient) return;
+function setupUploadListeners() {
+  const fileInput = document.getElementById("file-input");
+  const dashboardFileInput = document.getElementById("dashboard-file-input");
 
-        status.textContent = "Uploading...";
-        status.style.color = "#EAB308";
+  const handleUpload = async (inputElem, statusId) => {
+    const file = inputElem.files[0];
+    const status = document.getElementById(statusId);
+    if (!file || !currentUser || !supabaseClient) return;
 
-        const filePath = `homework/${currentUser.id}/${Date.now()}_${file.name}`;
-        const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
-
-        if (error) {
-          status.textContent = "Upload failed.";
-          status.style.color = "#EF4444";
-        } else {
-          status.textContent = "Uploaded successfully!";
-          status.style.color = "#10B981";
-          loadStudentUploadedFiles(currentUser.id);
-        }
-      };
-
-      if (fileInput) {
-        fileInput.addEventListener("change", () => handleUpload(fileInput, "upload-status"));
-      }
-
-      if (dashboardFileInput) {
-        dashboardFileInput.addEventListener("change", () => handleUpload(dashboardFileInput, "dashboard-upload-status"));
-      }
-    }
-
-    async function generateGeminiQuiz() {
-      const topic = document.getElementById("quiz-topic-input").value.trim();
-      const difficulty = document.getElementById("quiz-difficulty").value;
-      const status = document.getElementById("quiz-status");
-      const container = document.getElementById("quiz-container");
-
-      if (!topic) {
-        status.textContent = "Please specify a topic for the quiz.";
-        status.style.color = "#EF4444";
-        return;
-      }
-
-      status.textContent = "Generating AI Quiz...";
+    if (status) {
+      status.textContent = "Uploading...";
       status.style.color = "#EAB308";
-      container.innerHTML = "";
+    }
 
-      try {
-        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
-          body: { topic, difficulty }
-        });
+    const filePath = `homework/${currentUser.id}/${Date.now()}_${file.name}`;
+    const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
 
-        if (error) throw error;
-
-        status.textContent = "";
-        if (data && data.questions) {
-          container.innerHTML = data.questions.map((q, idx) => `
-            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:10px;">
-              <p style="font-weight:700; font-size:0.85rem; margin-bottom:8px;">Q${idx+1}: ${q.question}</p>
-              ${q.options.map(opt => `
-                <label style="display:block; font-size:0.8rem; margin-bottom:4px;">
-                  <input type="radio" name="q_${idx}" value="${opt}"> ${opt}
-                </label>
-              `).join('')}
-            </div>
-          `).join('');
-        }
-      } catch (err) {
-        status.textContent = "Could not generate quiz. Using fallback system.";
+    if (error) {
+      if (status) {
+        status.textContent = "Upload failed.";
         status.style.color = "#EF4444";
       }
+    } else {
+      if (status) {
+        status.textContent = "Uploaded successfully!";
+        status.style.color = "#10B981";
+      }
+      loadStudentUploadedFiles(currentUser.id);
     }
+  };
+
+  if (fileInput) {
+    fileInput.addEventListener("change", () => handleUpload(fileInput, "upload-status"));
+  }
+
+  if (dashboardFileInput) {
+    dashboardFileInput.addEventListener("change", () => handleUpload(dashboardFileInput, "dashboard-upload-status"));
+  }
+}
+
+// ==========================================
+// 7. GEMINI QUIZ GENERATOR
+// ==========================================
+async function generateGeminiQuiz() {
+  const topicInput = document.getElementById("quiz-topic-input");
+  const difficultyInput = document.getElementById("quiz-difficulty");
+  const status = document.getElementById("quiz-status");
+  const container = document.getElementById("quiz-container");
+
+  const topic = topicInput?.value.trim();
+  const difficulty = difficultyInput?.value || "Medium";
+
+  if (!topic) {
+    if (status) {
+      status.textContent = "Please specify a topic for the quiz.";
+      status.style.color = "#EF4444";
+    }
+    return;
+  }
+
+  if (status) {
+    status.textContent = "Generating AI Quiz...";
+    status.style.color = "#EAB308";
+  }
+  if (container) container.innerHTML = "";
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('generate-gemini-quiz', {
+      body: { topic, difficulty }
+    });
+
+    if (error) throw error;
+
+    if (status) status.textContent = "";
+    if (container && data && data.questions) {
+      container.innerHTML = data.questions.map((q, idx) => `
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:10px;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:8px;">Q${idx + 1}: ${q.question}</p>
+          ${q.options.map(opt => `
+            <label style="display:block; font-size:0.8rem; margin-bottom:4px;">
+              <input type="radio" name="q_${idx}" value="${opt}"> ${opt}
+            </label>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    if (status) {
+      status.textContent = "Could not generate quiz. Using fallback system.";
+      status.style.color = "#EF4444";
+    }
+  }
+}
   </script>
 </body>
 </html>
