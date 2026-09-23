@@ -1772,66 +1772,67 @@
     // ==========================================
     // 4. GEMINI EDGE FUNCTION ("Gemini_quiz")
     // ==========================================
-    async function generateGeminiQuiz() {
-      const topicInput = document.getElementById("quiz-topic-input").value || "High School Mathematics";
-      const difficulty = document.getElementById("quiz-difficulty").value;
-      const statusDiv = document.getElementById("quiz-status");
-      const containerDiv = document.getElementById("quiz-container");
+   async function generateGeminiQuiz() {
+  const topicInput = document.getElementById("quiz-topic-input").value || "High School Mathematics";
+  const difficulty = document.getElementById("quiz-difficulty").value;
+  const statusDiv = document.getElementById("quiz-status");
+  const containerDiv = document.getElementById("quiz-container");
 
-      statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EAB308;">Generating quiz with Gemini AI...</p>`;
-      containerDiv.innerHTML = "";
+  statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EAB308;">Generating quiz with Gemini AI...</p>`;
+  containerDiv.innerHTML = "";
 
-      try {
-        const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
-          body: { topic: topicInput, difficulty: difficulty }
-        });
-
-        if (error) throw error;
-
-        statusDiv.innerHTML = "";
-        const quizList = data?.questions || [
-          {
-            question: `Sample question on ${topicInput}: Simplify 2x + 3x`,
-            options: ["5x", "6x", "5x²", "x"],
-            answer: "5x",
-            explanation: "Combine like terms: 2x + 3x = (2+3)x = 5x."
-          }
-        ];
-
-        containerDiv.innerHTML = quizList.map((q, idx) => `
-          <div class="quiz-card">
-            <p style="font-weight:700; font-size:0.9rem; margin-bottom:8px;">Q${idx+1}: ${q.question}</p>
-            ${q.options.map(opt => `
-              <button class="quiz-option-btn" onclick="checkQuizAnswer(this, '${opt}', '${q.answer}', '${q.explanation.replace(/'/g, "\\'")}')">${opt}</button>
-            `).join('')}
-            <div class="quiz-explanation" style="display:none; font-size:0.8rem; margin-top:8px; padding:8px; background:#EFF6FF; color:#1E40AF; border-radius:6px;"></div>
-          </div>
-        `).join('');
-
-        if (window.MathJax) MathJax.typesetPromise([containerDiv]).catch(() => {});
-      } catch (err) {
-        console.error("Quiz Generation Error:", err);
-        statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EF4444;">Failed to generate quiz. Try again.</p>`;
+  try {
+    const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
+      body: { 
+        topic: topicInput, 
+        difficulty: difficulty,
+        grade: "Grade 9" // Passed explicitly for your function prompt
       }
-    }
+    });
 
-    function checkQuizAnswer(btn, selected, correct, explanation) {
-      const parent = btn.parentElement;
-      const expDiv = parent.querySelector(".quiz-explanation");
+    if (error) throw error;
 
-      if (selected === correct) {
-        btn.style.background = "#D1FAE5";
-        btn.style.borderColor = "#059669";
-        expDiv.style.display = "block";
-        expDiv.innerHTML = `<strong>Correct!</strong> ${explanation}`;
-      } else {
-        btn.style.background = "#FEE2E2";
-        btn.style.borderColor = "#EF4444";
-        expDiv.style.display = "block";
-        expDiv.innerHTML = `<strong>Incorrect.</strong> ${explanation}`;
+    statusDiv.innerHTML = "";
+    
+    // Updated to access data.quiz instead of data.questions
+    const rawQuizList = data?.quiz || [
+      {
+        question: `Sample question on ${topicInput}: Simplify 2x + 3x`,
+        options: ["5x", "6x", "5x²", "x"],
+        answerIndex: 0,
+        explanation: "Combine like terms: 2x + 3x = (2+3)x = 5x."
       }
-    }
+    ];
 
+    // Map answerIndex to string answer for compatibility
+    const quizList = rawQuizList.map(q => ({
+      ...q,
+      answer: q.answer || (q.options && q.answerIndex !== undefined ? q.options[q.answerIndex] : "")
+    }));
+
+    containerDiv.innerHTML = quizList.map((q, idx) => `
+      <div class="quiz-card" style="background:#FFF; padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid #E2E8F0;">
+        <p style="font-weight:700; font-size:0.9rem; margin-bottom:8px; color:#0F172A;">Q${idx+1}: ${q.question}</p>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          ${q.options.map(opt => `
+            <button class="quiz-option-btn" 
+                    style="padding:8px 12px; text-align:left; border:1px solid #CBD5E1; border-radius:6px; background:#F8FAFC; cursor:pointer;" 
+                    onclick="checkQuizAnswer(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}', '${q.explanation.replace(/'/g, "\\'")}')">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-explanation" style="display:none; font-size:0.8rem; margin-top:8px; padding:8px; background:#EFF6FF; color:#1E40AF; border-radius:6px;"></div>
+      </div>
+    `).join('');
+
+    if (window.MathJax) MathJax.typesetPromise([containerDiv]).catch(() => {});
+  } catch (err) {
+    console.error("Quiz Generation Error:", err);
+    statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EF4444;">Failed to generate quiz. Try again.</p>`;
+  }
+}
+    
     // ==========================================
     // 5. GRADES TABLE & PERFORMANCE TREND ("grades")
     // ==========================================
