@@ -342,6 +342,15 @@
       border: 1px solid #E2E8F0;
     }
 
+    .class-status {
+      background: #ECFDF5;
+      color: #059669;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
     .grade-select-wrapper {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -382,6 +391,10 @@
       cursor: pointer;
       outline: none;
       transition: all 0.2s;
+    }
+
+    .grade-dropdown:focus {
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.3);
     }
 
     .paper-cards-grid {
@@ -566,6 +579,20 @@
       overflow: hidden;
     }
 
+    .pdf-chip i.fa-file-pdf {
+      color: #EF4444;
+      font-size: 1rem;
+    }
+
+    .pdf-chip i.download-icon {
+      color: #94A3B8;
+      font-size: 0.85rem;
+    }
+
+    .pdf-chip:hover i.download-icon {
+      color: #EAB308;
+    }
+
     .btn-back-paper {
       background: #E2E8F0;
       color: #1E293B;
@@ -605,6 +632,7 @@
       display: none;
     }
 
+    /* Skeleton Loader */
     .skeleton-box {
       background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
       background-size: 200% 100%;
@@ -617,6 +645,7 @@
       100% { background-position: -200% 0; }
     }
 
+    /* Floating Formula Button & Drawer */
     .fab-formula-btn {
       position: fixed;
       bottom: 25px;
@@ -716,6 +745,10 @@
       margin-left: 8px;
     }
 
+    .formula-copy-btn:hover {
+      color: #EAB308;
+    }
+
     .drawer-overlay {
       position: fixed;
       top: 0;
@@ -731,6 +764,7 @@
       display: block;
     }
 
+    /* Dashboard Countdown Banner */
     .countdown-banner {
       background: #1E293B;
       color: #FFF;
@@ -749,6 +783,7 @@
       font-size: 1.05rem;
     }
 
+    /* Quick Upload Area */
     .quick-upload {
       background: #FFF;
       border: 2px dashed #CBD5E1;
@@ -781,6 +816,11 @@
       font-size: 0.85rem;
     }
 
+    .quick-upload-btn:hover {
+      background: #0F172A;
+    }
+
+    /* Enhancements Grid (Formulas & Gemini AI Quiz) */
     .enhancement-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -817,6 +857,10 @@
       font-size: 0.88rem;
       margin-bottom: 12px;
       outline: none;
+    }
+
+    .formula-search:focus, .quiz-topic-input:focus {
+      border-color: #EAB308;
     }
 
     .quiz-controls {
@@ -856,6 +900,58 @@
       gap: 6px;
     }
 
+    .btn-primary-gold:hover {
+      background: #CA8A04;
+    }
+
+    .quiz-status {
+      font-size: 0.8rem;
+      color: #64748B;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .quiz-question {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .quiz-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border: 1px solid #CBD5E1;
+      background: #FFF;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: #EAB308;
+      background: #FEFCE8;
+    }
+
+    .quiz-option.correct {
+      background: #DCFCE7 !important;
+      border-color: #22C55E !important;
+      color: #15803D !important;
+      font-weight: 700;
+    }
+
+    .quiz-option.incorrect {
+      background: #FEE2E2 !important;
+      border-color: #EF4444 !important;
+      color: #B91C1C !important;
+    }
+
+    /* Past Papers Section */
     .resource-filter-bar {
       background: #FFF;
       border: 1px solid #E2E8F0;
@@ -869,6 +965,96 @@
       font-size: 0.85rem;
     }
 
+    .resource-filter-bar select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .past-paper-category {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .past-paper-category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 10px;
+    }
+
+    .past-paper-category-header i {
+      color: #EAB308;
+      font-size: 1.2rem;
+    }
+
+    .term-block {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .term-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .paper-memo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .paper-memo-column {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .paper-memo-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748B;
+      letter-spacing: 0.5px;
+    }
+
+    .paper-pair-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .paper-pair-row input[type="checkbox"] {
+      margin-top: 10px;
+      accent-color: #EAB308;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .completion-note {
+      font-size: 0.72rem;
+      color: #64748B;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Chat Attachment Bar */
     .chat-attachment-bar {
       display: flex;
       gap: 8px;
@@ -890,6 +1076,17 @@
       gap: 6px;
     }
 
+    .chat-attach-btn:hover {
+      background: #E2E8F0;
+    }
+
+    .chat-attachment-preview {
+      font-size: 0.75rem;
+      color: #059669;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
     @media (max-width: 900px) {
       body {
         flex-direction: column;
@@ -906,11 +1103,20 @@
         bottom: 0;
         left: 0;
         z-index: 1000;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
       }
 
       .nav-menu {
         flex-direction: row;
         gap: 12px;
+      }
+
+      .nav-item::after {
+        display: none;
+      }
+
+      .brand-logo-img {
+        width: 36px;
       }
 
       .portal-container {
@@ -919,16 +1125,37 @@
         padding-bottom: 70px;
       }
 
+      .profile-panel, .analytics-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid #E2E8F0;
+      }
+
+      .main-panel {
+        padding: 20px 15px;
+      }
+
+      .fab-formula-btn {
+        bottom: 75px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 0.8rem;
+      }
+
       .formula-drawer {
         width: 100%;
         right: -100%;
+      }
+
+      .paper-memo-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. LEFT SIDEBAR -->
+  <!-- 1. LEFT SIDEBAR WITH TOOLTIPS -->
   <nav class="sidebar-nav">
     <a href="index.html">
       <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
@@ -959,7 +1186,9 @@
       <button class="close-drawer-btn" onclick="toggleFormulaDrawer()">&times;</button>
     </div>
     <input id="formula-search-drawer" class="formula-search" type="search" placeholder="Search drawer formulas..." oninput="filterFormulaDrawerItems(this.value)">
-    <div id="drawer-content" style="overflow-y: auto; flex: 1;"></div>
+    <div id="drawer-content" style="overflow-y: auto; flex: 1;">
+      <!-- Content populated dynamically -->
+    </div>
   </aside>
 
   <!-- 2. MAIN DASHBOARD CONTAINER -->
@@ -980,6 +1209,7 @@
         <span class="badge-icon" id="display-subject-tag"> Mathematics</span>
       </div>
 
+      <!-- Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
         <h4 style="font-size: 0.95rem;">Upload Files</h4>
@@ -988,6 +1218,7 @@
         <input type="file" id="file-input" />
         <p id="upload-status" class="upload-status"></p>
 
+        <!-- Uploaded Files Log -->
         <div class="uploaded-files-container">
           <div class="uploaded-files-title">My Uploaded Homework</div>
           <div id="uploaded-files-list">
@@ -997,7 +1228,7 @@
       </div>
     </section>
 
-    <!-- CENTER PANEL: DYNAMIC VIEWS -->
+    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
     <section class="main-panel">
 
       <!-- VIEW 1: DASHBOARD -->
@@ -1055,7 +1286,7 @@
             <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:#EAB308;"></i> Gemini AI Quiz</h3>
             <p>Generate a short multiple-choice quiz for the selected grade and topic. Wrong answers can reveal an explanation.</p>
             <div class="quiz-controls">
-              <input id="quiz-topic-input" class="quiz-topic-input" type="text" placeholder="Topic e.g. Exponents Grade 9">
+              <input id="quiz-topic-input" class="quiz-topic-input" type="text" placeholder="Topic e.g. Functions">
               <select id="quiz-difficulty" class="enhancement-select">
                 <option value="easy">Easy</option>
                 <option value="medium" selected>Medium</option>
@@ -1068,6 +1299,7 @@
           </div>
         </div>
 
+        <!-- GRADE & SUBJECT STREAM SELECTOR BAR -->
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
             <label for="study-stream-select">
@@ -1092,6 +1324,7 @@
           </div>
         </div>
 
+        <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
             <div class="paper-card" onclick="selectPaper('Paper 1')">
@@ -1107,6 +1340,7 @@
           </div>
         </div>
 
+        <!-- Paper Topics View -->
         <div id="paper-topics-view" style="display: none;">
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
@@ -1114,6 +1348,7 @@
             <strong><i class="fa-solid fa-filter" style="color:#EAB308;"></i> Filter Topics:</strong>
             <input type="text" id="topic-search-filter" placeholder="Search topic titles..." oninput="filterStudyTopics(this.value)" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #CBD5E1; font-size: 0.82rem; flex: 1;">
           </div>
+          
           <div class="topic-grid" id="topics-container"></div>
         </div>
       </div>
@@ -1254,7 +1489,7 @@
   <script>
     const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    const GEMINI_FUNCTION_NAME = "Gemini_quiz";
+    const GEMINI_FUNCTION_NAME = "generate-quiz";
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
     const BUCKET_NAME = "study-notes";
 
@@ -1356,17 +1591,6 @@
     function getStorageFileUrl(filePath) {
       const { data } = supabaseClient.storage.from(BUCKET_NAME).getPublicUrl(filePath);
       return data ? data.publicUrl : "#";
-    }
-
-    function getYouTubeEmbedUrl(url) {
-      if (!url) return null;
-      let videoId = "";
-      if (url.includes("v=")) {
-        videoId = url.split("v=")[1].split("&")[0];
-      } else if (url.includes("youtu.be/")) {
-        videoId = url.split("youtu.be/")[1].split("?")[0];
-      }
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
     }
 
     const gr89Paper1FolderMap = {
@@ -1685,148 +1909,6 @@
       });
     }
 
-   async function loadPastPapers() {
-  const container = document.getElementById("past-paper-categories");
-  const status = document.getElementById("past-paper-status");
-  const selectedGrade = document.getElementById("past-paper-grade-select").value;
-  const selectedStream = document.getElementById("past-paper-stream-select").value;
-
-  if (!container) return;
-
-  container.innerHTML = '<div class="skeleton-box" style="height: 120px;"></div>';
-  if (status) status.textContent = "Loading past papers...";
-
-  // Attempt common folder naming variations inside your 'study-notes' bucket
-  const possiblePaths = [
-    `PastPapers/${selectedGrade}`,
-    `PastPapers/${selectedGrade.replace(/[^a-zA-Z0-9]/g, '')}`,
-    selectedGrade.includes("8") ? "Gr8&9" : `Grade_${selectedGrade}`,
-    "" // Root folder check
-  ];
-
-  let fileList = [];
-  let successfulPath = "";
-
-  try {
-    for (const path of possiblePaths) {
-      const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(path, { limit: 100 });
-      if (!error && data && data.length > 0) {
-        // Exclude empty folder place-holders
-        const validFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
-        if (validFiles.length > 0) {
-          fileList = validFiles;
-          successfulPath = path;
-          break;
-        }
-      }
-    }
-
-    if (fileList.length === 0) {
-      container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly found in folder for ${selectedStream} (${selectedGrade}).</p>`;
-      if (status) status.textContent = "";
-      return;
-    }
-
-    if (status) status.textContent = `Found ${fileList.length} items.`;
-
-    container.innerHTML = `
-      <div class="past-paper-category" style="background:#FFF; padding:20px; border-radius:12px; border:1px solid #E2E8F0;">
-        <div class="past-paper-category-header" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-          <i class="fa-solid fa-folder-open" style="color:#EAB308; font-size:1.2rem;"></i>
-          <h3 style="font-size: 1rem; color:#0F172A;">Past Examination Archive (${selectedGrade})</h3>
-        </div>
-        <div class="resource-list" style="display:flex; flex-direction:column; gap:8px;">
-          ${fileList.map(f => {
-            const fullPath = successfulPath ? `${successfulPath}/${f.name}` : f.name;
-            const publicUrl = getStorageFileUrl(fullPath);
-            return `
-              <a href="${publicUrl}" target="_blank" class="pdf-chip">
-                <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-                <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-                <i class="fa-solid fa-arrow-down-long download-icon"></i>
-              </a>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
-  } catch (err) {
-    console.error("Error loading past papers:", err);
-    container.innerHTML = `<p style="font-size:0.85rem; color:#EF4444;">Unable to load past papers at this time.</p>`;
-    if (status) status.textContent = "";
-  }
-}
-
-async function loadPastPapers() {
-      const container = document.getElementById("past-paper-categories");
-      const status = document.getElementById("past-paper-status");
-      const selectedGrade = document.getElementById("past-paper-grade-select").value;
-      const selectedStream = document.getElementById("past-paper-stream-select").value;
-
-      if (!container) return;
-
-      container.innerHTML = '<div class="skeleton-box" style="height: 120px;"></div>';
-      if (status) status.textContent = "Loading past papers...";
-
-      const possiblePaths = [
-        `PastPapers/${selectedGrade}`,
-        `PastPapers/${selectedGrade.replace(/[^a-zA-Z0-9]/g, '')}`,
-        selectedGrade.includes("8") ? "Gr8&9" : `Grade_${selectedGrade}`,
-        ""
-      ];
-
-      let fileList = [];
-      let successfulPath = "";
-
-      try {
-        for (const path of possiblePaths) {
-          const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list(path, { limit: 100 });
-          if (!error && data && data.length > 0) {
-            const validFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
-            if (validFiles.length > 0) {
-              fileList = validFiles;
-              successfulPath = path;
-              break;
-            }
-          }
-        }
-
-        if (fileList.length === 0) {
-          container.innerHTML = `<p style="font-size:0.85rem; color:#64748B;">No past papers directly found in folder for ${selectedStream} (${selectedGrade}).</p>`;
-          if (status) status.textContent = "";
-          return;
-        }
-
-        if (status) status.textContent = `Found ${fileList.length} items.`;
-
-        container.innerHTML = `
-          <div class="past-paper-category" style="background:#FFF; padding:20px; border-radius:12px; border:1px solid #E2E8F0;">
-            <div class="past-paper-category-header" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-              <i class="fa-solid fa-folder-open" style="color:#EAB308; font-size:1.2rem;"></i>
-              <h3 style="font-size: 1rem; color:#0F172A;">Past Examination Archive (${selectedGrade})</h3>
-            </div>
-            <div class="resource-list" style="display:flex; flex-direction:column; gap:8px;">
-              ${fileList.map(f => {
-                const fullPath = successfulPath ? `${successfulPath}/${f.name}` : f.name;
-                const publicUrl = getStorageFileUrl(fullPath);
-                return `
-                  <a href="${publicUrl}" target="_blank" class="pdf-chip">
-                    <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-                    <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-                    <i class="fa-solid fa-arrow-down-long download-icon"></i>
-                  </a>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      } catch (err) {
-        console.error("Error loading past papers:", err);
-        container.innerHTML = `<p style="font-size:0.85rem; color:#EF4444;">Unable to load past papers at this time.</p>`;
-        if (status) status.textContent = "";
-      }
-    }
-
     async function selectPaper(paperName) {
       currentActivePaper = paperName;
       const selectedGrade = document.getElementById("study-grade-select").value;
@@ -1958,140 +2040,503 @@ async function loadPastPapers() {
       container.innerHTML = cardsHtml;
     }
 
-    async function loadUpcomingClasses(userId) {
-      const container = document.getElementById("upcoming-classes-container");
-      const calendarContainer = document.getElementById("calendar-classes-container");
-      if (!supabaseClient) return;
+    const PAST_PAPER_TERMS = ["March/April", "May/June", "September", "November"];
+    const PAST_PAPER_CATEGORIES = [
+      {key:"paper1", label:"Paper 1 past papers", icon:"fa-file-invoice"},
+      {key:"paper2", label:"Paper 2 past papers", icon:"fa-file-invoice"},
+      {key:"mixed", label:"Mixed topics past papers", icon:"fa-layer-group"}
+    ];
 
-      const { data } = await supabaseClient.from('schedules').select('*').order('class_time', { ascending: true });
+    function normalisePastPaperTerm(name) {
+      const n = name.toLowerCase().replace(/[_-]+/g, " ");
+      if (n.includes("march") || n.includes("april")) return "March/April";
+      if (n.includes("may") || n.includes("june")) return "May/June";
+      if (n.includes("september") || n.includes("sep")) return "September";
+      if (n.includes("november") || n.includes("nov")) return "November";
+      return "Uncategorised";
+    }
 
-      if (!data || data.length === 0) {
-        const noClasses = `<p style="font-size: 0.85rem; color: #64748B;">No upcoming classes scheduled.</p>`;
-        if (container) container.innerHTML = noClasses;
-        if (calendarContainer) calendarContainer.innerHTML = noClasses;
+    function pastPaperCompletionKey(category, term, base) {
+      const stream = document.getElementById("past-paper-stream-select").value;
+      const grade = document.getElementById("past-paper-grade-select").value;
+      return `4wm_completed_${currentUser?.id || "student"}_${stream}_${grade}_${category}_${term}_${base}`;
+    }
+
+    function cleanPaperBase(filename) {
+      return formatFilename(filename)
+        .replace(/\b(memo|memorandum)\b/ig, "")
+        .replace(/\b(paper|question paper)\b/ig, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function classifyPastPaperCategory(filename, sourceCategory) {
+      const n = filename.toLowerCase();
+      if (sourceCategory === "paper1" || /paper\s*1|p1/.test(n)) return "paper1";
+      if (sourceCategory === "paper2" || /paper\s*2|p2/.test(n)) return "paper2";
+      if (/mixed|all\s*topics|mixed\s*topic/.test(n)) return "mixed";
+      return sourceCategory;
+    }
+
+    function isMemoFile(filename) {
+      return /memo|memorandum/i.test(filename);
+    }
+
+    async function listPastPaperCandidates(basePaths) {
+      const found = [];
+      for (const item of basePaths) {
+        const {data, error} = await supabaseClient.storage.from(BUCKET_NAME).list(item.path, {limit: 100});
+        if (error || !data) continue;
+        data.filter(f => /\.pdf$/i.test(f.name)).forEach(f => {
+          found.push({name:f.name, path:`${item.path}/${f.name}`, category:item.category});
+        });
+      }
+      return found;
+    }
+
+    function buildPastPaperPairs(files) {
+      const groups = {};
+      files.forEach(file => {
+        const term = normalisePastPaperTerm(file.name);
+        const category = classifyPastPaperCategory(file.name, file.category);
+        if (!PAST_PAPER_TERMS.includes(term)) return;
+        const base = cleanPaperBase(file.name);
+        const key = `${category}||${term}||${base.toLowerCase()}`;
+        if (!groups[key]) groups[key] = {category, term, base, paper:null, memo:null};
+        if (isMemoFile(file.name)) groups[key].memo = file;
+        else groups[key].paper = file;
+      });
+      return Object.values(groups);
+    }
+
+    function togglePastPaperCompletion(key, checked) {
+      localStorage.setItem(key, checked ? "1" : "0");
+    }
+
+    function renderPastPaperCategories(pairs) {
+      const container = document.getElementById("past-paper-categories");
+      if (!container) return;
+
+      container.innerHTML = PAST_PAPER_CATEGORIES.map(category => `
+        <section class="past-paper-category">
+          <div class="past-paper-category-header">
+            <i class="fa-solid ${category.icon}"></i>
+            <h3 style="font-size:1.05rem;">${category.label}</h3>
+          </div>
+          ${PAST_PAPER_TERMS.map((term, tIdx) => {
+            const termPairs = pairs.filter(p => p.category === category.key && p.term === term);
+            return `
+              <div class="term-block">
+                <div class="term-title">${term}</div>
+                <div class="paper-memo-grid">
+                  <div class="paper-memo-column">
+                    <div class="paper-memo-label">Paper</div>
+                    ${termPairs.length ? termPairs.map(p => `
+                      <div class="paper-pair-row">
+                        <input type="checkbox" ${localStorage.getItem(pastPaperCompletionKey(p.category,p.term,p.base))==="1"?"checked":""}
+                          onchange="togglePastPaperCompletion('${pastPaperCompletionKey(p.category,p.term,p.base)}', this.checked)">
+                        <div style="min-width:0;flex:1;">
+                          ${p.paper ? `<a href="${getStorageFileUrl(p.paper.path)}" target="_blank" class="pdf-chip" rel="noopener"><i class="fa-solid fa-file-pdf"></i><span class="pdf-chip-title">${formatFilename(p.paper.name)}</span><i class="fa-solid fa-arrow-up-right-from-square download-icon"></i></a>` : '<span style="font-size:0.75rem;color:#94A3B8;">Not uploaded</span>'}
+                        </div>
+                      </div>`).join("") : '<span style="font-size:0.75rem;color:#94A3B8;">No papers uploaded for this term.</span>'}
+                  </div>
+                  <div class="paper-memo-column">
+                    <div class="paper-memo-label">Memo</div>
+                    ${termPairs.length ? termPairs.map(p => `
+                      <div class="paper-pair-row">
+                        <div style="width:24px;flex-shrink:0;"></div>
+                        <div style="min-width:0;flex:1;">
+                          ${p.memo ? `<a href="${getStorageFileUrl(p.memo.path)}" target="_blank" class="pdf-chip" rel="noopener"><i class="fa-solid fa-file-pdf"></i><span class="pdf-chip-title">${formatFilename(p.memo.name)}</span><i class="fa-solid fa-arrow-up-right-from-square download-icon"></i></a>` : '<span style="font-size:0.75rem;color:#94A3B8;">Not uploaded</span>'}
+                        </div>
+                      </div>`).join("") : '<span style="font-size:0.75rem;color:#94A3B8;">No memos uploaded for this term.</span>'}
+                  </div>
+                </div>
+                <div class="completion-note"><i class="fa-regular fa-circle-check"></i> Tick the checkbox beside a pair when you have completed it.</div>
+              </div>`;
+          }).join("")}
+        </section>
+      `).join("");
+    }
+
+    async function loadPastPapers() {
+      const selectedGrade = document.getElementById("past-paper-grade-select").value;
+      const selectedStream = document.getElementById("past-paper-stream-select").value;
+      const status = document.getElementById("past-paper-status");
+      const container = document.getElementById("past-paper-categories");
+      if (!supabaseClient || !container) return;
+
+      status.textContent = "Loading past papers...";
+      container.innerHTML = `
+        <div class="enhancement-grid">
+          <div class="skeleton-box" style="height:220px;"></div>
+          <div class="skeleton-box" style="height:220px;"></div>
+        </div>`;
+
+      const streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
+      const baseCandidates = [
+        {path:selectedGrade === "Grade 8 & 9" ? "Gr8&9/Paper1_worksheets/Past papers" : `${streamPrefix}${selectedGrade}/Paper1/Past papers`, category:"paper1"},
+        {path:selectedGrade === "Grade 8 & 9" ? "Gr8&9/Paper2_worksheets/Past papers" : `${streamPrefix}${selectedGrade}/Paper2/Past papers`, category:"paper2"},
+        {path:selectedGrade === "Grade 8 & 9" ? "Gr8&9/Mixed topics past papers" : `${streamPrefix}${selectedGrade}/Mixed topics past papers`, category:"mixed"},
+        {path:selectedGrade === "Grade 8 & 9" ? "Gr8&9/Mixed topics/Past papers" : `${streamPrefix}${selectedGrade}/Mixed topics/Past papers`, category:"mixed"}
+      ];
+
+      const files = await listPastPaperCandidates(baseCandidates);
+      const pairs = buildPastPaperPairs(files);
+      renderPastPaperCategories(pairs);
+
+      const count = files.length;
+      status.textContent = count
+        ? `${count} past-paper file${count === 1 ? "" : "s"} found.`
+        : "No past-paper files were found in the configured storage folders yet.";
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      if (!url) return null;
+      let videoId = "";
+      if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
+      else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    }
+
+    let quizState = {questions: [], index: 0};
+
+    async function generateGeminiQuiz() {
+      const status = document.getElementById("quiz-status");
+      const container = document.getElementById("quiz-container");
+      const topic = document.getElementById("quiz-topic-input").value.trim() ||
+        (currentActivePaper ? currentActivePaper : "Mathematics");
+      const grade = document.getElementById("study-grade-select").value;
+      const stream = document.getElementById("study-stream-select").value;
+      const difficulty = document.getElementById("quiz-difficulty").value;
+
+      status.textContent = "Generating questions...";
+      container.innerHTML = "";
+
+      if (!supabaseClient) {
+        status.textContent = "Supabase is not available.";
         return;
       }
 
-      const classItems = data.map(item => `
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">${item.title || 'Maths Lesson'}</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">${new Date(item.class_time).toLocaleString()}</p>
-          </div>
-          <span class="class-status">Confirmed</span>
-        </div>
-      `).join('');
+      try {
+        const {data, error} = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
+          body: { grade, subject: stream, topic, difficulty, question_count: 5 }
+        });
 
-      if (container) container.innerHTML = classItems;
-      if (calendarContainer) calendarContainer.innerHTML = classItems;
+        if (error || !data) {
+          status.innerHTML = 'Quiz service is offline or not configured. Deploy Edge Function <code>generate-quiz</code>.';
+          return;
+        }
+
+        const questions = data.questions || data.quiz || [];
+        if (!questions.length) {
+          status.textContent = "No questions generated. Try another topic.";
+          return;
+        }
+
+        quizState = {questions, index: 0};
+        status.textContent = `${questions.length} questions · ${topic} · ${difficulty}`;
+        renderQuizQuestion();
+      } catch (err) {
+        status.textContent = "Error invoking quiz function.";
+      }
+    }
+
+    function renderQuizQuestion() {
+      const container = document.getElementById("quiz-container");
+      const q = quizState.questions[quizState.index];
+      if (!q) return;
+
+      const options = q.options || q.choices || [];
+      const answerIndex = Number.isInteger(q.answer_index) ? q.answer_index :
+        (Number.isInteger(q.correct_answer) ? q.correct_answer : null);
+
+      container.innerHTML = `
+        <div class="quiz-question">
+          <div style="font-size:0.85rem;font-weight:800;margin-bottom:5px;">
+            Question ${quizState.index + 1} of ${quizState.questions.length}
+          </div>
+          <div style="font-size:0.9rem;line-height:1.45;margin-bottom:10px;">${q.question || q.prompt || ""}</div>
+          <div>
+            ${options.map((option, idx) => `
+              <button class="quiz-option" onclick="answerQuizOption(${idx},${answerIndex === null ? "null" : answerIndex})">
+                <strong>${String.fromCharCode(65 + idx)}.</strong>${option}
+              </button>`).join("")}
+          </div>
+          <div id="quiz-feedback" style="margin-top:10px;"></div>
+        </div>`;
+      if (window.MathJax) MathJax.typesetPromise([container]).catch(() => {});
+    }
+
+    function answerQuizOption(selected, correct) {
+      const q = quizState.questions[quizState.index];
+      const feedback = document.getElementById("quiz-feedback");
+
+      document.querySelectorAll(".quiz-option").forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === correct) btn.classList.add("correct");
+        if (idx === selected && selected !== correct) btn.classList.add("incorrect");
+      });
+
+      let nextBtn = '';
+      if (quizState.index < quizState.questions.length - 1) {
+        nextBtn = `<button class="btn-primary-gold" style="margin-top:10px;" onclick="nextQuizQuestion()">Next Question <i class="fa-solid fa-arrow-right"></i></button>`;
+      } else {
+        nextBtn = `<p style="font-size:0.85rem;color:#059669;font-weight:700;margin-top:10px;">Quiz complete!</p>`;
+      }
+
+      feedback.innerHTML = `
+        <div style="font-size:0.82rem; color:${selected === correct ? '#15803D' : '#B91C1C'}; font-weight:700;">
+          ${selected === correct ? 'Correct!' : 'Incorrect.'}
+        </div>
+        ${q.explanation ? `<p style="font-size:0.8rem;color:#64748B;margin-top:4px;">${q.explanation}</p>` : ''}
+        ${nextBtn}
+      `;
+    }
+
+    function nextQuizQuestion() {
+      quizState.index++;
+      renderQuizQuestion();
+    }
+
+    /* Additional Dynamic Handlers (Classes, Chat, Files, Chart) */
+    async function loadUpcomingClasses(userId) {
+      const container = document.getElementById("upcoming-classes-container");
+      const calContainer = document.getElementById("calendar-classes-container");
+      if (!supabaseClient) return;
+
+      const { data: classes } = await supabaseClient
+        .from('classes')
+        .select('*')
+        .order('start_time', { ascending: true })
+        .limit(3);
+
+      if (!classes || classes.length === 0) {
+        const noClassHtml = `<p style="font-size: 0.85rem; color: #64748B;">No upcoming classes scheduled.</p>`;
+        container.innerHTML = noClassHtml;
+        if (calContainer) calContainer.innerHTML = noClassHtml;
+        return;
+      }
+
+      let html = '';
+      classes.forEach(c => {
+        const dateStr = new Date(c.start_time).toLocaleString('en-ZA', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        html += `
+          <div class="class-item">
+            <div>
+              <div style="font-weight: 700; font-size: 0.9rem;">${c.title || 'Maths Tutorial'}</div>
+              <div style="font-size: 0.78rem; color: #64748B;">${dateStr}</div>
+            </div>
+            <span class="class-status">${c.status || 'Confirmed'}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      if (calContainer) calContainer.innerHTML = html;
+
+      // Countdown logic
+      const nextClass = classes[0];
+      if (nextClass && nextClass.start_time) {
+        const cdBanner = document.getElementById("next-class-countdown");
+        const cdValue = document.getElementById("countdown-value");
+        cdBanner.style.display = "flex";
+        
+        setInterval(() => {
+          const diff = new Date(nextClass.start_time) - new Date();
+          if (diff <= 0) {
+            cdValue.textContent = "Class in session";
+            return;
+          }
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          cdValue.textContent = `${hours}h ${mins}m`;
+        }, 1000);
+      }
     }
 
     async function loadStudentGrades(userId) {
       const tbody = document.getElementById("grades-table-body");
-      if (!supabaseClient || !tbody) return;
+      if (!supabaseClient) return;
 
-      const { data } = await supabaseClient.from('grades').select('*').eq('student_id', userId);
+      const { data: grades } = await supabaseClient
+        .from('grades')
+        .select('*')
+        .eq('student_id', userId);
 
-      if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; font-size: 0.85rem; color: #64748B;">No grade entries found yet.</td></tr>`;
+      if (!grades || grades.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; font-size:0.85rem; color:#64748B;">No grade records found.</td></tr>`;
+        initChart([]);
         return;
       }
 
-      tbody.innerHTML = data.map(g => `
-        <tr style="border-bottom: 1px solid #F1F5F9; font-size: 0.85rem;">
-          <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_title || 'Quiz'}</td>
-          <td style="padding: 12px 10px; color: #64748B;">${g.date || 'N/A'}</td>
-          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score}%</td>
-          <td style="padding: 12px 10px;"><span style="background: #DCFCE7; color: #15803D; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;">Graded</span></td>
-        </tr>
-      `).join('');
+      let scores = [];
+      tbody.innerHTML = grades.map(g => {
+        scores.push(g.score || 0);
+        return `
+          <tr style="border-bottom: 1px solid #F1F5F9; font-size: 0.85rem;">
+            <td style="padding: 10px; font-weight:600;">${g.assessment_title || 'Test'}</td>
+            <td style="padding: 10px; color:#64748B;">${g.date || 'Recent'}</td>
+            <td style="padding: 10px; font-weight:700; color:#854D0E;">${g.score}%</td>
+            <td style="padding: 10px;"><span class="class-status">${g.score >= 50 ? 'Passed' : 'Needs Work'}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      const avg = Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length);
+      document.getElementById("stat-avg-box").innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+      initChart(scores);
+    }
+
+    function initChart(scores) {
+      const ctx = document.getElementById('performanceChart')?.getContext('2d');
+      if (!ctx) return;
+      if (myPerformanceChart) myPerformanceChart.destroy();
+      
+      myPerformanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: scores.map((_, i) => `T${i+1}`),
+          datasets: [{
+            label: 'Score %',
+            data: scores.length ? scores : [60, 65, 70, 75, 82],
+            borderColor: '#EAB308',
+            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 0, max: 100 } }
+        }
+      });
     }
 
     async function loadStudentChat(userId) {
-      const chatBox = document.getElementById("chat-box");
-      if (!supabaseClient || !chatBox) return;
+      const box = document.getElementById("chat-box");
+      if (!supabaseClient) return;
 
-      const { data } = await supabaseClient.from('messages').select('*').or(`sender_id.eq.${userId},receiver_id.eq.${userId}`).order('created_at', { ascending: true });
+      const { data: messages } = await supabaseClient
+        .from('messages')
+        .select('*')
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+        .order('created_at', { ascending: true });
 
-      if (!data || data.length === 0) {
-        chatBox.innerHTML = `<p style="font-size: 0.8rem; color: #94A3B8; text-align: center; margin: auto 0;">Start a conversation with Gcina Sithole...</p>`;
+      if (!messages || messages.length === 0) {
+        box.innerHTML = `<div style="font-size:0.8rem; color:#94A3B8; text-align:center; margin-auto;">No messages yet. Send a message to start chatting!</div>`;
         return;
       }
 
-      chatBox.innerHTML = data.map(msg => {
-        const isMe = msg.sender_id === userId;
+      box.innerHTML = messages.map(m => {
+        const isMe = m.sender_id === userId;
         return `
-          <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? '#EAB308' : '#FFFFFF'}; color: ${isMe ? '#1E293B' : '#0F172A'}; padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-            ${msg.content}
+          <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? '#EAB308' : '#FFF'}; color: ${isMe ? '#1E293B' : '#0F172A'}; padding: 8px 14px; border-radius: 10px; max-width: 75%; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            ${m.message || ''}
+            ${m.attachment_url ? `<div style="margin-top:5px;"><a href="${m.attachment_url}" target="_blank" style="color:inherit;font-weight:700;text-decoration:underline;">[View Attachment]</a></div>` : ''}
           </div>
         `;
       }).join('');
-      chatBox.scrollTop = chatBox.scrollHeight;
+      box.scrollTop = box.scrollHeight;
     }
 
     async function sendChatMessage() {
       const input = document.getElementById("chat-input");
       const msg = input.value.trim();
-      if (!msg || !currentUser || !supabaseClient) return;
+      if (!msg && !selectedChatAttachment) return;
+      if (!supabaseClient || !currentUser) return;
 
-      input.value = "";
       await supabaseClient.from('messages').insert({
         sender_id: currentUser.id,
-        content: msg
+        message: msg,
+        attachment_url: selectedChatAttachment || null
       });
+
+      input.value = '';
+      selectedChatAttachment = null;
+      document.getElementById("chat-attachment-preview").textContent = '';
       loadStudentChat(currentUser.id);
     }
 
-    async function loadStudentUploadedFiles(userId) {
-      const listContainer = document.getElementById("uploaded-files-list");
-      if (!supabaseClient || !listContainer) return;
+    function handleChatImageSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        selectedChatAttachment = URL.createObjectURL(file);
+        document.getElementById("chat-attachment-preview").textContent = `Attached: ${file.name}`;
+      }
+    }
 
-      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(`student_uploads/${userId}`);
-      if (!data || data.length === 0) {
-        listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
+    function toggleVoiceRecorder() {
+      const rec = document.getElementById("voice-recorder");
+      rec.style.display = rec.style.display === "none" ? "flex" : "none";
+    }
+
+    async function toggleVoiceRecording() {
+      const btn = document.getElementById("btn-record-voice");
+      const status = document.getElementById("voice-recording-status");
+
+      if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+          selectedChatAttachment = URL.createObjectURL(blob);
+          document.getElementById("chat-attachment-preview").textContent = "Voice note attached.";
+        };
+        mediaRecorder.start();
+        btn.innerHTML = `<i class="fa-solid fa-square" style="color:#EF4444;"></i> Stop Recording`;
+        status.textContent = "Recording...";
+      } else {
+        mediaRecorder.stop();
+        btn.innerHTML = `<i class="fa-solid fa-circle" style="color:#EF4444;"></i> Start Recording`;
+        status.textContent = "Recorded";
+      }
+    }
+
+    async function loadStudentUploadedFiles(userId) {
+      const list = document.getElementById("uploaded-files-list");
+      if (!supabaseClient) return;
+
+      const { data: files } = await supabaseClient.storage.from('student-uploads').list(userId);
+      if (!files || files.length === 0) {
+        list.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
         return;
       }
 
-      listContainer.innerHTML = data.map(file => {
-        const publicUrl = getStorageFileUrl(`student_uploads/${userId}/${file.name}`);
-        return `
-          <div class="file-history-item">
-            <span>${file.name}</span>
-            <a href="${publicUrl}" target="_blank" style="color: #EAB308;"><i class="fa-solid fa-download"></i></a>
-          </div>
-        `;
-      }).join('');
+      list.innerHTML = files.map(f => `
+        <div class="file-history-item">
+          <span>${formatFilename(f.name)}</span>
+          <i class="fa-solid fa-check" style="color:#22C55E;"></i>
+        </div>
+      `).join('');
     }
 
     function setupUploadListeners() {
       const fileInputs = [
-        { id: "file-input", statusId: "upload-status" },
-        { id: "dashboard-file-input", statusId: "dashboard-upload-status" }
+        { inputId: 'file-input', statusId: 'upload-status' },
+        { inputId: 'dashboard-file-input', statusId: 'dashboard-upload-status' }
       ];
 
-      fileInputs.forEach(({ id, statusId }) => {
-        const inputElem = document.getElementById(id);
-        const statusElem = document.getElementById(statusId);
+      fileInputs.forEach(({ inputId, statusId }) => {
+        const el = document.getElementById(inputId);
+        if (!el) return;
+        el.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          const status = document.getElementById(statusId);
+          if (!file || !supabaseClient || !currentUser) return;
 
-        if (inputElem) {
-          inputElem.addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUser || !supabaseClient) return;
+          status.textContent = "Uploading...";
+          const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
+          const { error } = await supabaseClient.storage.from('student-uploads').upload(filePath, file);
 
-            if (statusElem) statusElem.textContent = "Uploading...";
-            const filePath = `student_uploads/${currentUser.id}/${Date.now()}_${file.name}`;
-
-            const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(filePath, file);
-
-            if (error) {
-              if (statusElem) statusElem.textContent = "Upload failed.";
-              console.error(error);
-            } else {
-              if (statusElem) statusElem.textContent = "Uploaded successfully!";
-              loadStudentUploadedFiles(currentUser.id);
-            }
-          });
-        }
+          if (error) {
+            status.textContent = "Upload failed.";
+          } else {
+            status.textContent = "Uploaded successfully!";
+            loadStudentUploadedFiles(currentUser.id);
+          }
+        });
       });
     }
   </script>
