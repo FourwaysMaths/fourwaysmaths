@@ -1594,10 +1594,7 @@
       });
     }
 
-    // ==========================================
-    // 1. PAST PAPERS
-    // ==========================================
-     async function loadPastPapers() {
+    async function loadPastPapers() {
     const selectedGrade = document.getElementById("past-paper-grade-select").value;
     const selectedStream = document.getElementById("past-paper-stream-select").value;
     const p1Container = document.getElementById("past-paper-1-list");
@@ -1619,22 +1616,18 @@
       p1Container.innerHTML = p1Files.filter(f => f.name.endsWith('.pdf')).map(f => {
         const fileUrl = getStorageFileUrl(`${p1FolderPath}/${f.name}`);
         return `
-              <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
-                <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
-                  <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-                  <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-                  <i class="fa-solid fa-arrow-down-long download-icon"></i>
-                </a>
-              </div>
-            `;
-          }).join('');
-          loadChecklistStates();
-        } else {
-          p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
-        }
+          <a href="${fileUrl}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
+          </a>
+        `;
+      }).join('');
+    } else {
+      p1Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 1 past exam papers available yet.</p>`;
+    }
 
-       const p2FolderPath = selectedGrade === 'Grade 8 & 9' 
+    const p2FolderPath = selectedGrade === 'Grade 8 & 9' 
       ? `Gr8&9/Paper2_worksheets/Past papers` 
       : `${streamPrefix}${selectedGrade}/Paper2/Past papers`;
 
@@ -1644,55 +1637,27 @@
       p2Container.innerHTML = p2Files.filter(f => f.name.endsWith('.pdf')).map(f => {
         const fileUrl = getStorageFileUrl(`${p2FolderPath}/${f.name}`);
         return `
-              <div class="pdf-chip-wrapper" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <input type="checkbox" id="${paperId}" class="past-paper-checkbox" onchange="togglePaperChecklist('${paperId}')">
-                <a href="${fileUrl}" target="_blank" class="pdf-chip" style="flex: 1;">
-                  <i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i>
-                  <span class="pdf-chip-title">${formatFilename(f.name)}</span>
-                  <i class="fa-solid fa-arrow-down-long download-icon"></i>
-                </a>
-              </div>
-            `;
-          }).join('');
-          loadChecklistStates();
-        } else {
-          p2Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 2 past exam papers available yet.</p>`;
-        }
-      } catch (err) {
-        console.error("Error loading past papers:", err);
-        p1Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
-        p2Container.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Error loading files.</p>`;
-      }
+          <a href="${fileUrl}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">${formatFilename(f.name)}</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
+          </a>
+        `;
+      }).join('');
+    } else {
+      p2Container.innerHTML = `<p style="color: #94A3B8; font-size: 0.85rem;">No Paper 2 past exam papers available yet.</p>`;
     }
+  }
 
-    function togglePaperChecklist(paperId) {
-      const cb = document.getElementById(paperId);
-      if (!cb) return;
-      const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
-      saved[paperId] = cb.checked;
-      localStorage.setItem('past_paper_checklist', JSON.stringify(saved));
-    }
-
-    function loadChecklistStates() {
-      const saved = JSON.parse(localStorage.getItem('past_paper_checklist') || '{}');
-      Object.keys(saved).forEach(id => {
-        const cb = document.getElementById(id);
-        if (cb) cb.checked = saved[id];
-      });
-    }
-
-    function getYouTubeEmbedUrl(url) {
+  function getYouTubeEmbedUrl(url) {
     if (!url) return null;
     let videoId = "";
     if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
     else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-    }
+  }
 
-    // ==========================================
-    // 2. UPCOMING CLASSES ("schedules")
-    // ==========================================
-    async function loadUpcomingClasses(studentId) {
+  async function loadUpcomingClasses(studentId) {
     if (!supabaseClient) return;
 
     const dashboardContainer = document.getElementById("upcoming-classes-container");
@@ -1711,87 +1676,65 @@
       return;
     }
 
-          const htmlContent = schedules.map(s => {
-          const rawDate = s.class_date || s.date || s.scheduled_at;
-          const dateFormatted = rawDate ? new Date(rawDate).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Scheduled';
-          const timeFormatted = s.class_time || s.time || '';
-          return `
-            <div class="class-item">
-              <div>
-                <h4 style="font-size: 0.95rem;">${s.topic || s.title || 'Maths Lesson'}</h4>
-                <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} ${timeFormatted ? '| ' + timeFormatted : ''}</p>
-              </div>
-              <span class="class-status">${s.status || 'Scheduled'}</span>
-            </div>
-          `;
-        }).join('');
+    const htmlContent = schedules.map(s => {
+      const dateFormatted = new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' });
+      return `
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">${s.topic}</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time}</p>
+          </div>
+          <span class="class-status">Scheduled</span>
+        </div>
+      `;
+    }).join('');
 
-        if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
-        if (calendarContainer) calendarContainer.innerHTML = htmlContent;
-      } catch (err) {
-        console.error("Error loading classes:", err);
-        const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
-        if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
-      }
+    dashboardContainer.innerHTML = htmlContent;
+    calendarContainer.innerHTML = htmlContent;
+  }
+
+  async function loadStudentChat(studentId) {
+    if (!supabaseClient) return;
+
+    const chatBox = document.getElementById("chat-box");
+    const { data: messages } = await supabaseClient
+      .from("messages")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("created_at", { ascending: true });
+
+    renderChatMessages(messages);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function renderChatMessages(messages) {
+    const chatBox = document.getElementById("chat-box");
+    if (!messages || messages.length === 0) {
+      chatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; font-size: 0.85rem;">No messages yet. Send a message to your educator below!</p>`;
+      return;
     }
 
-    // ==========================================
-    // 3. CHAT WITH EDUCATOR & "messages" TABLE
-    // ==========================================
-    async function loadStudentChat(studentId) {
-      const chatBox = document.getElementById("chat-box");
-      if (!supabaseClient || !chatBox || !studentId) return;
-
-      try {
-        const { data: messages, error } = await supabaseClient
-          .from("messages")
-          .select("*")
-          .eq("student_id", studentId)
-          .order("created_at", { ascending: true });
-
-        if (error || !messages || messages.length === 0) {
-          chatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; font-size: 0.85rem; margin: auto 0;">No messages yet. Send a message to your educator below!</p>`;
-          return;
-        }
-
-        chatBox.innerHTML = messages.map(msg => renderMessageBubble(msg, studentId)).join("");
-        chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (err) {
-        console.error("Error loading chat:", err);
-        chatBox.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem; text-align: center;">Failed to load messages.</p>`;
-      }
-    }
-
-    function renderMessageBubble(msg, studentId) {
-      const isStudent = msg.sender_role === "student" || msg.sender_id === studentId;
-      const isAI = msg.sender_role === "ai_assistant";
-
-      let bg = isStudent ? "#FEF08A" : "#FFF";
-      let color = isStudent ? "#854D0E" : "#0F172A";
-      let align = isStudent ? "flex-end" : "flex-start";
-      let borderRadius = isStudent ? "12px 12px 0 12px" : "12px 12px 12px 0";
-      let border = isStudent ? "none" : "1px solid #E2E8F0";
-      let senderName = isStudent ? "You" : (isAI ? "Gemini AI Math Assistant" : "Gcina Sithole");
-
-      if (isAI) {
-        bg = "#1E293B";
-        color = "#EAB308";
-        border = "none";
-      }
-
-      let mediaHtml = "";
+   let mediaHtml = "";
       if (msg.image_url) {
         mediaHtml += `<div style="margin-top: 6px;"><img src="${msg.image_url}" style="max-width: 100%; border-radius: 8px;" /></div>`;
       }
       if (msg.audio_url) {
         mediaHtml += `<div style="margin-top: 6px;"><audio controls src="${msg.audio_url}" style="width: 100%; max-width: 250px;"></audio></div>`;
       }
+    
+    chatBox.innerHTML = messages.map(msg => createMessageBubble(msg)).join("");
+  }
 
-      const text = msg.message_text || msg.content || "";
+  function createMessageBubble(msg) {
+    const isStudent = msg.sender_role === "student";
+    const bg = isStudent ? "#1E293B" : "#EAB308";
+    const color = isStudent ? "#FFF" : "#1E293B";
+    const align = isStudent ? "flex-end" : "flex-start";
+    const text = msg.message_text || msg.content || "";
 
       return `
         <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; border: ${border}; padding: 10px 14px; border-radius: ${borderRadius}; font-size: 0.88rem; line-height: 1.4; margin-bottom: 8px;">
-          <strong>${senderName}:</strong> ${text}
+          <strong>${isStudent ? "You" : "Gcina Sithole"}:</strong> ${text}
           ${mediaHtml}
         </div>
       `;
@@ -1805,18 +1748,25 @@
       }
     }
 
-    async function sendChatMessage() {
-      const input = document.getElementById("chat-input");
-      const text = input.value.trim();
-      if (!text && !selectedChatAttachment) return;
+   async function handleSendMessage() {
+    const input = document.getElementById("chat-input");
+    const text = input.value.trim();
+    if (!text || !currentUser) return;
 
+    input.value = "";
+    await supabaseClient.from("messages").insert([{ student_id: currentUser.id, sender_role: "student", message_text: text }]);
+    loadStudentChat(currentUser.id);
+ 
       let imageUrl = null;
       if (selectedChatAttachment) {
         const filePath = `chat_photos/${currentUser.id}/${Date.now()}_${selectedChatAttachment.name}`;
         const { error } = await supabaseClient.storage.from("student-files").upload(filePath, selectedChatAttachment);
         if (!error) {
           imageUrl = getStorageFileUrl(filePath);
-        }
+         }
+
+  document.getElementById("btn-send-chat").addEventListener("click", handleSendMessage);
+
       }
 
       const payload = {
@@ -1941,49 +1891,16 @@
   }
 }
     
-    // ==========================================
-    // 5. GRADES TABLE & PERFORMANCE TREND ("grades")
-    // ==========================================
-    async function loadStudentGrades(studentId) {
-      const tbody = document.getElementById('grades-table-body');
-      const statAvgBox = document.getElementById('stat-avg-box');
-      if (!supabaseClient || !tbody || !studentId) return;
+ <section class="analytics-panel dashboard-only">
+      <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
+      <canvas id="performanceChart" width="100" height="100"></canvas>
 
-      try {
-        const { data: grades, error } = await supabaseClient
-          .from('grades')
-          .select('*')
-          .eq('student_id', studentId)
-          .order('created_at', { ascending: true });
+      <div class="stat-box" id="stat-avg-box">
+         Current Mark Average: <strong>--%</strong>
+      </div>
+    </section>
 
-        if (error || !grades || grades.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
-          renderPerformanceChart(['No Data'], [0]);
-          return;
-        }
-
-        tbody.innerHTML = grades.map(g => {
-          const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
-          return `
-            <tr>
-              <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.assessment_title || g.title || 'Assessment'}</td>
-              <td style="padding: 12px 10px; color: #64748B;">${g.created_at ? new Date(g.created_at).toLocaleDateString('en-ZA') : (g.date || 'N/A')}</td>
-              <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
-              <td style="padding: 12px 10px;"><span class="class-status">${g.status || 'Verified'}</span></td>
-            </tr>
-          `;
-        }).join('');
-
-        const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
-        const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-
-        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
-        renderPerformanceChart(grades.map(g => g.assessment_name || g.assessment_title || g.title || 'Task'), scores);
-      } catch (err) {
-        console.error("Error loading grades:", err);
-        tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grade entries.</td></tr>`;
-      }
-    }
+  </div>
 
     function renderPerformanceChart(labels, data) {
       const ctx = document.getElementById('performanceChart')?.getContext('2d');
@@ -2013,9 +1930,6 @@
       });
     }
 
-    // ==========================================
-    // 6. UPLOADS MANAGEMENT
-    // ==========================================
     async function loadStudentUploadedFiles(studentId) {
       const listContainer = document.getElementById("uploaded-files-list");
       if (!supabaseClient || !listContainer || !studentId) return;
