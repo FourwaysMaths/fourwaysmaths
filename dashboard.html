@@ -140,11 +140,6 @@
       font-size: 1.25rem;
       overflow: hidden;
     }
-    .avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
 
     .greeting-text h1 { font-size: 1.5rem; font-weight: 800; color: #111827; }
     .greeting-text p { font-size: 0.9rem; color: var(--text-muted); }
@@ -268,6 +263,22 @@
       color: var(--primary-dark);
     }
 
+    /* Quiz Component Styling */
+    .quiz-option {
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #FFFFFF;
+      font-weight: 500;
+    }
+    .quiz-option:hover { border-color: var(--yellow-hover); background: var(--yellow-light); }
+    .quiz-option.selected { border-color: var(--yellow-hover); background: var(--yellow-accent); font-weight: 700; }
+    .quiz-option.correct-option { border-color: #059669; background: #DEF7EC; color: #03543F; font-weight: 700; }
+    .quiz-option.incorrect-option { border-color: #EF4444; background: #FDE8E8; color: #9B1C1C; }
+
     .skeleton-box {
       background: #E5E7EB;
       border-radius: 8px;
@@ -298,11 +309,9 @@
   <!-- 1. SIDEBAR NAVIGATION -->
   <aside id="sidebar">
     <div>
-      <div class="brand-logo">
-        <i class="fa-solid fa-square-root-variable"></i>
-        <span>Fourways Maths</span>
-      </div>
-      
+      <a href="index.html">
+      <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
+      </a>
       <ul class="nav-list">
         <li>
           <a href="#" class="nav-item active" data-view="dashboard">
@@ -312,6 +321,11 @@
         <li>
           <a href="#" class="nav-item" data-view="learning">
             <i class="fa-solid fa-book-open"></i> My Learning
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-view="quiz">
+            <i class="fa-solid fa-pen-to-square"></i> Practice Quiz
           </a>
         </li>
         <li>
@@ -497,7 +511,38 @@
         </div>
       </section>
 
-      <!-- VIEW 3: GRADES -->
+      <!-- VIEW 3: PRACTICE QUIZ -->
+      <section id="view-quiz" class="app-view">
+        <div style="padding: 24px 32px;">
+          <div class="card col-12">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fa-solid fa-pen-to-square"></i> Active Quiz</h2>
+              <span id="quiz-progress-text" style="font-size:0.85rem; color: var(--text-muted); font-weight: 600;">Question 1 of 3</span>
+            </div>
+
+            <div id="quiz-container">
+              <div id="quiz-question-box" style="margin-bottom: 20px;">
+                <h3 id="quiz-question-title" style="font-size: 1.1rem; margin-bottom: 12px;">Loading question...</h3>
+                <div id="quiz-options-container"></div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                <div id="quiz-feedback" style="font-weight: 600; font-size: 0.9rem;"></div>
+                <button id="btn-submit-quiz" onclick="submitQuizAnswer()" style="padding: 10px 20px; background: var(--yellow-accent); color: var(--primary-dark); font-weight: 700; border: none; border-radius: 8px; cursor: pointer;">Submit Answer</button>
+              </div>
+            </div>
+
+            <div id="quiz-results-box" style="display: none; text-align: center; padding: 20px;">
+              <i class="fa-solid fa-trophy" style="font-size: 3rem; color: var(--yellow-accent); margin-bottom: 12px;"></i>
+              <h3>Quiz Completed!</h3>
+              <p id="quiz-score-display" style="font-size: 1.25rem; font-weight: 700; margin: 10px 0;"></p>
+              <button onclick="resetQuiz()" style="padding: 10px 20px; background: var(--primary-dark); color: white; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;">Try Again</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: GRADES -->
       <section id="view-grades" class="app-view">
         <div style="padding: 24px 32px;">
           <div class="card col-12" style="margin-bottom: 20px;">
@@ -522,7 +567,7 @@
         </div>
       </section>
 
-      <!-- VIEW 4: UPCOMING CLASSES -->
+      <!-- VIEW 5: UPCOMING CLASSES -->
       <section id="view-classes" class="app-view">
         <div style="padding: 24px 32px;">
           <div class="card col-12">
@@ -534,7 +579,7 @@
         </div>
       </section>
 
-      <!-- VIEW 5: MESSAGES -->
+      <!-- VIEW 6: MESSAGES -->
       <section id="view-messages" class="app-view">
         <div style="padding: 24px 32px;">
           <div class="card col-12" style="height: 500px; display: flex; flex-direction: column;">
@@ -560,27 +605,28 @@
   let myPerformanceChart = null;
   let currentActivePaper = null;
 
-  const gr89Paper1FolderMap = {
-    'Whole numbers and integers': '1Whole numbers',
-    'Fractions and decimals': '3Fractions',
-    'Exponents': '4Exponents',
-    'Algebraic expressions': '5Expressions',
-    'Algebraic equations': '6Equations',
-    'Financial mathematics': '7Financial',
-    'Patterns': '8Patterns',
-    'Functions and relationships': '9Functions',
-    'Graphs': '10Graphs'
-  };
+  // Practice Quiz Engine State
+  const sampleQuizQuestions = [
+    {
+      question: "Solve for $x$: $2x + 5 = 15$",
+      options: ["$x = 3$", "$x = 5$", "$x = 10$", "$x = 7$"],
+      correctIndex: 1
+    },
+    {
+      question: "What is the hypotenuse of a right-angled triangle with sides 3cm and 4cm?",
+      options: ["5cm", "6cm", "7cm", "8cm"],
+      correctIndex: 0
+    },
+    {
+      question: "Simplify: $3a + 2b - a + 4b$",
+      options: ["$4a + 6b$", "$2a + 6b$", "$2a + 2b$", "$3a + 6b$"],
+      correctIndex: 1
+    }
+  ];
 
-  const gr89Paper2FolderMap = {
-    'Geometry Introduction & Lines': '10Intro Geometry lines',
-    'Geometry of parallel lines': '11Parallel lines',
-    'Triangles & Congruency': '12Triangles & Congruency',
-    'Pythagoras theorem': '13Pythagoras theorem',
-    'Translations, Reflections, Rotations': '14Transformations_graph',
-    'Perimeter, Area & Volume': '15Perimeter Area',
-    'Data Collection & Statistics': '16Statistics'
-  };
+  let currentQuestionIndex = 0;
+  let selectedOptionIndex = null;
+  let quizScore = 0;
 
   const fallbackStudyData = [
     { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
@@ -597,6 +643,7 @@
     initNavigation();
     initStreakTracker();
     initFileUpload();
+    loadQuizQuestion();
 
     if (supabaseClient) {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -646,6 +693,192 @@
       });
     });
   }
+
+  // Quiz Engine Implementation
+  function loadQuizQuestion() {
+    selectedOptionIndex = null;
+    const feedback = document.getElementById("quiz-feedback");
+    const submitBtn = document.getElementById("btn-submit-quiz");
+    
+    if (feedback) feedback.innerText = "";
+    if (submitBtn) {
+      submitBtn.innerText = "Submit Answer";
+      submitBtn.onclick = submitQuizAnswer;
+    }
+
+    const currentQ = sampleQuizQuestions[currentQuestionIndex];
+    document.getElementById("quiz-progress-text").innerText = `Question ${currentQuestionIndex + 1} of ${sampleQuizQuestions.length}`;
+    document.getElementById("quiz-question-title").innerText = currentQ.question;
+
+    const optionsContainer = document.getElementById("quiz-options-container");
+    optionsContainer.innerHTML = currentQ.options.map((opt, idx) => `
+      <div class="quiz-option" data-idx="${idx}" onclick="selectQuizOption(${idx})">${opt}</div>
+    `).join('');
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise();
+    }
+  }
+
+// Initial call to load topics when the page loads
+document.addEventListener('DOMContentLoaded', fetchAvailableTopics);
+  
+  let currentUser = null;
+  let myPerformanceChart = null;
+  let currentActivePaper = null;
+
+  const fallbackStudyData = [
+    // --- GRADE 8&9 ---
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: 'https://www.youtube.com/watch?v=c3DJOLPqWWo&list=PLU_DCVXL8MyPUSphd-e9Ckr3ac8ngd1-Q' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Exponents', description: 'Laws of exponents, integer exponents, square/cube roots, and scientific notation.', youtube_url: 'https://www.youtube.com/watch?v=36weQD824_E&list=PLU_DCVXL8MyNQOL3wJBrPkFzV0vi6Mj5t' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic expressions', description: 'Simplifying, multiplying polynomials, products of binomials, and factorisation.', youtube_url: 'https://www.youtube.com/watch?v=Yfy4wPWXHjI&list=PLU_DCVXL8MyPLoRo8i47w4clyoxm1GK4l' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic equations', description: 'Solving linear equations, bracket equations, and simple exponential equations.', youtube_url: 'https://www.youtube.com/watch?v=Yfy4wPWXHjI&list=PLU_DCVXL8MyMtMwjJzx34zo33GQv2jUqK' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Algebra', topic: 'Financial mathematics', description: 'Profit, loss, simple interest, and rate/speed/distance/time problems.', youtube_url: 'https://www.youtube.com/watch?v=DCSxBSwnjL0&list=PLU_DCVXL8MyMJwJ0pmUgc-oy9xMnlB097' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Patterns', description: 'Numeric and geometric sequences, finding the general rule (nth term).', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Functions and relationships', description: 'Input/output values, flow diagrams, and tables.', youtube_url: 'https://www.youtube.com/watch?v=oRKx3AsKaLY' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Relationships and Graphs', topic: 'Graphs', description: 'Drawing and interpreting straight-line linear graphs (y = mx + c), finding gradients and intercepts.', youtube_url: 'https://www.youtube.com/watch?v=90CmBsIgYNI' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry Introduction & Lines', description: 'Perpendicular lines, parallel lines cut by a transversal, and vertically opposite angles.', youtube_url: 'https://www.youtube.com/watch?v=swiniyRtVro' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Geometry of parallel lines', description: 'Corresponding, alternate, and co-interior angles.', youtube_url: 'https://www.youtube.com/watch?v=bHrSWfARg7I' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Triangles & Congruency', description: 'Properties of equilateral/isosceles triangles and conditions for congruency/similarity.', youtube_url: 'https://www.youtube.com/watch?v=MN5Rc-XhXa4' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Geometry of 2D Shapes & Lines', topic: 'Pythagoras theorem', description: 'Finding missing sides in right-angled triangles using a² + b² = c².', youtube_url: 'https://www.youtube.com/watch?v=uotYHqVV_HU&list=PLU_DCVXL8MyOLCVUwioubl7uZxay9byvd' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Transformation Geometry', topic: 'Translations, Reflections, Rotations', description: 'Moving, flipping, and rotating shapes on a Cartesian plane.', youtube_url: 'https://www.youtube.com/watch?v=GqHWdTLL8Qw' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Volume', description: 'Calculating perimeter, area, surface area, and volume of 2D shapes and 3D prisms.', youtube_url: 'https://www.youtube.com/watch?v=sS_ZQLvi48Y&list=PLU_DCVXL8MyPktNF2TpVe5ur4qg3vFkTm' },
+    { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 2', section: 'Data Handling', topic: 'Data Collection & Statistics', description: 'Frequency tables, graphs, mean, median, mode, range, and probability.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
+
+    // --- GRADE 10 (CORE MATHS) ---
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Algebraic Expressions & Exponents', description: 'Products, factorisation (difference of squares, trinomials, grouping), simplifying algebraic fractions, rational exponents.', youtube_url: 'https://www.youtube.com/watch?v=UV8Dbcf_3tw&list=PLU_DCVXL8MyNr7EoF0EH3uyyxwMWIxi14' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Algebra', topic: 'Equations & Inequalities', description: 'Linear equations, quadratic equations by factorisation, simultaneous equations, literal equations.', youtube_url: 'https://www.youtube.com/watch?v=AQ0FCi3oOYA&list=PLU_DCVXL8MyMtMwjJzx34zo33GQv2jUqK&index=15' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Patterns', topic: 'Number Patterns', description: 'Linear number patterns with constant first differences.', youtube_url: 'https://www.youtube.com/watch?v=_h6leOD0juY&list=PLU_DCVXL8MyOXpMKOnL6lbjwxCMfMg26T' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Graphs', description: 'Linear f(x)=mx+c, Quadratic f(x)=ax²+q, Hyperbola f(x)=a/x+q, Exponential f(x)=ab^x+q.', youtube_url: 'https://www.youtube.com/watch?v=OnIcV_pbM1s&list=PLU_DCVXL8MyNoRvpcydTNNpvbll692iGd' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Finance & Growth', description: 'Simple interest A=P(1+in), compound interest A=P(1+i)^n, inflation, exchange rates.', youtube_url: 'https://www.youtube.com/watch?v=AKU4lSQvrnI&list=PLU_DCVXL8MyOEf7oWx4CjrP33KWNKv04O' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trigonometric Ratios & Equations', description: 'Sine, Cosine, Tangent definitions in right triangles, unit circle, solving simple trig equations.', youtube_url: 'https://www.youtube.com/watch?v=4jSqFXdmKR0&list=PLU_DCVXL8MyOCpoTstYOBnYEwpdBun3pX' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Cartesian Coordinate Geometry', description: 'Distance formula, gradient of line, midpoint formula, parallel and perpendicular lines.', youtube_url: 'https://www.youtube.com/watch?v=H5hq7wkldj8&list=PLU_DCVXL8MyMzOFmSNyQH9rq3oh8Y0lU_' },
+    { subject: 'Mathematics', grade: 'Grade 10', paper: 'Paper 2', section: 'Statistics', topic: 'Measures of Central Tendency & Dispersion', description: 'Grouped data, mean, median, mode, five-number summary, box and whisker plots.', youtube_url: 'https://www.youtube.com/watch?v=xi8VjMmWdgI&list=PLU_DCVXL8MyOOUbM1E5t5h1gDnirK7dVi' },
+
+    // --- GRADE 11 (CORE MATHS) ---
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Algebra', topic: 'Exponents, Surds & Equations', description: 'Surd equations, solving quadratics using completing the square and quadratic formula, inequalities.', youtube_url: 'https://www.youtube.com/watch?v=XofwHRrFKNE&list=PLU_DCVXL8MyN3WecirANwTB3e8Ooy3x4_&pp=0gcJCf4COCosWNin' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Patterns', topic: 'Quadratic Number Patterns', description: 'Second differences, general term Tn = an² + bn + c.', youtube_url: 'https://www.youtube.com/watch?v=Ws_tyxB-Xyo&list=PLU_DCVXL8MyM5gt1mH6iq1E33WcpJ3eTH' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Functions', topic: 'Functions & Transformations', description: 'Parabola, Hyperbola, Exponential functions with horizontal and vertical shifts, axes of symmetry.', youtube_url: 'https://www.youtube.com/watch?v=VEFdT971Tzs&list=PLU_DCVXL8MyPIaFDwQITXenLPVzPLM7B7' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Depreciation & Nominal/Effective Rates', description: 'Straight-line and reducing balance depreciation, interest rate conversions.', youtube_url: 'https://www.youtube.com/watch?v=odpS_jVL-zM&list=PLU_DCVXL8MyPvtfGcmsJxC3w0eR07C6QQ' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Probability Rules & Venn Diagrams', description: 'Mutually exclusive & independent events, tree diagrams, Venn diagrams.', youtube_url: 'https://www.youtube.com/watch?v=PZpZBlqDEmE&list=PLU_DCVXL8MyMwNbYOh_R-4kSp8G0BavW8' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Identities, Reduction & Equations', description: 'sin²/cos² identities, reduction formulas for all quadrants, general solution of trig equations.', youtube_url: 'https://www.youtube.com/watch?v=XXwMYNorbaI&list=PLU_DCVXL8MyM3bl71J1E8w_LWRVGt8IXI' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trig Functions', topic: 'Sine, Cosine & Tan graphs', description: 'Trig functions horizontal shift, determining the equation and, sketching the graphs', youtube_url: 'https://www.youtube.com/watch?v=aqaWbNqM0aU&list=PLU_DCVXL8MyNSenwlz0mdinXYwl-3myMU' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan()=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: 'https://www.youtube.com/watch?v=KjVc1xdh78Q&list=PLU_DCVXL8MyPk4vSIOKfS1Gk3C9dsOYWA' },
+
+    // --- GRADE 12 (CORE MATHS) ---
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Patterns', topic: 'Arithmetic & Geometric Sequences & Series', description: 'General terms, sum formulas Sn, sum to infinity for convergent geometric series, sigma notation.', youtube_url: 'https://www.youtube.com/watch?v=B8dKyX9g7Fk&list=PLU_DCVXL8MyPIXj7twby7-xtcs9hekRVn' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Functions', topic: 'Inverse Functions & Logarithms', description: 'Definition of inverse functions f¹, logarithmic function as inverse of exponential.', youtube_url: 'https://www.youtube.com/watch?v=9jT3q9CCc2Y' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Calculus', topic: 'Differential Calculus & Curve Sketching', description: 'Limits, first principles derivative, rules of differentiation, tangents to curves, cubic graphs, maxima & minima optimization.', youtube_url: 'https://www.youtube.com/watch?v=4VUWIiudCk0&list=PLU_DCVXL8MyP_xzgHLGl89rWRiS2jLHNk' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Annuities & Loan Repayments', description: 'Present value PVA, future value FVA, deferred annuities, sinking funds.', youtube_url: 'https://www.youtube.com/watch?v=KbFqPQZyQ0g&list=PLU_DCVXL8MyPZRWmE6MVzwuBlg2hfuvoT' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Counting Principles & Probability', description: 'Fundamental counting principle, factorials, permutations, combinations.', youtube_url: 'https://www.youtube.com/watch?v=loYKqFQcksY&list=PLU_DCVXL8MyPJINt5go5JRtKhcEGc2bz5' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Trigonometry', topic: 'Compound & Double Angle Identities', description: 'cos(A±B), sin(A±B), double angle identities, solving 3D trig problems.', youtube_url: 'https://www.youtube.com/watch?v=yq76CaYxPWc&list=PLU_DCVXL8MyNp2vqZjZvDTRDxf6oCuf7l' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Circles & Tangents', description: 'Equation of circle (x-a)²+(y-b)²=r², equations of tangent lines to circles.', youtube_url: 'https://www.youtube.com/watch?v=cjP4tmQtxEs&list=PLU_DCVXL8MyPiQexgRohpf0G0o_DEHpQH' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Proportionality & Similarity Theorems', description: 'Line parallel to one side of triangle divides other sides proportionally, similar triangles ratio theorems.', youtube_url: 'https://www.youtube.com/watch?v=DHDKaIuUGnA&list=PLU_DCVXL8MyMfSj1cUq05oB6enr8aVRGg' },
+    { subject: 'Mathematics', grade: 'Grade 12', paper: 'Paper 2', section: 'Statistics', topic: 'Bivariate Data & Regression', description: 'Scatter plots, line of best fit, least squares regression line, correlation coefficient r.', youtube_url: 'https://www.youtube.com/watch?v=yXbx5EHE1ag&list=PLU_DCVXL8MyPUhwqhNcdwUxXCG7_BSZMw' },
+
+    // --- MATHEMATICAL LITERACY TEMPLATES (GRADE 10) ---
+    { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Financial Documents & Budgeting', description: 'Reading payslips, till slips, invoices, personal income/expenditure statements, and simple budgets.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Finance', topic: 'Tariff Systems', description: 'Calculating costs for municipal water, electricity, cellphone contracts, and transport tariffs.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 1', section: 'Data Handling', topic: 'Data Collection & Display', description: 'Organising data, tallies, bar graphs, pie charts, histograms, and interpreting statistical summaries.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 2', section: 'Measurement', topic: 'Conversions & Measuring Tools', description: 'Converting units of length, volume, mass, temperature (Celsius to Fahrenheit), and reading measuring tools.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 10', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Scale & Map Reading', description: 'Understanding bar and number scales, navigating seating plans, layout drawings, and floor plans.', youtube_url: '' },
+
+    // --- MATHEMATICAL LITERACY TEMPLATES (GRADE 11) ---
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Finance', topic: 'Taxation, Interest & Inflation', description: 'Simple vs compound interest calculations, understanding VAT (15%), inflation rates, and personal tax tables.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Data Handling', topic: 'Box-and-Whisker & Percentiles', description: 'Interquartile range, percentiles, cumulative frequency, and comparing datasets.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 1', section: 'Probability', topic: 'Expressions of Probability', description: 'Tree diagrams, two-way contingency tables, prediction vs relative frequency in practical contexts.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 2', section: 'Measurement', topic: 'Perimeter, Area & Packaging', description: 'Calculating surface area and volume of complex 3D shapes, optimal packaging arrangements.', youtube_url: '' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 11', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Route Maps & Elevations', description: 'Determining distance using scale on strip maps, elevation maps, and assembly plans.', youtube_url: '' },
+
+    // --- MATHEMATICAL LITERACY TEMPLATES (GRADE 12) ---
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Financial Documents', description: 'Tax Documents, employee income, and loan documents e.g., statements/loan institutions showing loan agreements, etc', youtube_url: 'https://www.youtube.com/watch?v=1tW7gt497sA' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Taxation', description: 'Calculating annual taxable income, tax, tax rebates, medical tax credits, investments.', youtube_url: 'https://www.youtube.com/watch?v=Ewccl2QLwnc&list=PLrYbkqr3qrA4YSBF0RPwhyAKN3dQSOsAj' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Tariff Systems', description: 'Calculate household or company costs of electricity, water, telephone, and municipal tariffs', youtube_url: 'https://www.youtube.com/watch?v=PRQDJXVl3CA' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Income and Expenditure', description: 'Businesses: A comparison of income/expenditure/profit/loss values over a period of time', youtube_url: 'https://www.youtube.com/watch?v=bdVNXiES6Ms&t=1s' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Cost Price & Selling Price', description: 'Cost of producing/manufacturing, approppriate selling price, percentage profit, and break-even analysis', youtube_url: 'https://www.youtube.com/watch?v=lblQbJeRu9I&list=PLrYbkqr3qrA6nfeFFMS7MYgf4BlkHHo_v' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Statistics', topic: 'Data Handling', description: 'Statistical calculations, analysing and summarising data, through exam questions', youtube_url: 'https://www.youtube.com/watch?v=RgIcsLDvKhw&pp=ygUgZ3JhZGUgMTIgbWF0aHMgbGl0IGRhdGEgaGFuZGxpbmc%3D' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Statistics', topic: 'Data Handling 2', description: 'Statistical calculations, focusing on Measures of Central Tendencies (Mean, Median, and mode) etc', youtube_url: 'https://www.youtube.com/watch?v=gafrJqc0fZA' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Probability', topic: 'Data Analysis & Risk Assessment', description: 'Critiquing graphical representations, identifying bias, and multi-step probability scenarios.', youtube_url: 'https://www.youtube.com/watch?v=iqWBoOfatjw' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Interest Rates', description: 'Simple Interest and Compound Interest comparisons in real life contexts.', youtube_url: 'https://www.youtube.com/watch?v=le6w0YG-ecE&pp=ygUnaW50ZXJlc3QgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN50gcJCSQMAYcqIYzv' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 1', section: 'Finance', topic: 'Financial Contexts', description: 'VAT and more exam questions that are focused on Finance', youtube_url: 'https://www.youtube.com/watch?v=TJwcA-nryzA&list=PLU_DCVXL8MyNeJQgWxUSaihehVZci17hZ' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Conversions', topic: 'Conversion factors and tables', description: 'Converting to and from Metric/Imperial systems, degrees celcius and fahrenheit, and time etc', youtube_url: 'https://www.youtube.com/watch?v=OnHUREYnzlU' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Perimeter and Area', description: 'Calculating the perimeter and Area in real life contexts', youtube_url: 'https://www.youtube.com/watch?v=CgXEPjYEZPM&pp=ygUtcGVyaW1ldGVyIGFyZWEgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN5' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Surface Area and Volume (Cube)', description: 'Calculating capacity, rate, mass, surface area, of 3d shapes', youtube_url: 'https://www.youtube.com/watch?v=15O48Ompz9s&list=PLU_DCVXL8MyOfsVTBbePMnm8Il3hxoRq3' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Measurements', topic: 'Surface Area and Volume (Cylinder)', description: 'Calculating capacity, rate, mass, surface area, of 3d shapes', youtube_url: 'https://www.youtube.com/watch?v=lYqzOcX4I7k&pp=ygU2dm9sdW1lIGFuZCBzdXJmYWNlIGFyZWEgZ3JhZGUgMTIgbWF0aGVtYXRpY2FsIGxpdGVyYWN50gcJCSQMAYcqIYzv' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Maps and Scales', description: 'Working with floor plans, elevations, grid references, scale drawings, and structural models.', youtube_url: 'https://www.youtube.com/watch?v=KhGfu0aKiYA&list=PLU_DCVXL8MyOgii-Irv0_1kj9nyWRuxhd' },
+    { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Types of Scales', description: 'Types of Scales', youtube_url: 'https://www.youtube.com/watch?v=sjPDDeeABDA&pp=ygUudHlwZXMgb2Ygc2NhbGVzIGdyYWRlIDEyIG1hdGhlbWF0aWNhbCBsaXRlcmFjeQ%3D%3D' }
+    
+  ];
+  
+  function selectQuizOption(index) {
+    selectedOptionIndex = index;
+    const options = document.querySelectorAll('.quiz-option');
+    options.forEach((opt, idx) => {
+      if (idx === index) {
+        opt.classList.add('selected');
+      } else {
+        opt.classList.remove('selected');
+      }
+    });
+  }
+
+  function submitQuizAnswer() {
+    if (selectedOptionIndex === null) {
+      alert("Please select an answer first.");
+      return;
+    }
+
+    const currentQ = sampleQuizQuestions[currentQuestionIndex];
+    const options = document.querySelectorAll('.quiz-option');
+    const feedback = document.getElementById("quiz-feedback");
+    const submitBtn = document.getElementById("btn-submit-quiz");
+
+    if (selectedOptionIndex === currentQ.correctIndex) {
+      quizScore++;
+      options[selectedOptionIndex].classList.add('correct-option');
+      feedback.style.color = "#03543F";
+      feedback.innerText = "Correct!";
+    } else {
+      options[selectedOptionIndex].classList.add('incorrect-option');
+      options[currentQ.correctIndex].classList.add('correct-option');
+      feedback.style.color = "#EF4444";
+      feedback.innerText = "Incorrect!";
+    }
+
+    if (currentQuestionIndex + 1 < sampleQuizQuestions.length) {
+      submitBtn.innerText = "Next Question";
+      submitBtn.onclick = () => {
+        currentQuestionIndex++;
+        loadQuizQuestion();
+      };
+    } else {
+      submitBtn.innerText = "View Results";
+      submitBtn.onclick = showQuizResults;
+    }
+  }
+
+  function showQuizResults() {
+    document.getElementById("quiz-container").style.display = "none";
+    const resultsBox = document.getElementById("quiz-results-box");
+    resultsBox.style.display = "block";
+    document.getElementById("quiz-score-display").innerText = `You scored ${quizScore} out of ${sampleQuizQuestions.length}`;
+  }
+
+  function resetQuiz() {
+    currentQuestionIndex = 0;
+    quizScore = 0;
+    document.getElementById("quiz-results-box").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    loadQuizQuestion();
+  }
+
+  
 
   // Profile Data Pipeline
   function loadUserProfile(user) {
