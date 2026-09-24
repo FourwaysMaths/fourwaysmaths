@@ -10,13 +10,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['\\(','\\)'], ['$', '$']], displayMath: [['\\[','\\]'], ['$$','$$']] },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
     * {
@@ -35,7 +28,7 @@
     }
 
     /* ----------------------------------
-    1. SIDEBAR WITH TOOLTIPS
+        1. SIDEBAR WITH TOOLTIPS
     ----------------------------------- */
     .sidebar-nav {
       width: 80px;
@@ -110,7 +103,7 @@
     }
 
     /* ----------------------------------
-    2. DASHBOARD LAYOUT
+        2. DASHBOARD LAYOUT
     ----------------------------------- */
     .portal-container {
       flex: 1;
@@ -232,6 +225,7 @@
       font-weight: 600;
     }
 
+    /* UPGRADE 2: Upload History Container */
     .uploaded-files-container {
       margin-top: 12px;
       text-align: left;
@@ -343,12 +337,12 @@
     }
 
     .class-status {
-      font-size: 0.75rem;
-      font-weight: 700;
+      background: #ECFDF5;
       color: #059669;
-      background: #D1FAE5;
+      font-size: 0.75rem;
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 6px;
+      font-weight: 700;
     }
 
     .grade-select-wrapper {
@@ -391,6 +385,10 @@
       cursor: pointer;
       outline: none;
       transition: all 0.2s;
+    }
+
+    .grade-dropdown:focus {
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.3);
     }
 
     .paper-cards-grid {
@@ -451,6 +449,101 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
+    .topic-header {
+      margin-bottom: 12px;
+    }
+
+    .topic-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .topic-section-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #854D0E;
+      background: #FEF08A;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* UPGRADE 4: Ask Question Button */
+    .btn-ask-topic {
+      background: #1E293B;
+      color: #EAB308;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+
+    .btn-ask-topic:hover {
+      background: #0F172A;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+      margin: 12px 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .resource-tabs {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      color: #64748B;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #FFF;
+      color: #0F172A;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
     .pdf-chip {
       display: flex;
       align-items: center;
@@ -479,6 +572,20 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+    }
+
+    .pdf-chip i.fa-file-pdf {
+      color: #EF4444;
+      font-size: 1rem;
+    }
+
+    .pdf-chip i.download-icon {
+      color: #94A3B8;
+      font-size: 0.85rem;
+    }
+
+    .pdf-chip:hover i.download-icon {
+      color: #EAB308;
     }
 
     .btn-back-paper {
@@ -520,6 +627,7 @@
       display: none;
     }
 
+    /* UPGRADE 5: Skeleton Loader Animation */
     .skeleton-box {
       background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
       background-size: 200% 100%;
@@ -532,6 +640,7 @@
       100% { background-position: -200% 0; }
     }
 
+    /* UPGRADE 1: Floating Action Button & Formula Sheet Drawer */
     .fab-formula-btn {
       position: fixed;
       bottom: 25px;
@@ -613,22 +722,10 @@
       font-size: 0.88rem;
       color: #0F172A;
       background: #FFF;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
       border: 1px dashed #CBD5E1;
       margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .formula-copy-btn {
-      background: transparent;
-      border: none;
-      color: #64748B;
-      cursor: pointer;
-      font-size: 0.85rem;
-      margin-left: 8px;
     }
 
     .drawer-overlay {
@@ -644,191 +741,6 @@
 
     .drawer-overlay.active {
       display: block;
-    }
-
-    .countdown-banner {
-      background: #1E293B;
-      color: #FFF;
-      padding: 14px 20px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-left: 4px solid #EAB308;
-    }
-
-    .countdown-value {
-      color: #EAB308;
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .quick-upload {
-      background: #FFF;
-      border: 2px dashed #CBD5E1;
-      border-radius: 14px;
-      padding: 22px;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .quick-upload i.fa-cloud-arrow-up {
-      font-size: 2rem;
-      color: #EAB308;
-      margin-bottom: 8px;
-    }
-
-    .quick-upload p {
-      font-size: 0.82rem;
-      color: #64748B;
-      margin: 6px 0 14px;
-    }
-
-    .quick-upload-btn {
-      background: #1E293B;
-      color: #EAB308;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-
-    .enhancement-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      margin-bottom: 25px;
-    }
-
-    .enhancement-card {
-      background: #FFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 14px;
-      padding: 20px;
-    }
-
-    .enhancement-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .enhancement-card p {
-      font-size: 0.82rem;
-      color: #64748B;
-      margin-bottom: 15px;
-    }
-
-    .formula-search, .quiz-topic-input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .quiz-controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .quiz-controls .quiz-topic-input {
-      flex: 1;
-      margin-bottom: 0;
-      min-width: 140px;
-    }
-
-    .enhancement-select {
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: 1px solid #CBD5E1;
-      font-size: 0.85rem;
-      font-weight: 600;
-      outline: none;
-      background: #FFF;
-    }
-
-    .btn-primary-gold {
-      background: #EAB308;
-      color: #1E293B;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .quiz-card {
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-
-    .quiz-option-btn {
-      width: 100%;
-      text-align: left;
-      padding: 8px 12px;
-      margin-top: 6px;
-      border: 1px solid #CBD5E1;
-      border-radius: 6px;
-      background: #FFF;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-
-    .quiz-option-btn:hover {
-      background: #FEF08A;
-      border-color: #EAB308;
-    }
-
-    .resource-filter-bar {
-      background: #FFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      font-size: 0.85rem;
-    }
-
-    .chat-attachment-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-      align-items: center;
-    }
-
-    .chat-attach-btn {
-      background: #F1F5F9;
-      border: 1px solid #CBD5E1;
-      color: #1E293B;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
     }
 
     @media (max-width: 900px) {
@@ -847,6 +759,7 @@
         bottom: 0;
         left: 0;
         z-index: 1000;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
       }
 
       .nav-menu {
@@ -854,10 +767,35 @@
         gap: 12px;
       }
 
+      .nav-item::after {
+        display: none;
+      }
+
+      .brand-logo-img {
+        width: 36px;
+      }
+
       .portal-container {
         grid-template-columns: 1fr !important;
         height: auto;
         padding-bottom: 70px;
+      }
+
+      .profile-panel, .analytics-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid #E2E8F0;
+      }
+
+      .main-panel {
+        padding: 20px 15px;
+      }
+
+      .fab-formula-btn {
+        bottom: 75px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 0.8rem;
       }
 
       .formula-drawer {
@@ -869,7 +807,7 @@
 </head>
 <body>
 
-  <!-- 1. LEFT SIDEBAR -->
+  <!-- 1. LEFT SIDEBAR WITH TOOLTIPS -->
   <nav class="sidebar-nav">
     <a href="index.html">
       <img src="images/logo.png" alt="Fourways Maths Logo" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/48/1E293B/EAB308?text=4WM'" />
@@ -888,7 +826,7 @@
     </div>
   </nav>
 
-  <!-- Floating Formula Button & Drawer -->
+  <!-- UPGRADE 1: Floating Action Button & Formula Drawer -->
   <button class="fab-formula-btn" onclick="toggleFormulaDrawer()">
     <i class="fa-solid fa-square-root-variable"></i> Formula Sheet
   </button>
@@ -899,8 +837,9 @@
       <h3 id="drawer-title" style="font-size: 1.1rem; color: #0F172A;"><i class="fa-solid fa-book-bookmark" style="color: #EAB308;"></i> Quick Formula Reference</h3>
       <button class="close-drawer-btn" onclick="toggleFormulaDrawer()">&times;</button>
     </div>
-    <input id="formula-search-drawer" class="formula-search" type="search" placeholder="Search drawer formulas..." oninput="filterFormulaDrawerItems(this.value)">
-    <div id="drawer-content" style="overflow-y: auto; flex: 1;"></div>
+    <div id="drawer-content" style="overflow-y: auto; flex: 1;">
+      <!-- Content populated dynamically based on Stream -->
+    </div>
   </aside>
 
   <!-- 2. MAIN DASHBOARD CONTAINER -->
@@ -921,6 +860,7 @@
         <span class="badge-icon" id="display-subject-tag"> Mathematics</span>
       </div>
 
+      <!-- Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
         <h4 style="font-size: 0.95rem;">Upload Files</h4>
@@ -929,6 +869,7 @@
         <input type="file" id="file-input" />
         <p id="upload-status" class="upload-status"></p>
 
+        <!-- UPGRADE 2: Uploaded Files Log -->
         <div class="uploaded-files-container">
           <div class="uploaded-files-title">My Uploaded Homework</div>
           <div id="uploaded-files-list">
@@ -938,14 +879,14 @@
       </div>
     </section>
 
-    <!-- CENTER PANEL: DYNAMIC VIEWS -->
+    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
     <section class="main-panel">
 
       <!-- VIEW 1: DASHBOARD -->
       <div id="view-dashboard" class="app-view">
         <div class="panel-header">
           <div>
-            <h2>Hi, <span id="welcome-name">Learner</span>! </h2>
+            <h2>Hi, <span id="welcome-name">Learner</span>! 👋</h2>
             <p style="color: #64748B; font-size: 0.9rem;">Here is your academic overview for this week.</p>
           </div>
           <div class="notif-bell" id="notif-btn">
@@ -959,18 +900,8 @@
 
         <h3 style="margin-bottom: 15px; font-size: 1.05rem;">Upcoming Classes</h3>
         <div id="upcoming-classes-container">
+          <!-- UPGRADE 5: Skeleton Loader Default -->
           <div class="class-item skeleton-box" style="height: 60px;"></div>
-        </div>
-
-        <div class="quick-upload" id="quick-upload-zone">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <h3 style="font-size:0.95rem;">Submit Completed Work</h3>
-          <p>Drag & drop a worksheet/homework file here, or choose a file to send it for grading.</p>
-          <button class="quick-upload-btn" type="button" onclick="document.getElementById('dashboard-file-input').click()">
-            <i class="fa-solid fa-folder-open"></i> Choose File
-          </button>
-          <input type="file" id="dashboard-file-input" style="display:none;" />
-          <div id="dashboard-upload-status" class="upload-status"></div>
         </div>
       </div>
 
@@ -978,32 +909,8 @@
       <div id="view-subjects" class="app-view" style="display: none;">
         <h2>Study Content</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your subject stream and grade to view video lessons, ATP topics, and downloadable study notes.</p>
-
-        <div class="enhancement-grid">
-          <div class="enhancement-card">
-            <h3><i class="fa-solid fa-square-root-variable" style="color:#EAB308;"></i> Interactive Formula Sheet</h3>
-            <p>Sharp, searchable formulas rendered with MathJax. Tap the copy icon to copy a formula in LaTeX/text form.</p>
-            <input id="formula-search-main" class="formula-search" type="search" placeholder="Search formulas..." oninput="filterFormulaDrawerItems(this.value)">
-            <div id="formula-main-list"></div>
-          </div>
-
-          <div class="enhancement-card">
-            <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:#EAB308;"></i> Gemini AI Quiz</h3>
-            <p>Generate a short multiple-choice quiz for the selected grade and topic. Wrong answers can reveal an explanation.</p>
-            <div class="quiz-controls">
-              <input id="quiz-topic-input" class="quiz-topic-input" type="text" placeholder="Topic e.g. Exponents Grade 9">
-              <select id="quiz-difficulty" class="enhancement-select">
-                <option value="easy">Easy</option>
-                <option value="medium" selected>Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-              <button class="btn-primary-gold" onclick="generateGeminiQuiz()"><i class="fa-solid fa-bolt"></i> Generate</button>
-            </div>
-            <div id="quiz-status" class="quiz-status"></div>
-            <div id="quiz-container"></div>
-          </div>
-        </div>
-
+        
+        <!-- GRADE & SUBJECT STREAM SELECTOR BAR -->
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
             <label for="study-stream-select">
@@ -1028,6 +935,7 @@
           </div>
         </div>
 
+        <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
             <div class="paper-card" onclick="selectPaper('Paper 1')">
@@ -1043,20 +951,18 @@
           </div>
         </div>
 
-         <!-- Paper Topics View -->
+        <!-- Paper Topics View -->
         <div id="paper-topics-view" style="display: none;">
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
           <div class="topic-grid" id="topics-container"></div>
         </div>
       </div>
-      
+
       <!-- VIEW 2B: PAST PAPERS -->
       <div id="view-past-papers" class="app-view" style="display: none;">
         <h2>Past Exam Papers & Memos</h2>
-        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
-          Browse Paper 1 and Paper 2 exam papers. Use the checklist to track what you have completed.
-        </p>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Access full past examination papers and memorandums structured by Paper 1 and Paper 2.</p>
 
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
@@ -1082,39 +988,46 @@
           </div>
         </div>
 
-        <h3 style="margin-top: 15px; margin-bottom: 10px;">Paper 1 Past Papers</h3>
-        <div id="past-paper-1-list"></div>
+        <div class="paper-cards-grid" style="margin-top: 20px;">
+          <!-- Paper 1 Past Papers Card -->
+          <div class="subject-card">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h3 style="margin-bottom: 10px;" id="past-p1-title">Paper 1 Past Papers</h3>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 1.</p>
+            <div id="past-paper-1-list" class="resource-list">
+              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
+              <div class="skeleton-box" style="height: 38px;"></div>
+            </div>
+          </div>
 
-        <h3 style="margin-top: 25px; margin-bottom: 10px;">Paper 2 Past Papers</h3>
-        <div id="past-paper-2-list"></div>
+          <!-- Paper 2 Past Papers Card -->
+          <div class="subject-card">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h3 style="margin-bottom: 10px;" id="past-p2-title">Paper 2 Past Papers</h3>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 2.</p>
+            <div id="past-paper-2-list" class="resource-list">
+              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
+              <div class="skeleton-box" style="height: 38px;"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-         <!-- VIEW 3: CHAT -->
+      <!-- VIEW 3: CHAT -->
       <div id="view-chat" class="app-view" style="display: none;">
         <h2>Chat to Educator</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
           Send a direct message or request to Gcina Sithole.
         </p>
-        
+
         <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
           <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
             <div class="skeleton-box" style="height: 40px; width: 60%; align-self: flex-start;"></div>
             <div class="skeleton-box" style="height: 40px; width: 60%; align-self: flex-end;"></div>
           </div>
-          
-          <div class="chat-attachment-bar">
-            <button class="chat-attach-btn" type="button" onclick="document.getElementById('chat-image-input').click()">
-              <i class="fa-solid fa-image"></i> Photo
-            </button>
-            <button class="chat-attach-btn" type="button" id="btn-toggle-mic" onclick="toggleVoiceRecording()">
-              <i class="fa-solid fa-microphone"></i> <span id="mic-btn-label">Voice Note</span>
-            </button>
-            <input type="file" id="chat-image-input" accept="image/*" capture="environment" style="display:none;" onchange="handleChatImageSelect(event)">
-            <span id="voice-recording-status" style="font-size:0.75rem; color:#EF4444; font-weight:700;"></span>
-          </div>
-          <div id="chat-attachment-preview" style="font-size: 0.8rem; color: #64748B; margin-bottom: 8px;"></div>
+
           <div style="display: flex; gap: 10px;">
-            <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" onkeypress="if(event.key==='Enter') sendChatMessage()" />
+            <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
             <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
               <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -1177,50 +1090,23 @@
       <canvas id="performanceChart" width="100" height="100"></canvas>
 
       <div class="stat-box" id="stat-avg-box">
-        Current Mark Average: <strong>--%</strong>
+         Current Mark Average: <strong>--%</strong>
       </div>
     </section>
 
   </div>
 
-  <script>
-    const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
-    const GEMINI_FUNCTION_NAME = "Gemini_quiz";
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-    const BUCKET_NAME = "study-notes";
+<script>
+  const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
+  const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+  const BUCKET_NAME = "study-notes";
 
-    let currentUser = null;
-    let myPerformanceChart = null;
-    let currentActivePaper = null;
-    let selectedChatAttachment = null;
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecording = false;
+  let currentUser = null;
+  let myPerformanceChart = null;
+  let currentActivePaper = null;
 
-    const formulaLibrary = {
-      "Mathematics": [
-        {section:"Algebra", name:"Quadratic Formula", latex:"x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}"},
-        {section:"Functions", name:"Gradient", latex:"m = \\frac{y_2-y_1}{x_2-x_1}"},
-        {section:"Sequences", name:"Arithmetic Term", latex:"T_n = a + (n-1)d"},
-        {section:"Sequences", name:"Arithmetic Sum", latex:"S_n = \\frac{n}{2}[2a+(n-1)d]"},
-        {section:"Finance", name:"Compound Growth", latex:"A = P(1+i)^n"},
-        {section:"Analytical Geometry", name:"Distance", latex:"d = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}"},
-        {section:"Analytical Geometry", name:"Gradient & Angle", latex:"m = \\tan(\\theta) = \\frac{y_2-y_1}{x_2-x_1}"},
-        {section:"Trigonometry", name:"Identity", latex:"\\sin^2(\\theta)+\\cos^2(\\theta)=1"}
-      ],
-      "Mathematical Literacy": [
-        {section:"Finance", name:"VAT", latex:"VAT = 0.15 \\times \\text{price}"},
-        {section:"Finance", name:"Simple Interest", latex:"A = P(1+in)"},
-        {section:"Finance", name:"Percentage Change", latex:"\\%\\text{ change} = \\frac{\\text{new}-\\text{old}}{\\text{old}}\\times100"},
-        {section:"Measurement", name:"Rectangle Area", latex:"A = l \\times b"},
-        {section:"Measurement", name:"Circle Area", latex:"A = \\pi r^2"},
-        {section:"Measurement", name:"Cylinder Volume", latex:"V = \\pi r^2h"},
-        {section:"Conversions", name:"Metric Conversion", latex:"1\\text{ m}=1000\\text{ mm},\\quad1\\text{ kg}=1000\\text{ g}"}
-      ]
-    };
-
-    const fallbackStudyData = [
+  const fallbackStudyData = [
     // --- GRADE 8&9 ---
     { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Whole numbers and integers', description: 'Multiples, factors, HCF, LCM, and calculations with positive and negative numbers.', youtube_url: 'https://www.youtube.com/watch?v=jXg3MWD51b8&list=PLU_DCVXL8MyNvw60u6fvHXdsTZWDJU_mB&index=5' },
     { subject: 'Mathematics', grade: 'Grade 8 & 9', paper: 'Paper 1', section: 'Numbers and Operations', topic: 'Fractions and decimals', description: 'Common fractions, decimal fractions, and ratios.', youtube_url: 'https://www.youtube.com/watch?v=c3DJOLPqWWo&list=PLU_DCVXL8MyPUSphd-e9Ckr3ac8ngd1-Q' },
@@ -1308,8 +1194,8 @@
     { subject: 'Mathematical Literacy', grade: 'Grade 12', paper: 'Paper 2', section: 'Maps, Scales & Plans', topic: 'Types of Scales', description: 'Types of Scales', youtube_url: 'https://www.youtube.com/watch?v=sjPDDeeABDA&pp=ygUudHlwZXMgb2Ygc2NhbGVzIGdyYWRlIDEyIG1hdGhlbWF0aWNhbCBsaXRlcmFjeQ%3D%3D' }
     
   ];
-   
-   function formatFilename(filename) {
+
+  function formatFilename(filename) {
     return filename
       .replace(/\.pdf$/i, '')
       .replace(/_/g, ' ')
@@ -1344,7 +1230,7 @@
     'Perimeter, Area & Volume': '15Perimeter Area',
     'Data Collection & Statistics': '16Statistics'
   };
-  
+
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
@@ -1375,7 +1261,7 @@
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
-  // UPGRADE 3: Load Saved Preferences from localStorage or user metadata
+    // UPGRADE 3: Load Saved Preferences from localStorage or user metadata
     const savedStream = localStorage.getItem('4wm_stream') || (selectedSubject.toLowerCase().includes("lit") ? "Mathematical Literacy" : "Mathematics");
     const savedGrade = localStorage.getItem('4wm_grade') || userGrade;
 
@@ -1401,7 +1287,7 @@
         );
         if (matchingOption) {
           gradeDropdown.value = matchingOption.value;
-        if (pastGradeDropdown) pastGradeDropdown.value = matchingOption.value;
+          if (pastGradeDropdown) pastGradeDropdown.value = matchingOption.value;
         }
       }
     }
@@ -1456,15 +1342,7 @@
     });
   });
 
-    document.getElementById("btn-logout")?.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
-      window.location.href = "login.html";
-    });
-
-   function updatePaperCardUI() {
+  function updatePaperCardUI() {
     const currentStream = document.getElementById("study-stream-select").value;
     const isLit = currentStream === "Mathematical Literacy";
 
@@ -1486,115 +1364,262 @@
     }
   }
 
-    function onStreamChange() {
-      const currentStream = document.getElementById("study-stream-select").value;
-      localStorage.setItem('4wm_stream', currentStream);
+  function onStreamChange() {
+    const currentStream = document.getElementById("study-stream-select").value;
+    localStorage.setItem('4wm_stream', currentStream);
 
-      updatePaperCardUI();
-      renderFormulaDrawerContent();
+    updatePaperCardUI();
+    renderFormulaDrawerContent();
 
-      const pastStream = document.getElementById("past-paper-stream-select");
-      if (pastStream) pastStream.value = currentStream;
+    const pastStream = document.getElementById("past-paper-stream-select");
+    if (pastStream) pastStream.value = currentStream;
 
-      if (currentActivePaper) selectPaper(currentActivePaper);
+    if (currentActivePaper) selectPaper(currentActivePaper);
+  }
+
+  function onGradeChange() {
+    const currentGrade = document.getElementById("study-grade-select").value;
+    localStorage.setItem('4wm_grade', currentGrade);
+
+    const pastGrade = document.getElementById("past-paper-grade-select");
+    if (pastGrade) pastGrade.value = currentGrade;
+
+    if (currentActivePaper) selectPaper(currentActivePaper);
+  }
+
+  /* UPGRADE 1: Formula Sheet Drawer Toggle & Content Generator */
+  function toggleFormulaDrawer() {
+    const drawer = document.getElementById("formula-drawer");
+    const overlay = document.getElementById("drawer-overlay");
+    drawer.classList.toggle("open");
+    overlay.classList.toggle("active");
+  }
+
+  function renderFormulaDrawerContent() {
+    const currentStream = document.getElementById("study-stream-select").value;
+    const contentBox = document.getElementById("drawer-content");
+
+    if (currentStream === "Mathematical Literacy") {
+      contentBox.innerHTML = `
+        <div class="formula-section">
+          <h4>Finance & Inflation</h4>
+          <div class="formula-item">VAT = Price x 15%</div>
+          <div class="formula-item">Simple Interest A = P(1 + i x n)</div>
+          <div class="formula-item">Percentage Increase = [(New - Old)/Old] x 100</div>
+        </div>
+        <div class="formula-section">
+          <h4>Measurement & Health</h4>
+          <div class="formula-item">BMI = Mass(kg) / [Height(m)]²</div>
+          <div class="formula-item">Area Rectangle = l x b</div>
+          <div class="formula-item">Area Circle = π x r²</div>
+          <div class="formula-item">Volume Cylinder = π x r² x h</div>
+        </div>
+        <div class="formula-section">
+          <h4>Scale & Conversions</h4>
+          <div class="formula-item">1 m = 1 000 mm | 1 cm = 10 mm</div>
+          <div class="formula-item">1 kg = 1 000 g | 1 L = 1 000 ml</div>
+        </div>
+      `;
+    } else {
+      contentBox.innerHTML = `
+        <div class="formula-section">
+          <h4>Algebra & Calculus</h4>
+          <div class="formula-item">x = [-b ± √(b² - 4ac)] / 2a</div>
+          <div class="formula-item">f'(x) = lim[h→0] (f(x+h) - f(x)) / h</div>
+        </div>
+        <div class="formula-section">
+          <h4>Sequences & Series</h4>
+          <div class="formula-item">Tn = a + (n-1)d | Sn = n/2[2a+(n-1)d]</div>
+          <div class="formula-item">Tn = a.r^(n-1) | Sn = a(r^n - 1)/(r - 1)</div>
+          <div class="formula-item">S∞ = a / (1 - r)  [-1 < r < 1]</div>
+        </div>
+        <div class="formula-section">
+          <h4>Finance Formulas</h4>
+          <div class="formula-item">Compound A = P(1 + i)^n</div>
+          <div class="formula-item">FVA = x[(1 + i)^n - 1] / i</div>
+          <div class="formula-item">PVA = x[1 - (1 + i)^-n] / i</div>
+        </div>
+        <div class="formula-section">
+          <h4>Analytical Geometry & Trig</h4>
+          <div class="formula-item">d = √[(x2 - x1)² + (y2 - y1)²]</div>
+          <div class="formula-item">m = tan(θ) = (y2 - y1)/(x2 - x1)</div>
+          <div class="formula-item">sin²θ + cos²θ = 1</div>
+        </div>
+      `;
+    }
+  }
+
+  /* UPGRADE 4: Ask Question Integration */
+  function askAboutTopic(topicTitle, grade, stream) {
+    const chatTabLink = document.querySelector('[data-target="view-chat"]');
+    if (chatTabLink) chatTabLink.click();
+
+    const chatInput = document.getElementById("chat-input");
+    if (chatInput) {
+      chatInput.value = `Hi Gcina, I have a question regarding ${stream} (${grade}) - ${topicTitle}: `;
+      chatInput.focus();
+    }
+  }
+
+  function showPaperSelection() {
+    currentActivePaper = null;
+    document.getElementById("paper-selection-view").style.display = "block";
+    document.getElementById("paper-topics-view").style.display = "none";
+  }
+
+  function switchTab(topicIdx, tabName) {
+    const card = document.getElementById(`topic-card-${topicIdx}`);
+    const tabs = card.querySelectorAll('.tab-btn');
+    tabs.forEach(t => t.classList.remove('active'));
+
+    event.target.classList.add('active');
+
+    const worksheetsList = card.querySelector('.list-worksheets');
+    const memosList = card.querySelector('.list-memos');
+
+    if (tabName === 'worksheets') {
+      worksheetsList.style.display = 'flex';
+      memosList.style.display = 'none';
+    } else if (tabName === 'memos') {
+      worksheetsList.style.display = 'none';
+      memosList.style.display = 'flex';
+    }
+  }
+
+  async function selectPaper(paperName) {
+    currentActivePaper = paperName;
+    const selectedGrade = document.getElementById("study-grade-select").value;
+    const selectedStream = document.getElementById("study-stream-select").value;
+
+    document.getElementById("paper-selection-view").style.display = "none";
+    document.getElementById("paper-topics-view").style.display = "block";
+    document.getElementById("selected-paper-title").textContent = `${selectedStream} | ${selectedGrade} - ${paperName} Topics & Resources`;
+
+    const container = document.getElementById("topics-container");
+    // UPGRADE 5: Skeleton Loader Grid
+    container.innerHTML = `
+      <div class="topic-card skeleton-box" style="height: 250px;"></div>
+      <div class="topic-card skeleton-box" style="height: 250px;"></div>
+    `;
+
+    let topicsToRender = [];
+    if (supabaseClient) {
+      const { data } = await supabaseClient
+        .from('study_content')
+        .select('*')
+        .eq('paper', paperName)
+        .eq('grade', selectedGrade)
+        .eq('subject', selectedStream);
+
+      if (data && data.length > 0) topicsToRender = data;
     }
 
-    function onGradeChange() {
-      const currentGrade = document.getElementById("study-grade-select").value;
-      localStorage.setItem('4wm_grade', currentGrade);
-
-      const pastGrade = document.getElementById("past-paper-grade-select");
-      if (pastGrade) pastGrade.value = currentGrade;
-
-      if (currentActivePaper) selectPaper(currentActivePaper);
+    if (topicsToRender.length === 0) {
+      topicsToRender = fallbackStudyData.filter(item => 
+        item.paper === paperName && 
+        item.grade === selectedGrade && 
+        (item.subject === selectedStream || (!item.subject && selectedStream === 'Mathematics'))
+      );
     }
 
-    function toggleFormulaDrawer() {
-      const drawer = document.getElementById("formula-drawer");
-      const overlay = document.getElementById("drawer-overlay");
-      drawer.classList.toggle("open");
-      overlay.classList.toggle("active");
-      if (drawer.classList.contains("open")) {
-        renderFormulaDrawerContent();
+    if (topicsToRender.length === 0) {
+      container.innerHTML = `<p style="color: #64748B;">No topics found for ${selectedStream} (${selectedGrade} ${paperName}).</p>`;
+      return;
+    }
+
+    let cardsHtml = '';
+
+    for (let idx = 0; idx < topicsToRender.length; idx++) {
+      const topic = topicsToRender[idx];
+      const embedUrl = topic.youtube_url ? getYouTubeEmbedUrl(topic.youtube_url) : null;
+      let worksheets = [];
+      let memos = [];
+
+      let storageFolderPath = null;
+      if (selectedStream === 'Mathematics' && selectedGrade === 'Grade 8 & 9') {
+        if (paperName === 'Paper 1' && gr89Paper1FolderMap[topic.topic]) {
+          storageFolderPath = `Gr8&9/Paper1_worksheets/${gr89Paper1FolderMap[topic.topic]}`;
+        } else if (paperName === 'Paper 2' && gr89Paper2FolderMap[topic.topic]) {
+          storageFolderPath = `Gr8&9/Paper2_worksheets/${gr89Paper2FolderMap[topic.topic]}`;
+        }
+      } else if (selectedStream === 'Mathematical Literacy') {
+        storageFolderPath = `MathsLit/${selectedGrade}/${paperName.replace(/\s+/g, '')}/${topic.topic.replace(/[^a-zA-Z0-9]/g, '_')}`;
       }
-    }
 
-    function renderFormulaItems(items, targetId) {
-      const box = document.getElementById(targetId);
-      if (!box) return;
-      if (!items.length) {
-        box.innerHTML = '<p style="font-size:0.78rem;color:#94A3B8;">No matching formulas.</p>';
-        return;
+      if (storageFolderPath) {
+        const { data: fileList } = await supabaseClient.storage.from(BUCKET_NAME).list(storageFolderPath);
+
+        if (fileList && fileList.length > 0) {
+          fileList.filter(f => f.name.endsWith('.pdf')).forEach(file => {
+            const fileUrl = getStorageFileUrl(`${storageFolderPath}/${file.name}`);
+            const cleanName = formatFilename(file.name);
+            const chipHtml = `
+              <a href="${fileUrl}" target="_blank" class="pdf-chip">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="pdf-chip-title">${cleanName}</span>
+                <i class="fa-solid fa-arrow-down-long download-icon"></i>
+              </a>
+            `;
+
+            if (file.name.toLowerCase().includes('memo') || file.name.toLowerCase().includes('memorandum')) {
+              memos.push(chipHtml);
+            } else {
+              worksheets.push(chipHtml);
+            }
+          });
+        }
       }
-      box.innerHTML = items.map((f) => `
-        <div class="formula-section formula-searchable-item">
-          <h4>${f.section} · ${f.name}</h4>
-          <div class="formula-item">
-            \\(${f.latex}\\)
-            <button class="formula-copy-btn" type="button" title="Copy formula" onclick="copyFormula('${f.latex.replace(/\\/g, '\\\\')}')">
-              <i class="fa-regular fa-copy"></i>
-            </button>
+
+      if (worksheets.length === 0 && memos.length === 0 && topic.pdf_url) {
+        worksheets.push(`
+          <a href="${topic.pdf_url}" target="_blank" class="pdf-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span class="pdf-chip-title">Download Study Notes</span>
+            <i class="fa-solid fa-arrow-down-long download-icon"></i>
+          </a>
+        `);
+      }
+
+      cardsHtml += `
+        <div class="topic-card" id="topic-card-${idx}">
+          <div class="topic-header">
+            <div class="topic-header-flex">
+              <span class="topic-section-tag">${topic.section}</span>
+              <!-- UPGRADE 4: Ask Question Button -->
+              <button class="btn-ask-topic" onclick="askAboutTopic('${topic.topic.replace(/'/g, "\\'")}', '${selectedGrade}', '${selectedStream}')">
+                <i class="fa-solid fa-comment-dots"></i> Ask Question
+              </button>
+            </div>
+            <h4 style="font-size: 1rem; color: #0F172A; margin-bottom: 6px;">${topic.topic}</h4>
+            <p style="font-size: 0.85rem; color: #64748B; line-height: 1.4;">${topic.description || ''}</p>
+          </div>
+
+          ${embedUrl ? `
+            <div class="video-container">
+              <iframe src="${embedUrl}" title="${topic.topic}" allowfullscreen></iframe>
+            </div>
+          ` : ''}
+
+          <div class="resource-tabs">
+            <button class="tab-btn active" onclick="switchTab(${idx}, 'worksheets')">Worksheets (${worksheets.length})</button>
+            <button class="tab-btn" onclick="switchTab(${idx}, 'memos')">Memos (${memos.length})</button>
+          </div>
+
+          <div class="resource-list list-worksheets">
+            ${worksheets.length > 0 ? worksheets.join('') : '<span style="font-size: 0.75rem; color: #94A3B8;">No worksheets attached</span>'}
+          </div>
+
+          <div class="resource-list list-memos" style="display: none;">
+            ${memos.length > 0 ? memos.join('') : '<span style="font-size: 0.75rem; color: #94A3B8;">No memos attached</span>'}
           </div>
         </div>
-      `).join('');
-      if (window.MathJax) MathJax.typesetPromise([box]).catch(() => {});
+      `;
     }
 
-    function renderFormulaDrawerContent() {
-      const streamSelect = document.getElementById("study-stream-select");
-      const currentStream = streamSelect ? streamSelect.value : "Mathematics";
-      const items = formulaLibrary[currentStream] || formulaLibrary["Mathematics"];
-      renderFormulaItems(items, "drawer-content");
-      renderFormulaItems(items.slice(0, 5), "formula-main-list");
-    }
+    container.innerHTML = cardsHtml;
+  }
 
-    function filterFormulaDrawerItems(query) {
-      const streamSelect = document.getElementById("study-stream-select");
-      const currentStream = streamSelect ? streamSelect.value : "Mathematics";
-      const q = (query || "").toLowerCase().trim();
-      const items = (formulaLibrary[currentStream] || []).filter(f =>
-        `${f.name} ${f.section} ${f.latex}`.toLowerCase().includes(q)
-      );
-      renderFormulaItems(items, "formula-main-list");
-      renderFormulaItems(items, "drawer-content");
-    }
-
-    async function copyFormula(latex) {
-      try {
-        await navigator.clipboard.writeText(latex);
-      } catch (e) {
-        const temp = document.createElement("textarea");
-        temp.value = latex;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        temp.remove();
-      }
-    }
-
-    function showPaperSelection() {
-      currentActivePaper = null;
-      document.getElementById("paper-selection-view").style.display = "block";
-      document.getElementById("paper-topics-view").style.display = "none";
-    }
-
-    function selectPaper(paperName) {
-      currentActivePaper = paperName;
-      document.getElementById("paper-selection-view").style.display = "none";
-      document.getElementById("paper-topics-view").style.display = "block";
-      document.getElementById("selected-paper-title").textContent = `${paperName} Topics`;
-    }
-
-    function filterStudyTopics(query) {
-      const q = query.toLowerCase().trim();
-      const cards = document.querySelectorAll(".topic-card");
-      cards.forEach(card => {
-        const topicName = card.getAttribute("data-topic") || "";
-        card.style.display = topicName.toLowerCase().includes(q) ? "flex" : "none";
-      });
-    }
-
-    async function loadPastPapers() {
+  async function loadPastPapers() {
     const selectedGrade = document.getElementById("past-paper-grade-select").value;
     const selectedStream = document.getElementById("past-paper-stream-select").value;
     const p1Container = document.getElementById("past-paper-1-list");
@@ -1714,14 +1739,6 @@
       return;
     }
 
-   let mediaHtml = "";
-      if (msg.image_url) {
-        mediaHtml += `<div style="margin-top: 6px;"><img src="${msg.image_url}" style="max-width: 100%; border-radius: 8px;" /></div>`;
-      }
-      if (msg.audio_url) {
-        mediaHtml += `<div style="margin-top: 6px;"><audio controls src="${msg.audio_url}" style="width: 100%; max-width: 250px;"></audio></div>`;
-      }
-    
     chatBox.innerHTML = messages.map(msg => createMessageBubble(msg)).join("");
   }
 
@@ -1730,25 +1747,15 @@
     const bg = isStudent ? "#1E293B" : "#EAB308";
     const color = isStudent ? "#FFF" : "#1E293B";
     const align = isStudent ? "flex-end" : "flex-start";
-    const text = msg.message_text || msg.content || "";
 
-      return `
-        <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; border: ${border}; padding: 10px 14px; border-radius: ${borderRadius}; font-size: 0.88rem; line-height: 1.4; margin-bottom: 8px;">
-          <strong>${isStudent ? "You" : "Gcina Sithole"}:</strong> ${text}
-          ${mediaHtml}
-        </div>
-      `;
-    }
+    return `
+      <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4;">
+        <strong>${isStudent ? "You" : "Gcina Sithole"}:</strong> ${msg.message_text}
+      </div>
+    `;
+  }
 
-    function handleChatImageSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        selectedChatAttachment = file;
-        document.getElementById("chat-attachment-preview").textContent = `Selected photo: ${file.name}`;
-      }
-    }
-
-   async function handleSendMessage() {
+  async function handleSendMessage() {
     const input = document.getElementById("chat-input");
     const text = input.value.trim();
     if (!text || !currentUser) return;
@@ -1756,227 +1763,118 @@
     input.value = "";
     await supabaseClient.from("messages").insert([{ student_id: currentUser.id, sender_role: "student", message_text: text }]);
     loadStudentChat(currentUser.id);
- 
-      let imageUrl = null;
-      if (selectedChatAttachment) {
-        const filePath = `chat_photos/${currentUser.id}/${Date.now()}_${selectedChatAttachment.name}`;
-        const { error } = await supabaseClient.storage.from("student-files").upload(filePath, selectedChatAttachment);
-        if (!error) {
-          imageUrl = getStorageFileUrl(filePath);
-         }
+  }
 
   document.getElementById("btn-send-chat").addEventListener("click", handleSendMessage);
 
-      }
+  /* UPGRADE 2: Query and render uploaded student files */
+  async function loadStudentUploadedFiles(studentId) {
+    if (!supabaseClient) return;
+    const listContainer = document.getElementById("uploaded-files-list");
 
-      const payload = {
-        student_id: currentUser.id,
-        sender_role: "student",
-        message_text: text,
-        image_url: imageUrl
-      };
+    const { data: files } = await supabaseClient.storage.from("student-files").list(studentId);
 
-      input.value = "";
-      selectedChatAttachment = null;
-      document.getElementById("chat-attachment-preview").textContent = "";
+    if (files && files.length > 0) {
+      listContainer.innerHTML = files.map(f => {
+        const cleanName = f.name.replace(/^\d+_/, '');
+        return `
+          <div class="file-history-item">
+            <span title="${cleanName}"><i class="fa-solid fa-paperclip" style="color: #EAB308;"></i> ${cleanName}</span>
+            <i class="fa-solid fa-check" style="color: #059669;"></i>
+          </div>
+        `;
+      }).join('');
+    } else {
+      listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
+    }
+  }
 
-      const { error } = await supabaseClient.from("messages").insert([payload]);
-      if (!error) {
-        loadStudentChat(currentUser.id);
-      }
+  // File Upload Handlers
+  document.getElementById("file-input").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    const uploadStatus = document.getElementById("upload-status");
+    if (!file || !currentUser) return;
+
+    uploadStatus.style.color = "#0F172A";
+    uploadStatus.textContent = "Uploading file...";
+
+    const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
+    const { error } = await supabaseClient.storage.from("student-files").upload(filePath, file);
+
+    if (error) {
+      uploadStatus.style.color = "#EF4444";
+      uploadStatus.textContent = "Upload failed.";
+    } else {
+      uploadStatus.style.color = "#059669";
+      uploadStatus.textContent = "Uploaded successfully!";
+      loadStudentUploadedFiles(currentUser.id);
+    }
+  });
+
+  document.getElementById("btn-logout").addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+  });
+
+  async function loadStudentGrades(studentId) {
+    if (!supabaseClient) return;
+
+    const { data: grades } = await supabaseClient
+      .from('grades')
+      .select('*')
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: true });
+
+    const tbody = document.getElementById('grades-table-body');
+    const statAvgBox = document.getElementById('stat-avg-box');
+
+    if (!grades || grades.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
+      renderPerformanceChart(['No Data'], [0]);
+      return;
     }
 
-    async function toggleVoiceRecording() {
-      const statusLbl = document.getElementById("voice-recording-status");
-      const micBtnLabel = document.getElementById("mic-btn-label");
-
-      if (!isRecording) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-
-          mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-          mediaRecorder.start();
-
-          isRecording = true;
-          statusLbl.textContent = "● Recording...";
-          micBtnLabel.textContent = "Stop Recording";
-        } catch (err) {
-          alert("Microphone access denied or unavailable.");
-        }
-      } else {
-        mediaRecorder.stop();
-        isRecording = false;
-        statusLbl.textContent = "";
-        micBtnLabel.textContent = "Voice Note";
-
-        mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const audioFile = new File([audioBlob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
-
-          const filePath = `chat_audio/${currentUser.id}/${audioFile.name}`;
-          const { error } = await supabaseClient.storage.from("student-files").upload(filePath, audioFile);
-
-          if (!error) {
-            const audioUrl = getStorageFileUrl(filePath);
-            await supabaseClient.from("messages").insert([{
-              student_id: currentUser.id,
-              sender_role: "student",
-              message_text: "[Voice Note]",
-              audio_url: audioUrl
-            }]);
-            loadStudentChat(currentUser.id);
-          }
-        };
-      }
-    }
-
-    // ==========================================
-    // 4. GEMINI EDGE FUNCTION ("Gemini_quiz")
-    // ==========================================
-  async function generateGeminiQuiz() {
-  const topicInput = document.getElementById("quiz-topic-input").value || "High School Mathematics";
-  const difficulty = document.getElementById("quiz-difficulty").value;
-  const statusDiv = document.getElementById("quiz-status");
-  const containerDiv = document.getElementById("quiz-container");
-
-  statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EAB308;">Generating quiz with Gemini AI...</p>`;
-  containerDiv.innerHTML = "";
-
-  try {
-    const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
-      body: { 
-        topic: topicInput, 
-        difficulty: difficulty,
-        grade: "Grade 9"
-      }
-    });
-
-    if (error) throw error;
-
-    statusDiv.innerHTML = "";
-    
-    const rawQuizList = data?.quiz || [];
-
-    const quizList = rawQuizList.map(q => ({
-      ...q,
-      answer: q.answer || (q.options && q.answerIndex !== undefined ? q.options[q.answerIndex] : "")
-    }));
-
-    containerDiv.innerHTML = quizList.map((q, idx) => `
-      <div class="quiz-card" style="background:#FFFFFF; padding:16px; border-radius:8px; margin-bottom:14px; border:1px solid #E2E8F0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-        <p style="font-weight:700; font-size:0.92rem; margin-bottom:10px; color:#0F172A;">Q${idx+1}: ${q.question}</p>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          ${q.options.map((opt) => `
-            <button class="quiz-option-btn" 
-                    type="button"
-                    style="width:100%; padding:10px 14px; text-align:left; border:1px solid #CBD5E1; border-radius:6px; background:#F8FAFC; color:#1E293B; font-size:0.88rem; cursor:pointer; pointer-events:auto; transition:all 0.2s ease;" 
-                    onclick="checkQuizAnswer(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}', '${q.explanation.replace(/'/g, "\\'")}')">
-              ${opt}
-            </button>
-          `).join('')}
-        </div>
-        <div class="quiz-explanation" style="display:none; font-size:0.82rem; margin-top:10px; padding:10px; background:#EFF6FF; color:#1E40AF; border-radius:6px; border-left:4px solid #3B82F6;"></div>
-      </div>
+    tbody.innerHTML = grades.map(g => `
+      <tr>
+        <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.title}</td>
+        <td style="padding: 12px 10px; color: #64748B;">${new Date(g.created_at).toLocaleDateString('en-ZA')}</td>
+        <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
+        <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+      </tr>
     `).join('');
 
-    // Trigger MathJax to render LaTeX expressions into clean algebraic notation
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([containerDiv]).catch((err) => console.error("MathJax Error:", err));
-    }
-  } catch (err) {
-    console.error("Quiz Generation Error:", err);
-    statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EF4444;">Failed to generate quiz. Try again.</p>`;
+    const scores = grades.map(g => Number(g.score || g.score_percentage));
+    const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+    statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+    renderPerformanceChart(grades.map(g => g.assessment_name || g.title), scores);
   }
-}
-    
- <section class="analytics-panel dashboard-only">
-      <h3 style="font-size: 1.05rem; margin-bottom: 15px;">Performance Trend</h3>
-      <canvas id="performanceChart" width="100" height="100"></canvas>
 
-      <div class="stat-box" id="stat-avg-box">
-         Current Mark Average: <strong>--%</strong>
-      </div>
-    </section>
+  function renderPerformanceChart(labels, dataPoints) {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    if (myPerformanceChart) myPerformanceChart.destroy();
 
-  </div>
-
-    function renderPerformanceChart(labels, data) {
-      const ctx = document.getElementById('performanceChart')?.getContext('2d');
-      if (!ctx) return;
-
-      if (myPerformanceChart) myPerformanceChart.destroy();
-
-      myPerformanceChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Score %',
-            data: data,
-            borderColor: '#EAB308',
-            backgroundColor: 'rgba(234, 179, 8, 0.1)',
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true, max: 100 }
-          }
-        }
-      });
-    }
-
-    async function loadStudentUploadedFiles(studentId) {
-      const listContainer = document.getElementById("uploaded-files-list");
-      if (!supabaseClient || !listContainer || !studentId) return;
-
-      const { data: files, error } = await supabaseClient.storage.from("student-files").list(`uploads/${studentId}`);
-
-      if (error || !files || files.length === 0) {
-        listContainer.innerHTML = `<span style="font-size: 0.72rem; color: #94A3B8;">No uploads yet</span>`;
-        return;
+    myPerformanceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Mark %',
+          data: dataPoints,
+          borderColor: '#EAB308',
+          backgroundColor: 'rgba(234, 179, 8, 0.1)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { min: 0, max: 100 } }
       }
-
-      listContainer.innerHTML = files.map(f => `
-        <div class="file-history-item">
-          <span>${f.name}</span>
-          <i class="fa-solid fa-check" style="color:#059669;"></i>
-        </div>
-      `).join('');
-    }
-
-    function setupUploadListeners() {
-      const fileInput = document.getElementById("file-input");
-      const dashFileInput = document.getElementById("dashboard-file-input");
-
-      const handleUpload = async (inputElem, statusId) => {
-        const file = inputElem.files[0];
-        const statusElem = document.getElementById(statusId);
-        if (!file || !currentUser) return;
-
-        statusElem.textContent = "Uploading...";
-        statusElem.style.color = "#EAB308";
-
-        const filePath = `uploads/${currentUser.id}/${Date.now()}_${file.name}`;
-        const { error } = await supabaseClient.storage.from("student-files").upload(filePath, file);
-
-        if (error) {
-          statusElem.textContent = "Upload failed.";
-          statusElem.style.color = "#EF4444";
-        } else {
-          statusElem.textContent = "Upload successful!";
-          statusElem.style.color = "#059669";
-          loadStudentUploadedFiles(currentUser.id);
-        }
-      };
-
-      fileInput?.addEventListener("change", () => handleUpload(fileInput, "upload-status"));
-      dashFileInput?.addEventListener("change", () => handleUpload(dashFileInput, "dashboard-upload-status"));
-    }
-  </script>
+    });
+  }
+</script>
 </body>
 </html>
