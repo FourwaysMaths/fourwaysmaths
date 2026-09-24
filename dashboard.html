@@ -10,6 +10,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- MathJax JS -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <style>
     * {
@@ -935,6 +937,31 @@
           </div>
         </div>
 
+         <!-- GEMINI AI QUIZ SECTION -->
+<div style="background:#FFF; border:1px solid #E2E8F0; border-radius:14px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+    <i class="fa-solid fa-wand-magic-sparkles" style="color:#EAB308; font-size:1.3rem;"></i>
+    <h3 style="font-size:1.1rem; color:#0F172A; margin:0;">AI Quiz Generator</h3>
+  </div>
+  <p style="font-size:0.85rem; color:#64748B; margin-bottom:15px;">Generate instant practice questions using Gemini AI tailored to your target topic.</p>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
+    <input type="text" id="quiz-topic-input" placeholder="Topic (e.g. Quadratic Equations)" style="flex:1; min-width:200px; padding:10px 14px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none;" />
+
+    <select id="quiz-difficulty" class="grade-dropdown" style="padding:9px 14px;">
+      <option value="Easy">Easy</option>
+      <option value="Medium" selected>Medium</option>
+      <option value="Hard">Hard</option>
+    </select>
+
+    <button type="button" onclick="generateGeminiQuiz()" style="background:#1E293B; color:#EAB308; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:8px;">
+      <i class="fa-solid fa-bolt"></i> Generate Quiz
+    </button>
+  </div>
+
+  <div id="quiz-status"></div>
+  <div id="quiz-container" style="margin-top:15px;"></div>
+</div>
         <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
@@ -1101,7 +1128,103 @@
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
   const BUCKET_NAME = "study-notes";
+  const GEMINI_FUNCTION_NAME = "Gemini_quiz";
 
+  function checkQuizAnswer(buttonElem, selectedOpt, correctAns, explanationText) {
+    const card = buttonElem.closest('.quiz-card');
+    const buttons = card.querySelectorAll('.quiz-option-btn');
+    const expDiv = card.querySelector('.quiz-explanation');
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      btn.style.cursor = 'default';
+    });
+
+    if (selectedOpt.trim() === correctAns.trim()) {
+      buttonElem.style.background = '#DCFCE7';
+      buttonElem.style.borderColor = '#22C55E';
+      buttonElem.style.color = '#15803D';
+    } else {
+      buttonElem.style.background = '#FEE2E2';
+      buttonElem.style.borderColor = '#EF4444';
+      buttonElem.style.color = '#B91C1C';
+
+      // Highlight the correct option
+      buttons.forEach(btn => {
+        if (btn.textContent.trim() === correctAns.trim()) {
+          btn.style.background = '#DCFCE7';
+          btn.style.borderColor = '#22C55E';
+          btn.style.color = '#15803D';
+        }
+      });
+    }
+
+    if (explanationText) {
+      expDiv.innerHTML = `<strong>Explanation:</strong> ${explanationText}`;
+      expDiv.style.display = 'block';
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([expDiv]).catch((err) => console.error("MathJax Error:", err));
+      }
+    }
+  }
+
+  async function generateGeminiQuiz() {
+    const topicInput = document.getElementById("quiz-topic-input").value || "High School Mathematics";
+    const difficulty = document.getElementById("quiz-difficulty").value;
+    const statusDiv = document.getElementById("quiz-status");
+    const containerDiv = document.getElementById("quiz-container");
+
+    statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EAB308;">Generating quiz with Gemini AI...</p>`;
+    containerDiv.innerHTML = "";
+
+    try {
+      const { data, error } = await supabaseClient.functions.invoke(GEMINI_FUNCTION_NAME, {
+        body: { 
+          topic: topicInput, 
+          difficulty: difficulty,
+          grade: document.getElementById("study-grade-select") ? document.getElementById("study-grade-select").value : "Grade 9"
+        }
+      });
+
+      if (error) throw error;
+
+      statusDiv.innerHTML = "";
+
+      const rawQuizList = data?.quiz || [];
+
+      const quizList = rawQuizList.map(q => ({
+        ...q,
+        answer: q.answer || (q.options && q.answerIndex !== undefined ? q.options[q.answerIndex] : "")
+      }));
+
+      containerDiv.innerHTML = quizList.map((q, idx) => `
+        <div class="quiz-card" style="background:#FFFFFF; padding:16px; border-radius:8px; margin-bottom:14px; border:1px solid #E2E8F0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+          <p style="font-weight:700; font-size:0.92rem; margin-bottom:10px; color:#0F172A;">Q${idx+1}: ${q.question}</p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${q.options.map((opt) => `
+              <button class="quiz-option-btn" 
+                      type="button"
+                      style="width:100%; padding:10px 14px; text-align:left; border:1px solid #CBD5E1; border-radius:6px; background:#F8FAFC; color:#1E293B; font-size:0.88rem; cursor:pointer; pointer-events:auto; transition:all 0.2s ease;" 
+                      onclick="checkQuizAnswer(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}', '${(q.explanation || '').replace(/'/g, "\\'")}')">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <div class="quiz-explanation" style="display:none; font-size:0.82rem; margin-top:10px; padding:10px; background:#EFF6FF; color:#1E40AF; border-radius:6px; border-left:4px solid #3B82F6;"></div>
+        </div>
+      `).join('');
+
+      // Trigger MathJax to render LaTeX expressions into clean algebraic notation
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([containerDiv]).catch((err) => console.error("MathJax Error:", err));
+      }
+    } catch (err) {
+      console.error("Quiz Generation Error:", err);
+      statusDiv.innerHTML = `<p style="font-size:0.82rem; color:#EF4444;">Failed to generate quiz. Try again.</p>`;
+    }
+  }
+  
+</script>
   let currentUser = null;
   let myPerformanceChart = null;
   let currentActivePaper = null;
