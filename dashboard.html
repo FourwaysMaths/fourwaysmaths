@@ -2063,49 +2063,58 @@ const gr11Paper2FolderMap = {
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
   }
 
-  async function loadUpcomingClasses(studentId) {
+ async function loadUpcomingClasses(studentId) {
     if (!supabaseClient) return;
 
     const dashboardContainer = document.getElementById("upcoming-classes-container");
     const calendarContainer = document.getElementById("calendar-classes-container");
 
-    const { data: schedules } = await supabaseClient
-      .from("schedules")
-      .select("*")
-      .eq("student_id", studentId)
-      .order("class_date", { ascending: true });
+    try {
+      let { data: schedules, error } = await supabaseClient
+        .from("schedules")
+        .select("*")
+        .eq("student_id", studentId)
+        .order("class_date", { ascending: true });
 
-    if (!schedules || schedules.length === 0) {
-      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
-      dashboardContainer.innerHTML = emptyMarkup;
-      calendarContainer.innerHTML = emptyMarkup;
-      return;
-    }
+      if (error || !schedules || schedules.length === 0) {
+        const altQuery = await supabaseClient
+          .from("schedules")
+          .select("*")
+          .eq("user_id", studentId)
+          .order("class_date", { ascending: true });
+        schedules = altQuery.data;
+      }
 
-    if (error) {
-    console.error('Schedules query failed:', error);
-    return;
-    }
+      if (!schedules || schedules.length === 0) {
+        const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
+        if (dashboardContainer) dashboardContainer.innerHTML = emptyMarkup;
+        if (calendarContainer) calendarContainer.innerHTML = emptyMarkup;
+        return;
+      }
 
-    console.log('Schedules returned:', schedules);
-
-    const htmlContent = schedules.map(s => {
-      const dateFormatted = new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' });
-      return `
-        <div class="class-item">
-          <div>
-            <h4 style="font-size: 0.95rem;">${s.topic}</h4>
-            <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time}</p>
+      const htmlContent = schedules.map(s => {
+        const dateFormatted = s.class_date ? new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+        return `
+          <div class="class-item">
+            <div>
+              <h4 style="font-size: 0.95rem;">${s.topic || s.title || "Scheduled Class"}</h4>
+              <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time || ''}</p>
+            </div>
+            <span class="class-status">Scheduled</span>
           </div>
-          <span class="class-status">Scheduled</span>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
 
-    dashboardContainer.innerHTML = htmlContent;
-    calendarContainer.innerHTML = htmlContent;
+      if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
+      if (calendarContainer) calendarContainer.innerHTML = htmlContent;
+    } catch (err) {
+      console.error("Error loading upcoming classes:", err);
+      const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
+      if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
+      if (calendarContainer) calendarContainer.innerHTML = errMarkup;
+    }
   }
-
+  
   async function loadStudentChat(studentId) {
     if (!supabaseClient) return;
 
@@ -2208,60 +2217,63 @@ const gr11Paper2FolderMap = {
   async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
-    // Try fetching with student_id first, fallback to user_id if needed
-    let { data: grades, error } = await supabaseClient
-      .from('grades')
-      .select('*')
-      .eq('student_id', studentId);
-
-    if ((!grades || grades.length === 0) && !error) {
-      const altQuery = await supabaseClient
-        .from('grades')
-        .select('*')
-        .eq('user_id', studentId);
-      grades = altQuery.data;
-    }
-
     const tbody = document.getElementById('grades-table-body');
     const statAvgBox = document.getElementById('stat-avg-box');
 
-    if (!grades || grades.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
-      renderPerformanceChart(['No Data'], [0]);
-      return;
+    try {
+      let { data: grades, error } = await supabaseClient
+        .from('grades')
+        .select('*')
+        .eq('student_id', studentId)
+        .order('created_at', { ascending: true });
+
+      if (error || !grades || grades.length === 0) {
+        const altQuery = await supabaseClient
+          .from('grades')
+          .select('*')
+          .eq('user_id', studentId)
+          .order('created_at', { ascending: true });
+        grades = altQuery.data;
+      }
+
+      if (!grades || grades.length === 0) {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
+        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>--%</strong>`;
+        const dashAvgDisplay = document.getElementById('dash-avg-display');
+        if (dashAvgDisplay) dashAvgDisplay.textContent = '--%';
+        renderPerformanceChart(['No Data'], [0]);
+        return;
+      }
+
+      if (tbody) {
+        tbody.innerHTML = grades.map(g => {
+          const assessmentTitle = g.assessment_name || g.title || g.assignment_name || "Assessment";
+          const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
+          const dateStr = g.created_at || g.date || new Date();
+          return `
+            <tr>
+              <td style="padding: 12px 10px; font-weight: 600;">${assessmentTitle}</td>
+              <td style="padding: 12px 10px; color: #64748B;">${new Date(dateStr).toLocaleDateString('en-ZA')}</td>
+              <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
+              <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
+      const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+      if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>Current Mark Average: <strong>${avg}%</strong>`;
+      const dashAvgDisplay = document.getElementById('dash-avg-display');
+      if (dashAvgDisplay) dashAvgDisplay.textContent = `${avg}%`;
+
+      renderPerformanceChart(grades.map(g => g.assessment_name || g.title || "Test"), scores);
+    } catch (err) {
+      console.error("Error loading grades:", err);
+      if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grades.</td></tr>`;
+      renderPerformanceChart(['Error'], [0]);
     }
-
-    if (error) {
-    console.error('Grades query failed:', error);
-    return;
-    }
-
-    console.log('Student ID:', studentId);
-    console.log('Grades returned:', grades);
-
-    tbody.innerHTML = grades.map(g => {
-      const assessmentTitle = g.assessment_name || g.title || g.assignment_name || "Assessment";
-      const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
-      const dateStr = g.created_at || g.date || new Date();
-      
-      return `
-        <tr>
-          <td style="padding: 12px 10px; font-weight: 600;">${assessmentTitle}</td>
-          <td style="padding: 12px 10px; color: #64748B;">${new Date(dateStr).toLocaleDateString('en-ZA')}</td>
-          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
-          <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-        </tr>
-      `;
-    }).join('');
-
-    const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
-    const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-
-    if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
-    const dashAvgDisplay = document.getElementById('dash-avg-display');
-    if (dashAvgDisplay) dashAvgDisplay.textContent = `${avg}%`;
-
-    renderPerformanceChart(grades.map(g => g.assessment_name || g.title || "Test"), scores);
   }
   
   function renderPerformanceChart(labels, dataPoints) {
