@@ -2082,6 +2082,13 @@ const gr11Paper2FolderMap = {
       return;
     }
 
+    if (error) {
+    console.error('Schedules query failed:', error);
+    return;
+    }
+
+    console.log('Schedules returned:', schedules);
+
     const htmlContent = schedules.map(s => {
       const dateFormatted = new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' });
       return `
@@ -2223,6 +2230,14 @@ const gr11Paper2FolderMap = {
       renderPerformanceChart(['No Data'], [0]);
       return;
     }
+
+    if (error) {
+    console.error('Grades query failed:', error);
+    return;
+    }
+
+    console.log('Student ID:', studentId);
+    console.log('Grades returned:', grades);
 
     tbody.innerHTML = grades.map(g => {
       const assessmentTitle = g.assessment_name || g.title || g.assignment_name || "Assessment";
