@@ -1359,6 +1359,7 @@ document.addEventListener('DOMContentLoaded', fetchAvailableTopics);
     { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig Equations', description: 'Determine for which values of a variable an identity holds', youtube_url: 'https://youtu.be/5eughc6CjL0?si=gTGL-Gs2clvG6are' },
     { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trig General Solutions', description: 'Determine the general solutions of trigonometric equations. Also, determine solutions in specific intervals', youtube_url: 'https://www.youtube.com/watch?v=R13Z7ZVChwI&list=PLU_DCVXL8MyM3bl71J1E8w_LWRVGt8IXI&index=18' },
     { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Sin, Cos, and Area rules', description: 'Prove, apply, and solve problems in 2D and 3D Trig using the sine, cosine and area rules', youtube_url: 'https://youtu.be/s9vYb0b0TIw?si=y0egjNg_PUNzfOwo' },
+    { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Trigonometry', topic: 'Trigonometric Functions', description: 'Graphs of sine, cosine, and tangent functions, amplitude, period, and vertical/horizontal shifts.', youtube_url: 'https://youtu.be/rQxDbz7r6fQ?si=C24PilKNvJuPud6X' },
     { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Euclidean Geometry', topic: 'Circle Geometry Theorems', description: 'Chords, angles subtended at center/circumference, cyclic quadrilaterals, tangents to circles.', youtube_url: 'https://youtu.be/x4zQmPEWweU?si=gIz47PU9Z5PEMBlD' },
     { subject: 'Mathematics', grade: 'Grade 11', paper: 'Paper 2', section: 'Analytical Geometry', topic: 'Line Equations & Angles of Inclination', description: 'Equation of line y-y1=m(x-x1), inclination angle tan()=m.', youtube_url: 'https://www.youtube.com/watch?v=QmNzxSM3qZA&list=PLU_DCVXL8MyPnrktTsTQXcz7HD1U-HnFu' },
     
@@ -1479,7 +1480,38 @@ document.addEventListener('DOMContentLoaded', fetchAvailableTopics);
   // Statistics
   "Statistics": "4Statistics"
 };
+  
+   // --- MAPPING FOR GRADE 11 PAPER 2 ---
+const gr11Paper2FolderMap = {
+  // Trigonometry Reduction
+  "Trig Reduction": "8TrigReduction",
+  "Trigonometry Reduction": "8TrigReduction",
 
+  // Trigonometric Equations
+  "Trig Equations": "9TrigEquations",
+  "Trigonometric Equations": "9TrigEquations",
+
+  // General Solutions
+  "Trig General Solutions": "10Triggeneral",
+  "General Trigonometry": "10Triggeneral",
+
+  // Trigonometric Functions (Added to match folder and potential data entries)
+  "Trigonometric Functions": "11TrigFunctions",
+  "Trig Graphs": "11TrigFunctions",
+
+  // Sine, Cosine & Area Rules
+  "Sin, Cos, and Area rules": "12TrigRules",
+  "Sine, Cosine & Area Rules": "12TrigRules",
+
+  // Euclidean Geometry
+  "Circle Geometry Theorems": "13Euclidean",
+  "Euclidean Geometry": "13Euclidean",
+
+  // Analytical Geometry
+  "Line Equations & Angles of Inclination": "14Analytical",
+  "Analytical Geometry": "14Analytical"
+};
+  
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
