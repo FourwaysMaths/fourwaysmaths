@@ -1542,8 +1542,15 @@ const gr11Paper2FolderMap = {
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
-    // UPGRADE 3: Load Saved Preferences from localStorage or user metadata
-    const savedStream = localStorage.getItem('4wm_stream') || (selectedSubject.toLowerCase().includes("lit") ? "Mathematical Literacy" : "Mathematics");
+    // FIX 1: Robust stream check so Core Maths doesn't mistakenly default to Math Lit
+    let initialStream = meta.subject || localStorage.getItem('4wm_stream') || "Mathematics";
+    if (initialStream.toLowerCase().includes("lit")) {
+      initialStream = "Mathematical Literacy";
+    } else {
+      initialStream = "Mathematics";
+    }
+    localStorage.setItem('4wm_stream', initialStream);
+    const savedStream = initialStream;
     const savedGrade = localStorage.getItem('4wm_grade') || userGrade;
 
     const streamDropdown = document.getElementById("study-stream-select");
@@ -1595,7 +1602,7 @@ const gr11Paper2FolderMap = {
     loadStudentChat(currentUser.id);
     loadStudentUploadedFiles(currentUser.id);
   });
-
+  
   const navLinks = document.querySelectorAll('.nav-link-item');
   const appViews = document.querySelectorAll('.app-view');
   const dashboardOnlyPanels = document.querySelectorAll('.dashboard-only');
@@ -2110,11 +2117,19 @@ const gr11Paper2FolderMap = {
   async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
-    const { data: grades } = await supabaseClient
+    // Try fetching with student_id first, fallback to user_id if needed
+    let { data: grades, error } = await supabaseClient
       .from('grades')
       .select('*')
-      .eq('student_id', studentId)
-      .order('created_at', { ascending: true });
+      .eq('student_id', studentId);
+
+    if ((!grades || grades.length === 0) && !error) {
+      const altQuery = await supabaseClient
+        .from('grades')
+        .select('*')
+        .eq('user_id', studentId);
+      grades = altQuery.data;
+    }
 
     const tbody = document.getElementById('grades-table-body');
     const statAvgBox = document.getElementById('stat-avg-box');
@@ -2125,22 +2140,28 @@ const gr11Paper2FolderMap = {
       return;
     }
 
-    tbody.innerHTML = grades.map(g => `
-      <tr>
-        <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.title}</td>
-        <td style="padding: 12px 10px; color: #64748B;">${new Date(g.created_at).toLocaleDateString('en-ZA')}</td>
-        <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
-        <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = grades.map(g => {
+      const assessmentTitle = g.assessment_name || g.title || g.assignment_name || "Assessment";
+      const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
+      const dateStr = g.created_at || g.date || new Date();
+      
+      return `
+        <tr>
+          <td style="padding: 12px 10px; font-weight: 600;">${assessmentTitle}</td>
+          <td style="padding: 12px 10px; color: #64748B;">${new Date(dateStr).toLocaleDateString('en-ZA')}</td>
+          <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
+          <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+        </tr>
+      `;
+    }).join('');
 
-    const scores = grades.map(g => Number(g.score || g.score_percentage));
+    const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
     const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
     statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
-    renderPerformanceChart(grades.map(g => g.assessment_name || g.title), scores);
-  }
-
+    renderPerformanceChart(grades.map(g => g.assessment_name || g.title || "Test"), scores);
+    }
+  
   function renderPerformanceChart(labels, dataPoints) {
     const ctx = document.getElementById('performanceChart').getContext('2d');
     if (myPerformanceChart) myPerformanceChart.destroy();
