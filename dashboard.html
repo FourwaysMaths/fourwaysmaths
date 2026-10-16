@@ -1667,20 +1667,24 @@ const gr11Paper2FolderMap = {
     const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(learnerName)}&background=1E293B&color=EAB308`;
     document.getElementById("user-avatar").src = avatarUrl;
 
+    // Safely check if the element exists before modifying it
     const dashboardSubjectContainer = document.getElementById("dashboard-subject-container");
     const isMathLit = savedStream === "Mathematical Literacy";
 
-    dashboardSubjectContainer.innerHTML = `
-      <div class="subject-card">
-        <i class="fa-solid ${isMathLit ? 'fa-chart-line' : 'fa-calculator'}"></i>
-        <h4>${isMathLit ? 'Mathematical Literacy' : 'Core Mathematics'}</h4>
-        <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
-      </div>
-    `;
+    if (dashboardSubjectContainer) {
+      dashboardSubjectContainer.innerHTML = `
+        <div class="subject-card">
+          <i class="fa-solid ${isMathLit ? 'fa-chart-line' : 'fa-calculator'}"></i>
+          <h4>${isMathLit ? 'Mathematical Literacy' : 'Core Mathematics'}</h4>
+          <p style="font-size: 0.8rem; color: #64748B; margin-top: 5px;">Lead Educator: Gcina S.</p>
+        </div>
+      `;
+    }
 
     const dashStreamDisplay = document.getElementById('dash-stream-display');
     if (dashStreamDisplay) dashStreamDisplay.textContent = isMathLit ? 'Mathematical Literacy' : 'Core Mathematics';
 
+    // Now these functions will execute normally!
     loadUpcomingClasses(currentUser.id);
     loadStudentGrades(currentUser.id);
     loadStudentChat(currentUser.id);
