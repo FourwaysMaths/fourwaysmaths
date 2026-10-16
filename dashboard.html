@@ -1198,30 +1198,7 @@
           <!-- Dynamically populated by term (March/April, May/June, September, November) -->
         </div>
         </div>
-      
-        <div class="paper-cards-grid" style="margin-top: 20px;">
-          <div class="subject-card">
-            <i class="fa-solid fa-file-pdf"></i>
-            <h3 style="margin-bottom: 10px;" id="past-p1-title">Paper 1 Past Papers</h3>
-            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 1.</p>
-            <div id="past-paper-1-list" class="resource-list">
-              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
-              <div class="skeleton-box" style="height: 38px;"></div>
-            </div>
-          </div>
-
-          <div class="subject-card">
-            <i class="fa-solid fa-file-pdf"></i>
-            <h3 style="margin-bottom: 10px;" id="past-p2-title">Paper 2 Past Papers</h3>
-            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">Previous exam papers and full memorandums for Paper 2.</p>
-            <div id="past-paper-2-list" class="resource-list">
-              <div class="skeleton-box" style="height: 38px; margin-bottom: 6px;"></div>
-              <div class="skeleton-box" style="height: 38px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    
       <!-- VIEW 5: CHAT -->
       <div id="view-chat" class="app-view" style="display: none;">
         <h2>Chat to Educator</h2>
@@ -2122,7 +2099,7 @@ const gr11Paper2FolderMap = {
     container.innerHTML = cardsHtml;
   }
 
-  // ==========================================
+ // ==========================================
   // PAST PAPERS & MORE STUDY RESOURCES
   // ==========================================
   let activePastPaperCategory = 'Paper 1';
@@ -2133,6 +2110,16 @@ const gr11Paper2FolderMap = {
     parentContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btnElem.classList.add('active');
     loadPastPapers();
+  }
+
+  // Maps dropdown grade name to your exact Supabase folder name
+  function getSupabaseGradeFolder(gradeStr) {
+    const g = (gradeStr || '').trim();
+    if (g.includes('8') || g.includes('9') || g.includes('&')) return 'Gr8&9';
+    if (g.includes('10')) return 'Gr10';
+    if (g.includes('11')) return 'Gr11';
+    if (g.includes('12')) return 'Gr12';
+    return 'Gr11'; // safe fallback
   }
 
   async function loadPastPapers() {
@@ -2155,20 +2142,26 @@ const gr11Paper2FolderMap = {
     ];
 
     let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
+    let gradeFolder = getSupabaseGradeFolder(selectedGrade);
     let folderCategoryName = activePastPaperCategory === 'Topic Tests' ? 'Topic_Tests' : activePastPaperCategory.replace(/\s+/g, '');
-    let folderPath = `${streamPrefix}${selectedGrade}/${folderCategoryName}/Past papers`;
+    let folderPath = `${streamPrefix}${gradeFolder}/${folderCategoryName}/Past papers`;
 
     let allFiles = [];
     if (supabaseClient) {
-      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
+      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath, { limit: 100 });
       if (data) allFiles = data.filter(f => f.name.endsWith('.pdf'));
     }
 
     container.innerHTML = terms.map(term => {
-      // Filter files matching the term keyword
-      const termFiles = allFiles.filter(f => f.name.toLowerCase().includes(term.key.toLowerCase()) || f.name.toLowerCase().includes(term.label.toLowerCase().split(' ')[0]));
-      
-      // Separate papers and memos
+      let termFiles = allFiles.filter(f => 
+        f.name.toLowerCase().includes(term.key.toLowerCase()) || 
+        f.name.toLowerCase().includes(term.label.toLowerCase().split(' ')[0].toLowerCase())
+      );
+
+      if (termFiles.length === 0 && term.key === 'Term 1' && allFiles.length > 0) {
+        termFiles = allFiles;
+      }
+
       const paperFiles = termFiles.filter(f => !f.name.toLowerCase().includes('memo') && !f.name.toLowerCase().includes('memorandum'));
       const memoFiles = termFiles.filter(f => f.name.toLowerCase().includes('memo') || f.name.toLowerCase().includes('memorandum'));
 
@@ -2231,16 +2224,17 @@ const gr11Paper2FolderMap = {
     container.innerHTML = `<p style="color: #64748B;">Loading textbooks and study materials...</p>`;
 
     let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
-    let folderPath = `${streamPrefix}${selectedGrade}/Material`;
+    let gradeFolder = getSupabaseGradeFolder(selectedGrade);
+    let folderPath = `${streamPrefix}${gradeFolder}/Material`;
 
     let files = [];
     if (supabaseClient) {
-      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath);
+      const { data } = await supabaseClient.storage.from(BUCKET_NAME).list(folderPath, { limit: 100 });
       if (data) files = data.filter(f => f.name.endsWith('.pdf'));
     }
 
     if (files.length === 0) {
-      container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;">No study materials found in ${selectedGrade}/Material yet.</p>`;
+      container.innerHTML = `<p style="color: #64748B; font-size: 0.85rem;">No study materials found in <strong>${gradeFolder}/Material</strong> on Supabase.</p>`;
       return;
     }
 
