@@ -3,270 +3,410 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Educator Command Center | Fourways Maths</title>
+  <title>Educator Portal | Fourways Maths</title>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #F1F5F9; color: #0F172A; padding: 30px; }
-    
-    header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 30px; 
-      flex-wrap: wrap;
-      gap: 15px;
+    :root {
+      --navy-dark: #0F172A;
+      --slate-sidebar: #1E293B;
+      --gold-accent: #EAB308;
+      --gold-hover: #CA8A04;
+      --bg-light: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-dark: #0F172A;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
     }
 
-    .header-actions {
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg-light); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+    /* SIDEBAR NAVIGATION */
+    aside {
+      width: 260px;
+      background: var(--slate-sidebar);
+      color: #FFF;
       display: flex;
-      gap: 10px;
-      align-items: center;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
     }
 
-    .card { 
-      background: #FFF; 
-      border-radius: 14px; 
-      padding: 24px; 
-      border: 1px solid #E2E8F0; 
-      margin-bottom: 25px; 
+    .brand-header {
+      padding: 25px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-header h1 { font-size: 1.15rem; color: #FFF; font-weight: 700; }
+    .brand-header span { color: var(--gold-accent); }
+
+    .nav-menu { list-style: none; padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .nav-item {
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #FFF; }
+    .nav-item.active { background: var(--gold-accent); color: var(--navy-dark); font-weight: 700; }
+
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+    /* MAIN CONTENT AREA */
+    main { margin-left: 260px; flex: 1; padding: 35px 40px; width: calc(100% - 260px); }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header-title h2 { font-size: 1.6rem; color: var(--navy-dark); }
+    .header-title p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+
+    .btn-student-view {
+      background: var(--navy-dark); color: #FFF; border: none; padding: 10px 18px;
+      border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;
+    }
+    .btn-student-view:hover { background: #1E293B; }
+
+    .btn-logout {
+      background: #FEE2E2; color: #DC2626; border: none; padding: 10px 16px;
+      border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center;
+    }
+    .btn-logout:hover { background: #FECACA; }
+
+    /* STATS OVERVIEW CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+    }
+
+    /* VIEW PANELS */
+    .tab-view { display: none; }
+    .tab-view.active { display: block; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
     .card-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-size: 1.1rem;
-      margin-bottom: 15px;
-      color: #1E293B;
-    }
-
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th, td { padding: 12px 15px; border-bottom: 1px solid #F1F5F9; }
-    th { color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .btn { 
-      background: #EAB308; 
-      color: #1E293B; 
-      border: none; 
-      padding: 9px 16px; 
-      border-radius: 8px; 
-      font-weight: 700; 
-      cursor: pointer; 
-      text-decoration: none;
-      display: inline-flex;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 18px;
+      display: flex;
       align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
+      gap: 10px;
     }
 
-    .btn:hover { background: #CA8A04; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-secondary { background: #1E293B; color: #FFF; }
-    .btn-secondary:hover { background: #0F172A; }
-    .btn-danger { background: #EF4444; color: #FFF; }
-    .btn-danger:hover { background: #DC2626; }
-
-    .form-group {
+    /* FORM STYLING */
+    .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
+    label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
     input, select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      background-color: #FFF;
+      width: 100%; padding: 11px 14px; border: 1px solid #CBD5E1;
+      border-radius: 8px; font-size: 0.9rem; outline: none; background: #FFF;
     }
+    input:focus, select:focus { border-color: var(--gold-accent); box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15); }
 
-    #form-status {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      font-weight: 600;
+    .btn-gold {
+      background: var(--gold-accent); color: var(--navy-dark); border: none;
+      padding: 11px 22px; border-radius: 8px; font-weight: 700; font-size: 0.88rem;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;
     }
+    .btn-gold:hover { background: var(--gold-hover); }
 
-    /* Chat Hub Specific Styling */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    /* TABLES */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
+    th { background: #F1F5F9; color: var(--text-muted); padding: 12px 16px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-dark); }
+    tr:last-child td { border-bottom: none; }
 
-    .chat-messages-box {
-      height: 320px;
-      overflow-y: auto;
-      border: 1px solid #CBD5E1;
-      background: #F8FAFC;
-      padding: 15px;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    /* CHAT LAYOUT */
+    .chat-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; height: 450px; }
+    .chat-student-list { border: 1px solid var(--border-color); border-radius: 10px; overflow-y: auto; background: #FFF; }
+    .chat-student-item {
+      padding: 14px; border-bottom: 1px solid #F1F5F9; cursor: pointer; transition: 0.2s;
     }
-
-    .chat-input-row {
-      display: flex;
-      gap: 10px;
+    .chat-student-item:hover, .chat-student-item.active { background: #FEF08A; }
+    .chat-box-area {
+      border: 1px solid var(--border-color); border-radius: 10px; background: #F8FAFC;
+      display: flex; flex-direction: column; padding: 15px; height: 100%;
     }
+    .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+    .chat-input-bar { display: flex; gap: 10px; margin-top: 15px; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div>
-      <h2>Educator Command Center 👨‍🏫</h2>
-      <p style="color: #64748B;">Manage Fourways Maths learners, mark records, lesson schedules, and live communications.</p>
+  <!-- SIDEBAR NAVIGATION -->
+  <aside>
+    <div class="brand-header">
+      <i class="fa-solid fa-graduation-cap" style="color: var(--gold-accent); font-size: 1.4rem;"></i>
+      <h1>Fourways<span>Maths</span></h1>
     </div>
-    <div class="header-actions">
-      <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-user-graduate"></i> Student View</a>
-      <button id="btn-logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
-    </div>
-  </header>
 
-  <!-- SECTION 1: LIVE STUDENT CHAT HUB -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-comments" style="color: #EAB308;"></i>
-      <h3>Live Learner Chat & Queries</h3>
-    </div>
-    <div class="chat-container">
-      <div style="max-width: 320px;">
-        <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student to Message</label>
-        <select id="chat-student-select">
-          <option value="">-- Select a Learner --</option>
-        </select>
-      </div>
+    <ul class="nav-menu">
+      <li class="nav-item active" onclick="switchTab('tab-overview', this)">
+        <i class="fa-solid fa-chart-pie"></i> Overview & Logs
+      </li>
+      <li class="nav-item" onclick="switchTab('tab-chat', this)">
+        <i class="fa-solid fa-comments"></i> Learner Chat Hub
+      </li>
+      <li class="nav-item" onclick="switchTab('tab-documents', this)">
+        <i class="fa-solid fa-folder-open"></i> Student Submissions
+      </li>
+      <li class="nav-item" onclick="switchTab('tab-grades', this)">
+        <i class="fa-solid fa-pen-to-square"></i> Record Marks
+      </li>
+      <li class="nav-item" onclick="switchTab('tab-schedules', this)">
+        <i class="fa-solid fa-calendar-plus"></i> Schedule Classes
+      </li>
+    </ul>
 
-      <div class="chat-messages-box" id="admin-chat-box">
-        <p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.9rem;">Select a student from the dropdown above to view or send messages.</p>
-      </div>
-
-      <div class="chat-input-row">
-        <input type="text" id="admin-chat-input" placeholder="Type your response to the student..." disabled />
-        <button id="btn-send-admin-chat" class="btn" disabled><i class="fa-solid fa-paper-plane"></i> Send</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 2: UPLOADED STUDENT DOCUMENTS -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-folder-open" style="color: #EAB308;"></i>
-      <h3>Uploaded Student Test Scripts & Reports</h3>
-    </div>
-    <div style="overflow-x: auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>Document Path / File Name</th>
-            <th>Uploaded Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="student-files-table">
-          <tr>
-            <td colspan="3" style="color: #64748B;">Scanning Supabase storage bucket...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SECTION 3: LOG NEW GRADES FOR LEARNERS -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-pen-to-square" style="color: #EAB308;"></i>
-      <h3>Log Learner Marks & Assessment Scores</h3>
-    </div>
-    <form id="form-log-grade">
-      <div class="form-group">
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student</label>
-          <select id="student-select" required>
-            <option value="">Loading student list...</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Assessment Name</label>
-          <input type="text" id="assessment-title" placeholder="e.g. Term 1 Test - Financial Maths" required />
-        </div>
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Score (%)</label>
-          <input type="number" id="assessment-score" placeholder="e.g. 85" min="0" max="100" required />
-        </div>
-      </div>
-      <button type="submit" id="btn-submit-mark" class="btn" style="margin-top: 15px;">
-        <i class="fa-solid fa-check"></i> Record Grade
+    <div class="sidebar-footer">
+      <button id="btn-logout" class="btn-logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
       </button>
-      <div id="form-status"></div>
-    </form>
-  </div>
-
-  <!-- SECTION 4: SCHEDULE UPCOMING CLASSES -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-calendar-plus" style="color: #EAB308;"></i>
-      <h3>Schedule Upcoming Class / Session</h3>
     </div>
-    <form id="form-schedule-class">
-      <div class="form-group">
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Select Student</label>
-          <select id="schedule-student-select" required>
-            <option value="">Loading student list...</option>
-          </select>
+  </aside>
+
+  <!-- MAIN PORTAL BODY -->
+  <main>
+    <header>
+      <div class="header-title">
+        <h2>Educator Portal</h2>
+        <p>Manage learner activity, assessments, schedules, and communications.</p>
+      </div>
+      <a href="dashboard.html" class="btn-student-view" target="_blank">
+        <i class="fa-solid fa-eye"></i> Student View
+      </a>
+    </header>
+
+    <!-- QUICK STATS BAR -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #FEF08A; color: #854D0E;">
+          <i class="fa-solid fa-users"></i>
         </div>
         <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Topic / Lesson Focus</label>
-          <input type="text" id="schedule-topic" placeholder="e.g. Financial Maths: Compound Interest" required />
-        </div>
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Date</label>
-          <input type="date" id="schedule-date" required />
-        </div>
-        <div>
-          <label style="font-size: 0.8rem; font-weight: bold; color: #64748B; display: block; margin-bottom: 4px;">Time</label>
-          <input type="time" id="schedule-time" required />
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Active Learners</p>
+          <h3 id="stat-student-count" style="font-size: 1.25rem; margin-top: 2px;">--</h3>
         </div>
       </div>
-      <button type="submit" id="btn-submit-schedule" class="btn" style="margin-top: 15px;">
-        <i class="fa-solid fa-calendar-check"></i> Schedule Lesson
-      </button>
-      <div id="schedule-status" style="margin-top: 15px; font-size: 0.9rem; font-weight: 600;"></div>
-    </form>
-  </div>
 
-  <!-- SECTION 5: STUDENT LOGIN & STREAK ACTIVITY LOGS -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-clock-rotate-left" style="color: #EAB308;"></i>
-      <h3>Student Login & Streak Activity Logs</h3>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #DBEAFE; color: #1E40AF;">
+          <i class="fa-solid fa-calendar-day"></i>
+        </div>
+        <div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Logins Today</p>
+          <h3 id="stat-login-count" style="font-size: 1.25rem; margin-top: 2px;">--</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #DCFCE7; color: #15803D;">
+          <i class="fa-solid fa-file-arrow-up"></i>
+        </div>
+        <div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Submissions</p>
+          <h3 id="stat-uploads-count" style="font-size: 1.25rem; margin-top: 2px;">--</h3>
+        </div>
+      </div>
     </div>
-    <div style="overflow-x: auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>Student Email</th>
-            <th>Login Date</th>
-            <th>Exact Login Time</th>
-          </tr>
-        </thead>
-        <tbody id="activity-log-table-body">
-          <tr>
-            <td colspan="3" style="color: #64748B; text-align: center;">Loading student login activity...</td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- TAB 1: OVERVIEW & LOGIN LOGS -->
+    <div id="tab-overview" class="tab-view active">
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--gold-accent);"></i>
+          <span>Student Login & Streak Activity</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Student Email</th>
+                <th>Login Date</th>
+                <th>Exact Login Time</th>
+              </tr>
+            </thead>
+            <tbody id="activity-log-table-body">
+              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading activity logs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- TAB 2: LEARNER CHAT HUB -->
+    <div id="tab-chat" class="tab-view">
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-comments" style="color: var(--gold-accent);"></i>
+          <span>Live Learner Communication Hub</span>
+        </div>
+        
+        <div class="chat-layout">
+          <div>
+            <label style="margin-bottom: 8px;">SELECT LEARNER</label>
+            <div class="chat-student-list" id="chat-student-list">
+              <div style="padding: 15px; color: var(--text-muted); font-size: 0.85rem;">Loading learners...</div>
+            </div>
+          </div>
+
+          <div class="chat-box-area">
+            <div class="chat-messages" id="admin-chat-box">
+              <p style="color: var(--text-muted); text-align: center; margin: auto;">Select a student on the left to start messaging.</p>
+            </div>
+            <div class="chat-input-bar">
+              <input type="text" id="admin-chat-input" placeholder="Type a response to student..." disabled />
+              <button id="btn-send-admin-chat" class="btn-gold" disabled><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: STUDENT SUBMISSIONS -->
+    <div id="tab-documents" class="tab-view">
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-folder-open" style="color: var(--gold-accent);"></i>
+          <span>Uploaded Student Scripts & Homework</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Student / File Name</th>
+                <th>Upload Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="student-files-table">
+              <tr><td colspan="3" style="color: var(--text-muted);">Scanning storage files...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: RECORD MARKS -->
+    <div id="tab-grades" class="tab-view">
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-pen-to-square" style="color: var(--gold-accent);"></i>
+          <span>Log Assessment Score</span>
+        </div>
+        <form id="form-log-grade">
+          <div class="form-grid">
+            <div>
+              <label>LEARNER</label>
+              <select id="student-select" required>
+                <option value="">Loading students...</option>
+              </select>
+            </div>
+            <div>
+              <label>ASSESSMENT TITLE</label>
+              <input type="text" id="assessment-title" placeholder="e.g. Term 1 Test - Financial Maths" required />
+            </div>
+            <div>
+              <label>SCORE (%)</label>
+              <input type="number" id="assessment-score" placeholder="e.g. 85" min="0" max="100" required />
+            </div>
+          </div>
+          <button type="submit" id="btn-submit-mark" class="btn-gold">
+            <i class="fa-solid fa-check"></i> Record Grade
+          </button>
+          <div id="form-status" style="margin-top: 12px; font-weight: 600;"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 5: SCHEDULE CLASSES -->
+    <div id="tab-schedules" class="tab-view">
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-calendar-plus" style="color: var(--gold-accent);"></i>
+          <span>Schedule Upcoming Lesson</span>
+        </div>
+        <form id="form-schedule-class">
+          <div class="form-grid">
+            <div>
+              <label>LEARNER</label>
+              <select id="schedule-student-select" required>
+                <option value="">Loading students...</option>
+              </select>
+            </div>
+            <div>
+              <label>LESSON TOPIC</label>
+              <input type="text" id="schedule-topic" placeholder="e.g. Functions & Graphs" required />
+            </div>
+            <div>
+              <label>DATE</label>
+              <input type="date" id="schedule-date" required />
+            </div>
+            <div>
+              <label>TIME</label>
+              <input type="time" id="schedule-time" required />
+            </div>
+          </div>
+          <button type="submit" id="btn-submit-schedule" class="btn-gold">
+            <i class="fa-solid fa-calendar-check"></i> Schedule Session
+          </button>
+          <div id="schedule-status" style="margin-top: 12px; font-weight: 600;"></div>
+        </form>
+      </div>
+    </div>
+
+  </main>
 
 <script>
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
@@ -276,12 +416,12 @@
   let activeChatStudentId = null;
   let activeChannel = null;
   let currentUserFullName = "Educator";
+  let studentMap = {}; // Maps ID to Name
 
-  // Single DOMContentLoaded listener with Admin Guard
+  // Security Guard & Page Initialization
   document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
 
-    // Verify Session & Role Security Guard
     const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (!session) {
@@ -293,7 +433,6 @@
     const userEmail = session.user.email;
     currentUserFullName = session.user.user_metadata?.full_name || "Educator";
 
-    // Strict Admin & Educator Route Protection
     const isAdminOrEducator = userRole === "admin" || userRole === "educator" || userEmail === "info@fourwaysmaths.co.za";
 
     if (!isAdminOrEducator) {
@@ -302,262 +441,216 @@
       return;
     }
 
-    loadStudentDropdowns();
-    loadStudentUploads();
+    await loadStudentData();
     loadAdminActivityLogs();
+    loadStudentUploads();
   });
 
-  // Populate Dropdowns across Grade Logging, Scheduling, and Chat Hub
-  async function loadStudentDropdowns() {
+  // Switch Active Tab
+  function switchTab(tabId, element) {
+    document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    element.classList.add('active');
+  }
+
+  // Load Students and Populate Map + Dropdowns + Chat Sidebar
+  async function loadStudentData() {
     const gradeSelect = document.getElementById("student-select");
     const schedSelect = document.getElementById("schedule-student-select");
-    const chatSelect = document.getElementById("chat-student-select");
+    const chatList = document.getElementById("chat-student-list");
 
     const { data: students, error } = await supabaseClient
       .from("profiles")
       .select("id, full_name, grade, role")
       .order("full_name", { ascending: true });
 
-    if (error || !students || students.length === 0) {
-      const fallbackMsg = `<option value="">No registered students found</option>`;
-      gradeSelect.innerHTML = fallbackMsg;
-      schedSelect.innerHTML = fallbackMsg;
-      chatSelect.innerHTML = fallbackMsg;
-      return;
-    }
+    if (error || !students) return;
+
+    let filteredStudents = students.filter(s => s.role !== 'admin' && s.role !== 'educator');
+    
+    // Update Stat Counter
+    document.getElementById('stat-student-count').textContent = filteredStudents.length;
 
     let defaultOption = `<option value="">-- Select a Learner --</option>`;
     gradeSelect.innerHTML = defaultOption;
     schedSelect.innerHTML = defaultOption;
-    chatSelect.innerHTML = defaultOption;
+    chatList.innerHTML = "";
 
-    students.forEach(student => {
-      if (student.role === 'admin' || student.role === 'educator') return;
+    filteredStudents.forEach(student => {
+      studentMap[student.id] = student.full_name || "Student";
 
       const option = document.createElement("option");
       option.value = student.id;
-      option.textContent = `${student.full_name || 'Unnamed Student'} ${student.grade ? `(${student.grade})` : ''}`;
+      option.textContent = `${student.full_name || 'Learner'} ${student.grade ? `(${student.grade})` : ''}`;
 
       gradeSelect.appendChild(option.cloneNode(true));
       schedSelect.appendChild(option.cloneNode(true));
-      chatSelect.appendChild(option.cloneNode(true));
+
+      // Build Chat List Sidebar Items
+      const chatItem = document.createElement("div");
+      chatItem.className = "chat-student-item";
+      chatItem.innerHTML = `
+        <div style="font-weight: 700; font-size: 0.88rem;">${student.full_name || 'Learner'}</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">${student.grade || 'Grade --'}</div>
+      `;
+      chatItem.onclick = () => selectChatStudent(student.id, chatItem);
+      chatList.appendChild(chatItem);
     });
   }
 
-  /* ----------------------------------------------------
-      REAL-TIME CHAT HUB FOR EDUCATOR
-  ---------------------------------------------------- */
-  const chatStudentSelect = document.getElementById("chat-student-select");
-  const adminChatBox = document.getElementById("admin-chat-box");
-  const adminChatInput = document.getElementById("admin-chat-input");
-  const btnSendAdminChat = document.getElementById("btn-send-admin-chat");
+  // Chat Selection Handler
+  async function selectChatStudent(studentId, element) {
+    document.querySelectorAll('.chat-student-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+    activeChatStudentId = studentId;
 
-  chatStudentSelect.addEventListener("change", async (e) => {
-    activeChatStudentId = e.target.value;
+    const chatBox = document.getElementById("admin-chat-box");
+    const chatInput = document.getElementById("admin-chat-input");
+    const btnSend = document.getElementById("btn-send-admin-chat");
 
-    if (activeChannel) {
-      supabaseClient.removeChannel(activeChannel);
-      activeChannel = null;
-    }
+    if (activeChannel) supabaseClient.removeChannel(activeChannel);
 
-    if (!activeChatStudentId) {
-      adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.9rem;">Select a student from the dropdown above to view or send messages.</p>`;
-      adminChatInput.disabled = true;
-      btnSendAdminChat.disabled = true;
-      return;
-    }
+    chatInput.disabled = false;
+    btnSend.disabled = false;
+    chatBox.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: auto;">Loading chat history...</p>`;
 
-    adminChatInput.disabled = false;
-    btnSendAdminChat.disabled = false;
-    adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.85rem;">Fetching chat history...</p>`;
-
-    const { data: messages, error } = await supabaseClient
+    const { data: messages } = await supabaseClient
       .from("messages")
       .select("*")
       .eq("student_id", activeChatStudentId)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      console.error("Error fetching messages:", error);
-      adminChatBox.innerHTML = `<p style="color: #EF4444; text-align: center; margin: auto; font-size: 0.85rem;">Failed to load messages.</p>`;
-      return;
-    }
-
-    renderAdminChatMessages(messages);
-    adminChatBox.scrollTop = adminChatBox.scrollHeight;
+    renderChatMessages(messages);
 
     activeChannel = supabaseClient
       .channel(`admin-chat-${activeChatStudentId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", filter: `student_id=eq.${activeChatStudentId}`, schema: "public", table: "messages" },
-        (payload) => {
-          appendAdminMessage(payload.new);
-          adminChatBox.scrollTop = adminChatBox.scrollHeight;
+      .on("postgres_changes", { event: "INSERT", filter: `student_id=eq.${activeChatStudentId}`, schema: "public", table: "messages" },
+        payload => {
+          appendChatMessage(payload.new);
+          chatBox.scrollTop = chatBox.scrollHeight;
         }
-      )
-      .subscribe();
-  });
+      ).subscribe();
+  }
 
-  function renderAdminChatMessages(messages) {
+  function renderChatMessages(messages) {
+    const chatBox = document.getElementById("admin-chat-box");
     if (!messages || messages.length === 0) {
-      adminChatBox.innerHTML = `<p style="color: #94A3B8; text-align: center; margin: auto; font-size: 0.85rem;">No past messages found with this learner.</p>`;
+      chatBox.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: auto;">No past messages with this learner.</p>`;
       return;
     }
-    adminChatBox.innerHTML = messages.map(msg => createAdminMessageBubble(msg)).join("");
+    chatBox.innerHTML = messages.map(msg => createBubble(msg)).join("");
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function appendAdminMessage(msg) {
-    if (adminChatBox.querySelector('p')) {
-      const pText = adminChatBox.querySelector('p').innerText;
-      if (pText.includes("No past messages") || pText.includes("Fetching")) {
-        adminChatBox.innerHTML = "";
-      }
-    }
-    adminChatBox.innerHTML += createAdminMessageBubble(msg);
+  function appendChatMessage(msg) {
+    const chatBox = document.getElementById("admin-chat-box");
+    if (chatBox.querySelector('p')) chatBox.innerHTML = "";
+    chatBox.innerHTML += createBubble(msg);
   }
 
-  function createAdminMessageBubble(msg) {
+  function createBubble(msg) {
     const isEducator = msg.sender_role === "admin" || msg.sender_role === "educator";
-    const bg = isEducator ? "#EAB308" : "#1E293B";
-    const color = isEducator ? "#1E293B" : "#FFF";
-    const align = isEducator ? "flex-end" : "flex-start";
-    const senderLabel = isEducator ? `${currentUserFullName} (You)` : "Learner";
-
     return `
-      <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4;">
-        <strong>${senderLabel}:</strong> ${msg.message_text}
+      <div style="align-self: ${isEducator ? 'flex-end' : 'flex-start'}; max-width: 80%; background: ${isEducator ? '#EAB308' : '#1E293B'}; color: ${isEducator ? '#1E293B' : '#FFF'}; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem;">
+        <strong>${isEducator ? 'You' : 'Learner'}:</strong> ${msg.message_text}
       </div>
     `;
   }
 
-  async function handleSendAdminMessage() {
-    const text = adminChatInput.value.trim();
+  // Send Message Action
+  async function sendAdminMessage() {
+    const input = document.getElementById("admin-chat-input");
+    const text = input.value.trim();
     if (!text || !activeChatStudentId) return;
 
-    adminChatInput.value = "";
-
-    const { error } = await supabaseClient
-      .from("messages")
-      .insert([
-        {
-          student_id: activeChatStudentId,
-          sender_role: "admin",
-          message_text: text
-        }
-      ]);
-
-    if (error) {
-      console.error("Error sending educator message:", error);
-      alert("Failed to send message: " + error.message);
-    }
+    input.value = "";
+    await supabaseClient.from("messages").insert([{ student_id: activeChatStudentId, sender_role: "admin", message_text: text }]);
   }
 
-  btnSendAdminChat.addEventListener("click", handleSendAdminMessage);
-  adminChatInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleSendAdminMessage();
-  });
+  document.getElementById("btn-send-admin-chat").addEventListener("click", sendAdminMessage);
+  document.getElementById("admin-chat-input").addEventListener("keypress", e => { if (e.key === "Enter") sendAdminMessage(); });
 
-  /* ----------------------------------------------------
-     STUDENT LOGIN & STREAK ACTIVITY LOGS
-  ---------------------------------------------------- */
+  // Load Activity Logs
   async function loadAdminActivityLogs() {
     const tableBody = document.getElementById('activity-log-table-body');
-    if (!supabaseClient) return;
+    const { data: logs } = await supabaseClient.from('user_activity').select('*').order('login_time', { ascending: false }).limit(25);
 
-    try {
-      const { data: logs, error } = await supabaseClient
-        .from('user_activity')
-        .select('*')
-        .order('login_time', { ascending: false })
-        .limit(30);
-
-      if (error) throw error;
-
-      if (!logs || logs.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #64748B; padding: 20px;">No student login activity recorded yet.</td></tr>`;
-        return;
-      }
-
-      tableBody.innerHTML = logs.map(log => {
-        const timeFormatted = new Date(log.login_time).toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        return `
-          <tr>
-            <td style="font-weight: 600;">${log.student_email || 'Unknown Student'}</td>
-            <td style="color: #64748B;">${log.login_date}</td>
-            <td style="color: #059669; font-weight: 700;">${timeFormatted}</td>
-          </tr>
-        `;
-      }).join('');
-    } catch (err) {
-      console.error("Failed to load activity logs:", err);
-      tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #EF4444; padding: 20px;">Failed to load activity logs.</td></tr>`;
+    if (!logs || logs.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No login activity recorded yet.</td></tr>`;
+      return;
     }
+
+    // Update Today's Logins Stat
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayLogins = logs.filter(l => l.login_date === todayStr).length;
+    document.getElementById('stat-login-count').textContent = todayLogins;
+
+    tableBody.innerHTML = logs.map(log => {
+      const timeFormatted = new Date(log.login_time).toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' });
+      return `
+        <tr>
+          <td style="font-weight: 600;">${log.student_email || 'Learner'}</td>
+          <td style="color: var(--text-muted);">${log.login_date}</td>
+          <td style="color: #059669; font-weight: 700;">${timeFormatted}</td>
+        </tr>
+      `;
+    }).join('');
   }
-  
-  /* ----------------------------------------------------
-      STUDENT FILE SUBMISSIONS (RECURSIVE / BUCKET SCAN)
-  ---------------------------------------------------- */
+
+  // Load & Clean Up Student Uploads Table
   async function loadStudentUploads() {
     const tableBody = document.getElementById("student-files-table");
-
+    
     try {
-      // 1. Fetch all top-level items
-      const { data: items, error } = await supabaseClient.storage
-        .from("student-files")
-        .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
-
-      if (error) throw error;
-
+      const { data: items } = await supabaseClient.storage.from("student-files").list("", { limit: 100 });
       let allFiles = [];
 
-      // 2. Traversal: If item has no id or metadata, check as folder
       for (const item of items || []) {
-        if (!item.id && !item.metadata) {
-          // It's a folder, search inside
-          const { data: subFiles } = await supabaseClient.storage
-            .from("student-files")
-            .list(item.name, { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+        // Skip system/hidden placeholder files
+        if (item.name.includes('.emptyFolderPlaceholder')) continue;
 
-          if (subFiles && subFiles.length > 0) {
+        if (!item.id && !item.metadata) {
+          const { data: subFiles } = await supabaseClient.storage.from("student-files").list(item.name, { limit: 100 });
+          if (subFiles) {
             subFiles.forEach(f => {
-              if (f.id || f.metadata) {
+              if (!f.name.includes('.emptyFolderPlaceholder')) {
                 allFiles.push({
-                  path: `${item.name}/${f.name}`,
-                  name: f.name,
-                  created_at: f.created_at || f.updated_at || item.created_at
+                  studentId: item.name,
+                  fileName: f.name,
+                  fullPath: `${item.name}/${f.name}`,
+                  created_at: f.created_at || item.created_at
                 });
               }
             });
           }
         } else {
-          // Direct file in root
-          allFiles.push({
-            path: item.name,
-            name: item.name,
-            created_at: item.created_at || item.updated_at
-          });
+          allFiles.push({ studentId: 'General', fileName: item.name, fullPath: item.name, created_at: item.created_at });
         }
       }
 
+      document.getElementById('stat-uploads-count').textContent = allFiles.length;
+
       if (allFiles.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="color: #64748B;">No student test submissions or reports found yet.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="3" style="color: var(--text-muted);">No student test submissions uploaded yet.</td></tr>`;
         return;
       }
 
-      tableBody.innerHTML = allFiles.map(file => {
-        // Generate signed URL (expires in 1 hour) for secure bucket access
-        const encodedPath = encodeURIComponent(file.path).replace(/%2F/g, "/");
+      tableBody.innerHTML = allFiles.map(f => {
+        const studentName = studentMap[f.studentId] || f.studentId;
+        const encodedPath = encodeURIComponent(f.fullPath).replace(/%2F/g, "/");
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/student-files/${encodedPath}`;
-        
-        const fileDate = file.created_at ? new Date(file.created_at).toLocaleDateString() : "Recent";
+        const dateStr = f.created_at ? new Date(f.created_at).toLocaleDateString('en-ZA') : "Recent";
 
         return `
           <tr>
-            <td style="font-weight: 600;">${file.path}</td>
-            <td style="color: #64748B;">${fileDate}</td>
+            <td style="font-weight: 600;">
+              <div>${f.fileName}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${studentName}</div>
+            </td>
+            <td style="color: var(--text-muted);">${dateStr}</td>
             <td>
-              <a href="${publicUrl}" target="_blank" class="btn" style="padding: 5px 12px; font-size: 0.8rem;">
+              <a href="${publicUrl}" target="_blank" class="btn-gold" style="padding: 6px 14px; font-size: 0.78rem;">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Open File
               </a>
             </td>
@@ -566,110 +659,54 @@
       }).join("");
 
     } catch (err) {
-      console.error("Storage scan error:", err);
-      tableBody.innerHTML = `<tr><td colspan="3" style="color: #EF4444;">Error scanning storage bucket: ${err.message}</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="3" style="color: #EF4444;">Unable to load files.</td></tr>`;
     }
   }
 
-  /* ----------------------------------------------------
-      FORM HANDLERS (GRADES & SCHEDULES)
-  ---------------------------------------------------- */
-  document.getElementById("form-log-grade").addEventListener("submit", async (e) => {
+  // Form Submission: Log Grade
+  document.getElementById("form-log-grade").addEventListener("submit", async e => {
     e.preventDefault();
-    
     const studentId = document.getElementById("student-select").value;
     const title = document.getElementById("assessment-title").value.trim();
     const score = parseInt(document.getElementById("assessment-score").value, 10);
     const statusEl = document.getElementById("form-status");
-    const submitBtn = document.getElementById("btn-submit-mark");
 
-    if (!studentId) {
-      statusEl.style.color = "#DC2626";
-      statusEl.textContent = "Please select a student from the dropdown list.";
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Mark...`;
-    statusEl.textContent = "";
-
-    // Cleaned insert payload to match database schema columns: student_id, title, score
-    const { data, error } = await supabaseClient
-      .from("grades")
-      .insert([
-        {
-          student_id: studentId,
-          title: title,
-          score: score
-        }
-      ]);
+    const { error } = await supabaseClient.from("grades").insert([{ student_id: studentId, title, score }]);
 
     if (error) {
-      console.error("Database error:", error);
       statusEl.style.color = "#DC2626";
-      statusEl.textContent = "❌ Error saving mark: " + error.message;
+      statusEl.textContent = "Error saving grade: " + error.message;
     } else {
       statusEl.style.color = "#166534";
-      statusEl.textContent = `✅ Recorded mark: ${score}% for "${title}" successfully!`;
-      
-      document.getElementById("assessment-title").value = "";
-      document.getElementById("assessment-score").value = "";
-      document.getElementById("student-select").value = "";
+      statusEl.textContent = `Grade logged: ${score}% for ${title}!`;
+      document.getElementById("form-log-grade").reset();
     }
-
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Record Grade`;
   });
 
-  document.getElementById("form-schedule-class").addEventListener("submit", async (e) => {
+  // Form Submission: Schedule Session
+  document.getElementById("form-schedule-class").addEventListener("submit", async e => {
     e.preventDefault();
-
     const studentId = document.getElementById("schedule-student-select").value;
     const topic = document.getElementById("schedule-topic").value.trim();
     const date = document.getElementById("schedule-date").value;
     const time = document.getElementById("schedule-time").value;
     const statusEl = document.getElementById("schedule-status");
-    const btn = document.getElementById("btn-submit-schedule");
 
-    if (!studentId) {
-      statusEl.style.color = "#DC2626";
-      statusEl.textContent = "Please select a student from the dropdown list.";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Scheduling...`;
-    statusEl.textContent = "";
-
-    const { data, error } = await supabaseClient
-      .from("schedules")
-      .insert([
-        {
-          student_id: studentId,
-          topic: topic,
-          class_date: date,
-          class_time: time
-        }
-      ]);
+    const { error } = await supabaseClient.from("schedules").insert([{ student_id: studentId, topic, class_date: date, class_time: time }]);
 
     if (error) {
       statusEl.style.color = "#DC2626";
-      statusEl.textContent = "❌ Failed to schedule class: " + error.message;
+      statusEl.textContent = "Failed to schedule class: " + error.message;
     } else {
       statusEl.style.color = "#166534";
-      statusEl.textContent = `✅ Lesson on "${topic}" scheduled for ${date} at ${time}!`;
+      statusEl.textContent = `Class scheduled on "${topic}" for ${date} at ${time}!`;
       document.getElementById("form-schedule-class").reset();
     }
-
-    btn.disabled = false;
-    btn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> Schedule Lesson`;
   });
 
-  // Sign-Out Handler
+  // Sign Out
   document.getElementById("btn-logout").addEventListener("click", async () => {
-    if (supabaseClient) {
-      await supabaseClient.auth.signOut();
-    }
+    if (supabaseClient) await supabaseClient.auth.signOut();
     window.location.href = "login.html";
   });
 </script>
