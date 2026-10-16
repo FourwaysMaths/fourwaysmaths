@@ -910,11 +910,10 @@
       </div>
     </section>
 
-    <!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
+<!-- CENTER PANEL: DYNAMIC SPA VIEWS -->
     <section class="main-panel">
 
-      <!-- VIEW 1: DASHBOARD -->
-    <!-- VIEW 1: REIMAGINED DASHBOARD -->
+      <!-- VIEW 1: REIMAGINED DASHBOARD -->
       <div id="view-dashboard" class="app-view">
         <div class="panel-header" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); padding: 30px; border-radius: 16px; color: #FFF; margin-bottom: 25px;">
           <div>
@@ -923,7 +922,7 @@
             <p style="color: #94A3B8; font-size: 0.92rem; margin-top: 4px;">Here is your complete academic overview and schedule for this week.</p>
           </div>
           <div style="display: flex; gap: 12px; align-items: center;">
-            <button onclick="document.querySelector('[data-target=\'view-subjects\']').click()" style="background: #EAB308; color: #1E293B; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <button onclick="document.querySelector('[data-target=\'view-quiz\']').click()" style="background: #EAB308; color: #1E293B; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
               <i class="fa-solid fa-pen-to-square"></i> Practice Quiz
             </button>
             <div class="notif-bell" id="notif-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #FFF;">
@@ -966,9 +965,8 @@
           </div>
         </div>
 
-        <!-- Main Dashboard Grid (Performance Chart + Upcoming Classes) -->
+        <!-- Main Dashboard Grid -->
         <div class="dashboard-grid">
-          <!-- Left Column: Performance Trend Chart -->
           <div class="dash-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
               <h3 style="font-size: 1.05rem; color: #0F172A;"><i class="fa-solid fa-chart-area" style="color: #EAB308;"></i> Performance Trend</h3>
@@ -979,7 +977,6 @@
             </div>
           </div>
 
-          <!-- Right Column: Upcoming Classes -->
           <div class="dash-card">
             <h3 style="font-size: 1.05rem; color: #0F172A; margin-bottom: 15px;"><i class="fa-solid fa-clock" style="color: #EAB308;"></i> Upcoming Classes</h3>
             <div id="upcoming-classes-container">
@@ -994,12 +991,9 @@
         <h2>Study Content</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your subject stream and grade to view video lessons, ATP topics, and downloadable study notes.</p>
         
-        <!-- GRADE & SUBJECT STREAM SELECTOR BAR -->
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
-            <label for="study-stream-select">
-              <i class="fa-solid fa-layer-group" style="color: #EAB308;"></i> Stream:
-            </label>
+            <label for="study-stream-select"><i class="fa-solid fa-layer-group" style="color: #EAB308;"></i> Stream:</label>
             <select id="study-stream-select" class="grade-dropdown" onchange="onStreamChange()">
               <option value="Mathematics">Mathematics (Core)</option>
               <option value="Mathematical Literacy">Mathematical Literacy</option>
@@ -1007,9 +1001,7 @@
           </div>
 
           <div class="grade-select-group">
-            <label for="study-grade-select">
-              <i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Grade:
-            </label>
+            <label for="study-grade-select"><i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Grade:</label>
             <select id="study-grade-select" class="grade-dropdown" onchange="onGradeChange()">
               <option value="Grade 8 & 9">Grade 8 & 9</option>
               <option value="Grade 10">Grade 10</option>
@@ -1019,130 +1011,6 @@
           </div>
         </div>
 
-     <!-- VIEW: DEDICATED PRACTICE QUIZ -->
-<div id="view-quiz" class="app-view" style="display: none;">
-  <h2>Practice Exercises & Quiz</h2>
-  <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your criteria below to load exercises, then type your answers to check your work.</p>
-  
-  <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:14px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:15px;">
-      <div>
-        <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">SUBJECT</label>
-        <select id="quiz-subject-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-          <option value="Mathematics" selected>Mathematics</option>
-          <option value="Mathematical Literacy">Mathematical Literacy</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">GRADE</label>
-        <select id="quiz-grade-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-          <option value="Grade 8&9" selected>Grade 8&9</option>
-          <option value="Grade 9">Grade 9</option>
-          <option value="Grade 10">Grade 10</option>
-          <option value="Grade 11">Grade 11</option>
-          <option value="Grade 12">Grade 12</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">PAPER</label>
-        <select id="quiz-paper-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-          <option value="Paper 1" selected>Paper 1</option>
-          <option value="Paper 2">Paper 2</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">TOPIC</label>
-        <select id="quiz-topic-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-          <option value="">All Topics</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">DIFFICULTY</label>
-        <select id="quiz-difficulty-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-          <option value="All">All Difficulties</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-      </div>
-    </div>
-
-    <button type="button" onclick="loadDatabaseQuiz()" style="background:#1E293B; color:#FFFFFF; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:8px;">
-      <i class="fa-solid fa-play"></i> Start Practice
-    </button>
-
-    <div id="quiz-status" style="margin-top:12px;"></div>
-    <div id="quiz-container" style="margin-top:15px;"></div>
-  </div>
-</div>   
-
-<!-- SIYAVULA-STYLE PRACTICE EXERCISE SECTION -->
-<div style="background:#FFF; border:1px solid #E2E8F0; border-radius:14px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-  <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-    <i class="fa-solid fa-pen-to-square" style="color:#3B82F6; font-size:1.3rem;"></i>
-    <h3 style="font-size:1.1rem; color:#0F172A; margin:0;">Practice Exercises</h3>
-  </div>
-  <p style="font-size:0.85rem; color:#64748B; margin-bottom:15px;">Select your criteria below to load exercises, then type your answers to check your work.</p>
-  
-  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:15px;">
-    <!-- Subject Dropdown -->
-    <div>
-      <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">SUBJECT</label>
-      <select id="quiz-subject-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-        <option value="Mathematics" selected>Mathematics</option>
-        <option value="Mathematical Literacy">Mathematical Literacy</option>
-      </select>
-    </div>
-
-    <!-- Grade Dropdown -->
-    <div>
-      <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">GRADE</label>
-      <select id="quiz-grade-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-        <option value="Grade 8&9" selected>Grade 8&9</option>
-        <option value="Grade 9">Grade 9</option>
-        <option value="Grade 10">Grade 10</option>
-        <option value="Grade 11">Grade 11</option>
-        <option value="Grade 12">Grade 12</option>
-      </select>
-    </div>
-
-    <!-- Paper Type Dropdown -->
-    <div>
-      <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">PAPER</label>
-      <select id="quiz-paper-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-        <option value="Paper 1" selected>Paper 1</option>
-        <option value="Paper 2">Paper 2</option>
-      </select>
-    </div>
-
-    <!-- Topic Dropdown (Populated Dynamically) -->
-    <div>
-      <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">TOPIC</label>
-      <select id="quiz-topic-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-        <option value="">All Topics</option>
-      </select>
-    </div>
-
-    <!-- Difficulty Dropdown -->
-    <div>
-      <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">DIFFICULTY</label>
-      <select id="quiz-difficulty-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
-        <option value="All">All Difficulties</option>
-        <option value="Easy">Easy</option>
-        <option value="Medium">Medium</option>
-        <option value="Hard">Hard</option>
-      </select>
-    </div>
-  </div>
-
-  <button type="button" onclick="loadDatabaseQuiz()" style="background:#1E293B; color:#FFFFFF; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:8px;">
-    <i class="fa-solid fa-play"></i> Start Practice
-  </button>
-
-  <div id="quiz-status" style="margin-top:12px;"></div>
-  <div id="quiz-container" style="margin-top:15px;"></div>
-</div>
-        <!-- Paper Selection Landing View -->
         <div id="paper-selection-view">
           <div class="paper-cards-grid">
             <div class="paper-card" onclick="selectPaper('Paper 1')">
@@ -1158,7 +1026,6 @@
           </div>
         </div>
 
-        <!-- Paper Topics View -->
         <div id="paper-topics-view" style="display: none;">
           <button class="btn-back-paper" onclick="showPaperSelection()"><i class="fa-solid fa-arrow-left"></i> Back to Papers</button>
           <h3 id="selected-paper-title" style="margin-bottom: 20px; font-size: 1.2rem;">Paper 1 Topics</h3>
@@ -1166,16 +1033,71 @@
         </div>
       </div>
 
-      <!-- VIEW 2B: PAST PAPERS -->
+      <!-- VIEW 3: DEDICATED PRACTICE QUIZ -->
+      <div id="view-quiz" class="app-view" style="display: none;">
+        <h2>Practice Exercises & Quiz</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Select your criteria below to load exercises, then type your answers to check your work.</p>
+        
+        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:14px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:15px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">SUBJECT</label>
+              <select id="quiz-subject-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
+                <option value="Mathematics" selected>Mathematics</option>
+                <option value="Mathematical Literacy">Mathematical Literacy</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">GRADE</label>
+              <select id="quiz-grade-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
+                <option value="Grade 8&9" selected>Grade 8&9</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">PAPER</label>
+              <select id="quiz-paper-select" onchange="fetchAvailableTopics()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
+                <option value="Paper 1" selected>Paper 1</option>
+                <option value="Paper 2">Paper 2</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">TOPIC</label>
+              <select id="quiz-topic-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
+                <option value="">All Topics</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">DIFFICULTY</label>
+              <select id="quiz-difficulty-select" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.88rem; outline:none; background:#FFF;">
+                <option value="All">All Difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" onclick="loadDatabaseQuiz()" style="background:#1E293B; color:#FFFFFF; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-play"></i> Start Practice
+          </button>
+
+          <div id="quiz-status" style="margin-top:12px;"></div>
+          <div id="quiz-container" style="margin-top:15px;"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: PAST PAPERS -->
       <div id="view-past-papers" class="app-view" style="display: none;">
         <h2>Past Exam Papers & Memos</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">Access full past examination papers and memorandums structured by Paper 1 and Paper 2.</p>
 
         <div class="grade-select-wrapper">
           <div class="grade-select-group">
-            <label for="past-paper-stream-select">
-              <i class="fa-solid fa-layer-group" style="color: #EAB308;"></i> Stream:
-            </label>
+            <label for="past-paper-stream-select"><i class="fa-solid fa-layer-group" style="color: #EAB308;"></i> Stream:</label>
             <select id="past-paper-stream-select" class="grade-dropdown" onchange="loadPastPapers()">
               <option value="Mathematics">Mathematics (Core)</option>
               <option value="Mathematical Literacy">Mathematical Literacy</option>
@@ -1183,9 +1105,7 @@
           </div>
 
           <div class="grade-select-group">
-            <label for="past-paper-grade-select">
-              <i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Grade:
-            </label>
+            <label for="past-paper-grade-select"><i class="fa-solid fa-graduation-cap" style="color: #EAB308;"></i> Grade:</label>
             <select id="past-paper-grade-select" class="grade-dropdown" onchange="loadPastPapers()">
               <option value="Grade 8 & 9">Grade 8 & 9</option>
               <option value="Grade 10">Grade 10</option>
@@ -1196,7 +1116,6 @@
         </div>
 
         <div class="paper-cards-grid" style="margin-top: 20px;">
-          <!-- Paper 1 Past Papers Card -->
           <div class="subject-card">
             <i class="fa-solid fa-file-pdf"></i>
             <h3 style="margin-bottom: 10px;" id="past-p1-title">Paper 1 Past Papers</h3>
@@ -1207,7 +1126,6 @@
             </div>
           </div>
 
-          <!-- Paper 2 Past Papers Card -->
           <div class="subject-card">
             <i class="fa-solid fa-file-pdf"></i>
             <h3 style="margin-bottom: 10px;" id="past-p2-title">Paper 2 Past Papers</h3>
@@ -1220,42 +1138,38 @@
         </div>
       </div>
 
-     <!-- VIEW 4: CHAT -->
-<div id="view-chat" class="app-view" style="display: none;">
-  <h2>Chat to Educator</h2>
-  <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
-    Send a direct message, photo of your working, or voice note to Mr. G.
-  </p>
+      <!-- VIEW 5: CHAT -->
+      <div id="view-chat" class="app-view" style="display: none;">
+        <h2>Chat to Educator</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px;">
+          Send a direct message, photo of your working, or voice note to Mr. G.
+        </p>
 
-  <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
-    <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-      <!-- Populated dynamically -->
-    </div>
+        <div style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; max-width: 650px;">
+          <div id="chat-box" style="height: 350px; overflow-y: auto; border: 1px solid #F1F5F9; background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
 
-    <!-- Enhanced Input Bar with Image & Voice Actions -->
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <!-- Hidden file input for images/photos -->
-      <input type="file" id="chat-file-input" accept="image/*,audio/*" style="display: none;" onchange="handleChatAttachment(this)" />
-      
-      <button type="button" onclick="document.getElementById('chat-file-input').click()" title="Attach Image or Audio" style="background: #F1F5F9; border: 1px solid #CBD5E1; color: #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-paperclip"></i>
-      </button>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="file" id="chat-file-input" accept="image/*,audio/*" style="display: none;" onchange="handleChatAttachment(this)" />
+            
+            <button type="button" onclick="document.getElementById('chat-file-input').click()" title="Attach Image or Audio" style="background: #F1F5F9; border: 1px solid #CBD5E1; color: #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer;">
+              <i class="fa-solid fa-paperclip"></i>
+            </button>
 
-      <button type="button" id="btn-record-voice" onclick="toggleVoiceRecording()" title="Record Voice Note" style="background: #F1F5F9; border: 1px solid #CBD5E1; color: #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-microphone"></i>
-      </button>
+            <button type="button" id="btn-record-voice" onclick="toggleVoiceRecording()" title="Record Voice Note" style="background: #F1F5F9; border: 1px solid #CBD5E1; color: #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer;">
+              <i class="fa-solid fa-microphone"></i>
+            </button>
 
-      <input type="text" id="chat-input" placeholder="Type a message or attach working..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
-      
-      <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; height: 42px;">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
-    </div>
-    <div id="chat-upload-preview" style="font-size: 0.78rem; color: #059669; margin-top: 6px; font-weight: 600;"></div>
-  </div>
-</div>
+            <input type="text" id="chat-input" placeholder="Type a message or attach working..." style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.9rem;" />
+            
+            <button id="btn-send-chat" style="background: #EAB308; color: #1E293B; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; height: 42px;">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+          <div id="chat-upload-preview" style="font-size: 0.78rem; color: #059669; margin-top: 6px; font-weight: 600;"></div>
+        </div>
+      </div>
 
-      <!-- VIEW 4: CALENDAR -->
+      <!-- VIEW 6: CALENDAR -->
       <div id="view-calendar" class="app-view" style="display: none;">
         <h2>Class Schedule & Calendar</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Your scheduled sessions for this term.</p>
@@ -1264,7 +1178,7 @@
         </div>
       </div>
 
-      <!-- VIEW 5: GRADES -->
+      <!-- VIEW 7: GRADES -->
       <div id="view-grades" class="app-view" style="display: none;">
         <h2>Grades & Test Results</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Review your assessment scores and teacher feedback.</p>
@@ -1291,7 +1205,7 @@
         </div>
       </div>
 
-      <!-- VIEW 6: SETTINGS -->
+      <!-- VIEW 8: SETTINGS -->
       <div id="view-settings" class="app-view" style="display: none;">
         <h2>Account Settings</h2>
         <p style="color: #64748B; font-size: 0.9rem; margin-top: 5px; margin-bottom: 25px;">Manage your student profile preferences.</p>
