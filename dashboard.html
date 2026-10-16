@@ -2069,50 +2069,34 @@ const gr11Paper2FolderMap = {
     const dashboardContainer = document.getElementById("upcoming-classes-container");
     const calendarContainer = document.getElementById("calendar-classes-container");
 
-    try {
-      let { data: schedules, error } = await supabaseClient
-        .from("schedules")
-        .select("*")
-        .eq("student_id", studentId)
-        .order("class_date", { ascending: true });
+    const { data: schedules } = await supabaseClient
+      .from("schedules")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("class_date", { ascending: true });
 
-      if (error || !schedules || schedules.length === 0) {
-        const altQuery = await supabaseClient
-          .from("schedules")
-          .select("*")
-          .eq("student_id", studentId)
-          .order("class_date", { ascending: true });
-        schedules = altQuery.data;
-      }
-
-      if (!schedules || schedules.length === 0) {
-        const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
-        if (dashboardContainer) dashboardContainer.innerHTML = emptyMarkup;
-        if (calendarContainer) calendarContainer.innerHTML = emptyMarkup;
-        return;
-      }
-
-      const htmlContent = schedules.map(s => {
-        const dateFormatted = s.class_date ? new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-        return `
-          <div class="class-item">
-            <div>
-              <h4 style="font-size: 0.95rem;">${s.topic || s.title || "Scheduled Class"}</h4>
-              <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time || ''}</p>
-            </div>
-            <span class="class-status">Scheduled</span>
-          </div>
-        `;
-      }).join('');
-
-      if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
-      if (calendarContainer) calendarContainer.innerHTML = htmlContent;
-    } catch (err) {
-      console.error("Error loading upcoming classes:", err);
-      const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
-      if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
-      if (calendarContainer) calendarContainer.innerHTML = errMarkup;
+    if (!schedules || schedules.length === 0) {
+      const emptyMarkup = `<div class="class-item"><p style="color: #64748B; font-size: 0.85rem;">No upcoming classes scheduled.</p></div>`;
+      dashboardContainer.innerHTML = emptyMarkup;
+      calendarContainer.innerHTML = emptyMarkup;
+      return;
     }
+
+    const htmlContent = schedules.map(s => {
+      const dateFormatted = new Date(s.class_date).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' });
+      return `
+        <div class="class-item">
+          <div>
+            <h4 style="font-size: 0.95rem;">${s.topic}</h4>
+            <p style="font-size: 0.8rem; color: #64748B;">${dateFormatted} | ${s.class_time}</p>
+          </div>
+          <span class="class-status">Scheduled</span>
+        </div>
+      `;
+    }).join('');
+
+    dashboardContainer.innerHTML = htmlContent;
+    calendarContainer.innerHTML = htmlContent;
   }
   
   async function loadStudentChat(studentId) {
