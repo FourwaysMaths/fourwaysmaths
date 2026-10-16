@@ -2198,7 +2198,7 @@ const gr11Paper2FolderMap = {
     window.location.href = "login.html";
   });
 
-  async function loadStudentGrades(studentId) {
+ async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
     const { data: grades } = await supabaseClient
