@@ -2379,7 +2379,72 @@ async function loadStudentGrades(studentId) {
         scales: { y: { min: 0, max: 100 } }
       }
     });
-  }
+
+   // ==========================================
+  // AUTOMATED 7-DAY STREAK & LOGIN TRACKER
+  // ==========================================
+  async function initStreakTracker() {
+    if (!currentUser || !supabaseClient) return;
+
+    const today = new Date();
+    const todayIndex = today.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+    const todayDateString = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dayButtons = document.querySelectorAll('.day-check-btn');
+
+    // 1. Record today's login to Supabase (Check if already logged in today to avoid duplicate spam)
+    const lastLoggedDate = localStorage.getItem('fwm_last_login_date');
+    if (lastLoggedDate !== todayDateString) {
+      try {
+        await supabaseClient.from('user_activity').insert([{
+          student_id: currentUser.id,
+          student_email: currentUser.email,
+          login_date: todayDateString
+        }]);
+        localStorage.setItem('fwm_last_login_date', todayDateString);
+      } catch (err) {
+        console.error("Error logging user activity:", err);
+      }
+    }
+
+    // 2. Fetch this week's login records for this student from Supabase
+    let loggedDays = [];
+    try {
+      const { data: activityData, error } = await supabaseClient
+        .from('user_activity')
+        .select('login_date')
+        .eq('student_id', currentUser.id);
+
+      if (!error && activityData) {
+        // Convert login dates to day numbers (0-6)
+        loggedDays = activityData.map(record => new Date(record.login_date).getDay());
+      }
+    } catch (err) {
+      console.error("Error fetching activity history:", err);
+    }
+
+    // 3. Style and lock the 7-day tracker UI
+    dayButtons.forEach(btn => {
+      const dayNum = parseInt(btn.getAttribute('data-day'), 10);
+
+      // Make completely uneditable by user
+      btn.style.pointerEvents = 'none';
+      btn.style.cursor = 'default';
+
+      // If they logged in on this day, or if it's today and they are active, check it off
+      if (loggedDays.includes(dayNum) || dayNum === todayIndex) {
+        btn.classList.add('completed');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        btn.style.background = '#EAB308';
+        btn.style.borderColor = '#EAB308';
+        btn.style.color = '#0F172A';
+      } else {
+        // Future or missed days remain uncompleted & locked
+        btn.style.background = '#F3F4F6';
+        btn.style.color = '#9CA3AF';
+        btn.style.opacity = '0.6';
+      }
+    });
+  } 
 </script>
 </body>
 </html>
