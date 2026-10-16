@@ -1727,13 +1727,29 @@ const gr11Paper2FolderMap = {
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
-   function renderLearnerBadge() {
+   async function renderLearnerBadge() {
     const container = document.getElementById("learner-badge-container");
-    if (!container) return;
+    if (!container || !currentUser) return;
 
-    // You can manage/change this badge title manually here or fetch it from user_metadata
-    // e.g., const badgeTitle = currentUser.user_metadata?.badge || "Algebra Master";
-    const badgeTitle = "Algebra Master"; // Change this manually whenever you want!
+    let badgeTitle = "Algebra Master"; // Default fallback
+
+    try {
+      // Fetch the badge directly from the student's row in the 'profiles' table
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('badge')
+        .eq('id', currentUser.id)
+        .single();
+
+      if (!error && profile && profile.badge) {
+        badgeTitle = profile.badge;
+      } else if (currentUser.user_metadata?.badge) {
+        // Fallback to auth metadata if profile column isn't used
+        badgeTitle = currentUser.user_metadata.badge;
+      }
+    } catch (err) {
+      console.error("Error fetching learner badge:", err);
+    }
 
     if (!badgeTitle || badgeTitle.trim() === "") {
       container.innerHTML = `
@@ -1744,7 +1760,7 @@ const gr11Paper2FolderMap = {
       return;
     }
 
-    // Automatically assign a relevant icon based on keywords in your badge title
+    // Automatically assign a relevant icon based on keywords in the badge title
     let iconClass = "fa-medal";
     let badgeColor = "#FEF08A";
     let textColor = "#854D0E";
