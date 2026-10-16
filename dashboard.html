@@ -1691,24 +1691,17 @@ const gr11Paper2FolderMap = {
   "Analytical Geometry": "14Analytical"
 };
   
-  document.addEventListener("DOMContentLoaded", async () => {
+ document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
-
     const { data: { session } } = await supabaseClient.auth.getSession();
-
-    // 1. If not logged in at all, go to login page
     if (!session) {
       window.location.href = "login.html";
       return;
     }
 
-    // REMOVE any line that looks like:
-    // if (session.user.user_metadata?.role === "admin") window.location.href = "admin.html";
-    
-    // Simply set currentUser and load student views!
     currentUser = session.user;
-    loadDashboardData();
-  });
+    const userRole = currentUser.user_metadata?.role || "student";
+    }
     
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
