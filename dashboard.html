@@ -2201,65 +2201,37 @@ const gr11Paper2FolderMap = {
   async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
+    const { data: grades } = await supabaseClient
+      .from('grades')
+      .select('*')
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: true });
+
     const tbody = document.getElementById('grades-table-body');
     const statAvgBox = document.getElementById('stat-avg-box');
 
-    try {
-      let { data: grades, error } = await supabaseClient
-        .from('grades')
-        .select('*')
-        .eq('student_id', studentId)
-        .order('created_at', { ascending: true });
-
-      if (error || !grades || grades.length === 0) {
-        const altQuery = await supabaseClient
-          .from('grades')
-          .select('*')
-          .eq('student_id', studentId)
-          .order('created_at', { ascending: true });
-        grades = altQuery.data;
-      }
-
-      if (!grades || grades.length === 0) {
-        if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
-        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>--%</strong>`;
-        const dashAvgDisplay = document.getElementById('dash-avg-display');
-        if (dashAvgDisplay) dashAvgDisplay.textContent = '--%';
-        renderPerformanceChart(['No Data'], [0]);
-        return;
-      }
-
-      if (tbody) {
-        tbody.innerHTML = grades.map(g => {
-          const assessmentTitle = g.assessment_name || g.title || g.assignment_name || "Assessment";
-          const scoreVal = g.score !== undefined ? g.score : (g.score_percentage !== undefined ? g.score_percentage : 0);
-          const dateStr = g.created_at || g.date || new Date();
-          return `
-            <tr>
-              <td style="padding: 12px 10px; font-weight: 600;">${assessmentTitle}</td>
-              <td style="padding: 12px 10px; color: #64748B;">${new Date(dateStr).toLocaleDateString('en-ZA')}</td>
-              <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${scoreVal}%</td>
-              <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
-      const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-
-      if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>Current Mark Average: <strong>${avg}%</strong>`;
-      const dashAvgDisplay = document.getElementById('dash-avg-display');
-      if (dashAvgDisplay) dashAvgDisplay.textContent = `${avg}%`;
-
-      renderPerformanceChart(grades.map(g => g.assessment_name || g.title || "Test"), scores);
-    } catch (err) {
-      console.error("Error loading grades:", err);
-      if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grades.</td></tr>`;
-      renderPerformanceChart(['Error'], [0]);
+    if (!grades || grades.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
+      renderPerformanceChart(['No Data'], [0]);
+      return;
     }
+
+    tbody.innerHTML = grades.map(g => `
+      <tr>
+        <td style="padding: 12px 10px; font-weight: 600;">${g.assessment_name || g.title}</td>
+        <td style="padding: 12px 10px; color: #64748B;">${new Date(g.created_at).toLocaleDateString('en-ZA')}</td>
+        <td style="padding: 12px 10px; font-weight: 700; color: #059669;">${g.score || g.score_percentage}%</td>
+        <td style="padding: 12px 10px;"><span class="class-status">Verified</span></td>
+      </tr>
+    `).join('');
+
+    const scores = grades.map(g => Number(g.score || g.score_percentage));
+    const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+    statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+    renderPerformanceChart(grades.map(g => g.assessment_name || g.title), scores);
   }
-  
+
   function renderPerformanceChart(labels, dataPoints) {
     const ctx = document.getElementById('performanceChart').getContext('2d');
     if (myPerformanceChart) myPerformanceChart.destroy();
