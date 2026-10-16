@@ -1729,23 +1729,32 @@ const gr11Paper2FolderMap = {
 
    async function renderLearnerBadge() {
     const container = document.getElementById("learner-badge-container");
-    if (!container || !currentUser) return;
+    if (!container) return;
 
     let badgeTitle = "Algebra Master"; // Default fallback
 
     try {
+      // Get the current logged-in user directly from Supabase session
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session || !session.user) {
+        console.warn("No active session user found for badge.");
+        return;
+      }
+      const userId = session.user.id;
+
       // Fetch the badge directly from the student's row in the 'profiles' table
       const { data: profile, error } = await supabaseClient
         .from('profiles')
         .select('badge')
-        .eq('id', currentUser.id)
-        .single();
+        .eq('id', userId)
+        .maybeSingle(); // maybeSingle prevents errors if no row matches
 
-      if (!error && profile && profile.badge) {
+      if (error) {
+        console.error("Supabase profile badge error:", error.message);
+      } else if (profile && profile.badge) {
         badgeTitle = profile.badge;
-      } else if (currentUser.user_metadata?.badge) {
-        // Fallback to auth metadata if profile column isn't used
-        badgeTitle = currentUser.user_metadata.badge;
+      } else if (session.user.user_metadata?.badge) {
+        badgeTitle = session.user.user_metadata.badge;
       }
     } catch (err) {
       console.error("Error fetching learner badge:", err);
@@ -1760,7 +1769,6 @@ const gr11Paper2FolderMap = {
       return;
     }
 
-    // Automatically assign a relevant icon based on keywords in the badge title
     let iconClass = "fa-medal";
     let badgeColor = "#FEF08A";
     let textColor = "#854D0E";
