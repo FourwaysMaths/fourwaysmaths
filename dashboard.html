@@ -2080,7 +2080,7 @@ const gr11Paper2FolderMap = {
         const altQuery = await supabaseClient
           .from("schedules")
           .select("*")
-          .eq("user_id", studentId)
+          .eq("student_id", studentId)
           .order("class_date", { ascending: true });
         schedules = altQuery.data;
       }
@@ -2231,7 +2231,7 @@ const gr11Paper2FolderMap = {
         const altQuery = await supabaseClient
           .from('grades')
           .select('*')
-          .eq('user_id', studentId)
+          .eq('student_id', studentId)
           .order('created_at', { ascending: true });
         grades = altQuery.data;
       }
