@@ -2143,8 +2143,13 @@ const gr11Paper2FolderMap = {
 
     let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
     let gradeFolder = getSupabaseGradeFolder(selectedGrade);
-    let folderCategoryName = activePastPaperCategory === 'Topic Tests' ? 'Topic_Tests' : activePastPaperCategory.replace(/\s+/g, '');
-    let folderPath = `${streamPrefix}${gradeFolder}/${folderCategoryName}/Past papers`;
+    
+    // Map categories to your exact Supabase subfolder names
+    let subfolderName = "Paper1_worksheets";
+    if (activePastPaperCategory === 'Paper 2') subfolderName = "Paper2_worksheets";
+    if (activePastPaperCategory === 'Topic Tests') subfolderName = "Topic_Tests";
+
+    let folderPath = `${streamPrefix}${gradeFolder}/${subfolderName}/Past papers`;
 
     let allFiles = [];
     if (supabaseClient) {
@@ -2158,6 +2163,7 @@ const gr11Paper2FolderMap = {
         f.name.toLowerCase().includes(term.label.toLowerCase().split(' ')[0].toLowerCase())
       );
 
+      // Fallback: If no term keywords are in the filename, list all files under Term 1
       if (termFiles.length === 0 && term.key === 'Term 1' && allFiles.length > 0) {
         termFiles = allFiles;
       }
