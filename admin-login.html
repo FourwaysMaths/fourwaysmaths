@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fourways Maths | Educator Command Center</title>
+  <title>Fourways Maths | Educator Access</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
       --primary-grey: #1E293B;
@@ -28,12 +26,10 @@
       align-items: center; 
       padding: 20px;
     }
-    
-    /* Login Screen Container */
     .auth-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-top: 6px solid var(--primary-grey);
+      border-top: 6px solid var(--primary-grey); /* Darker header tab for Admin */
       border-radius: 12px;
       padding: 40px;
       width: 100%;
@@ -50,77 +46,11 @@
     .btn-primary { width: 100%; background-color: var(--primary-grey); color: #FFF; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-primary:hover { background-color: #0F172A; }
     .alert { padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 16px; display: none; text-align: left; background-color: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
-
-    /* Admin Dashboard Panel Layout */
-    .admin-dashboard {
-      display: none;
-      width: 100%;
-      max-width: 900px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-    }
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 20px;
-      margin-bottom: 25px;
-    }
-    .admin-header h2 { font-size: 1.4rem; color: var(--primary-grey); }
-    .btn-logout {
-      background: #FEE2E2;
-      color: #DC2626;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-    .btn-logout:hover { background: #FECACA; }
-    
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--primary-grey);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .table-container {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-    th {
-      background: #F1F5F9;
-      color: var(--text-muted);
-      padding: 12px 16px;
-      font-weight: 700;
-    }
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-main);
-    }
-    tr:last-child td { border-bottom: none; }
   </style>
 </head>
 <body>
 
-  <!-- 1. AUTHENTICATION LOGIN CARD -->
-  <div class="auth-card" id="login-container">
+  <div class="auth-card">
     <div class="auth-header">
       <h2>Educator Command Center</h2>
       <p>Authorized access only. Sign in with administrative credentials.</p>
@@ -143,76 +73,25 @@
     </form>
   </div>
 
-  <!-- 2. EDUCATOR COMMAND CENTER DASHBOARD (Hidden until login) -->
-  <div class="admin-dashboard" id="dashboard-container">
-    <div class="admin-header">
-      <div>
-        <h2><i class="fa-solid fa-gauge-high" style="color: var(--yellow-accent);"></i> Educator Command Center</h2>
-        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">Monitor student engagement and live login activity.</p>
-      </div>
-      <button class="btn-logout" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
-    </div>
-
-    <div>
-      <div class="section-title">
-        <i class="fa-solid fa-clock-rotate-left" style="color: var(--yellow-accent);"></i> Recent Student Login Activity
-      </div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Student Email</th>
-              <th>Login Date</th>
-              <th>Exact Login Time</th>
-            </tr>
-          </thead>
-          <tbody id="activity-log-table-body">
-            <tr>
-              <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">Loading student activity logs...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
 <script>
   const SUPABASE_URL = "https://iajuctffwesmsumopoqu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ayM8pw97h1RpKpXcKEtnBA_TBRg2V-1";
   const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-  const loginContainer = document.getElementById('login-container');
-  const dashboardContainer = document.getElementById('dashboard-container');
   const authForm = document.getElementById('admin-auth-form');
   const alertMsg = document.getElementById('alert-msg');
   const btnSubmit = document.getElementById('btn-submit');
-  const btnLogout = document.getElementById('btn-logout');
 
-  // Check session on page load
+  // Auto-redirect if already logged in as admin
   document.addEventListener("DOMContentLoaded", async () => {
-    if (!supabaseClient) return;
-
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    
-    if (session && session.user?.user_metadata?.role === "admin") {
-      showAdminDashboard();
-    } else {
-      showLoginForm();
+    if (supabaseClient) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session?.user?.user_metadata?.role === "admin") {
+        window.location.href = "admin.html";
+      }
     }
   });
 
-  function showAdminDashboard() {
-    loginContainer.style.display = 'none';
-    dashboardContainer.style.display = 'block';
-    loadAdminActivityLogs();
-  }
-
-  function showLoginForm() {
-    dashboardContainer.style.display = 'none';
-    loginContainer.style.display = 'block';
-  }
-
-  // Handle Admin Login Form Submission
   authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     alertMsg.style.display = 'none';
@@ -231,12 +110,13 @@
 
       if (error) throw error;
 
-      // Verify account role is admin, update metadata if missing
+      // Verify account role is actually admin
       if (data.user?.user_metadata?.role !== "admin") {
+        // Ensure role is explicitly set for admin session
         await supabaseClient.auth.updateUser({ data: { role: "admin" } });
       }
 
-      showAdminDashboard();
+      window.location.href = "admin.html";
 
     } catch (err) {
       alertMsg.textContent = err.message || "Invalid administrative credentials.";
@@ -245,50 +125,6 @@
       btnSubmit.textContent = "Sign In to Dashboard";
     }
   });
-
-  // Handle Admin Logout
-  btnLogout.addEventListener('click', async () => {
-    if (supabaseClient) {
-      await supabaseClient.auth.signOut();
-    }
-    showLoginForm();
-  });
-
-  // Fetch and render student login activity logs
-  async function loadAdminActivityLogs() {
-    const tableBody = document.getElementById('activity-log-table-body');
-    if (!supabaseClient) return;
-
-    try {
-      const { data: logs, error } = await supabaseClient
-        .from('user_activity')
-        .select('*')
-        .order('login_time', { ascending: false })
-        .limit(30);
-
-      if (error) throw error;
-
-      if (!logs || logs.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">No student login activity recorded yet.</td></tr>`;
-        return;
-      }
-
-      tableBody.innerHTML = logs.map(log => {
-        const timeFormatted = new Date(log.login_time).toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        return `
-          <tr>
-            <td style="font-weight: 600;">${log.student_email || 'Unknown Student'}</td>
-            <td style="color: var(--text-muted);">${log.login_date}</td>
-            <td style="color: #059669; font-weight: 700;">${timeFormatted}</td>
-          </tr>
-        `;
-      }).join('');
-
-    } catch (err) {
-      console.error("Failed to load activity logs:", err);
-      tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #DC2626; padding: 20px;">Failed to load activity logs.</td></tr>`;
-    }
-  }
 </script>
 </body>
 </html>
