@@ -500,6 +500,22 @@
       display: inline-block;
     }
 
+    .day-check-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #E2E8F0;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748B;
+      margin: 0 auto;
+      transition: all 0.2s ease;
+    }
+
     /* UPGRADE 4: Ask Question Button */
     .btn-ask-topic {
       background: #1E293B;
@@ -964,6 +980,47 @@
             </div>
           </div>
         </div>
+
+        <!-- 7-Day Streak Checklist -->
+      <div class="dash-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="font-size: 1.05rem; color: #0F172A;"><i class="fa-solid fa-fire" style="color: #F59E0B;"></i> 7-Day Streak</h3>
+        </div>
+        <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 16px;">
+          Complete your daily practice session to maintain your streak!
+        </p>
+        
+        <div style="display: flex; justify-content: space-between; text-align: center;" id="streak-days-container">
+          <div>
+            <button class="day-check-btn" data-day="1">M</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Mon</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="2">T</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Tue</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="3">W</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Wed</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="4">T</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Thu</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="5">F</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Fri</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="6">S</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Sat</span>
+          </div>
+          <div>
+            <button class="day-check-btn" data-day="0">S</button>
+            <span style="font-size: 0.75rem; color: #64748B; display: block; margin-top: 4px;">Sun</span>
+          </div>
+        </div>
+      </div>
 
         <!-- Main Dashboard Grid -->
         <div class="dashboard-grid">
