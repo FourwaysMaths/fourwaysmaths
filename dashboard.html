@@ -1727,75 +1727,8 @@ const gr11Paper2FolderMap = {
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
-   async function renderLearnerBadge() {
-    const container = document.getElementById("learner-badge-container");
-    if (!container) return;
-
-    let badgeTitle = "Algebra Master"; // Default fallback
-
-    try {
-      // Get the current logged-in user directly from Supabase session
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session || !session.user) {
-        console.warn("No active session user found for badge.");
-        return;
-      }
-      const userId = session.user.id;
-
-      // Fetch the badge directly from the student's row in the 'profiles' table
-      const { data: profile, error } = await supabaseClient
-        .from('profiles')
-        .select('badge')
-        .eq('id', userId)
-        .maybeSingle(); // maybeSingle prevents errors if no row matches
-
-      if (error) {
-        console.error("Supabase profile badge error:", error.message);
-      } else if (profile && profile.badge) {
-        badgeTitle = profile.badge;
-      } else if (session.user.user_metadata?.badge) {
-        badgeTitle = session.user.user_metadata.badge;
-      }
-    } catch (err) {
-      console.error("Error fetching learner badge:", err);
-    }
-
-    if (!badgeTitle || badgeTitle.trim() === "") {
-      container.innerHTML = `
-        <p style="font-size: 0.75rem; color: #64748B; line-height: 1.4;">
-          To earn a badge, login 7 days a week and master a topic.
-        </p>
-      `;
-      return;
-    }
-
-    let iconClass = "fa-medal";
-    let badgeColor = "#FEF08A";
-    let textColor = "#854D0E";
-
-    const lowerTitle = badgeTitle.toLowerCase();
-    if (lowerTitle.includes("streak") || lowerTitle.includes("warrior")) {
-      iconClass = "fa-fire";
-      badgeColor = "#FEE2E2";
-      textColor = "#DC2626";
-    } else if (lowerTitle.includes("trig") || lowerTitle.includes("titan")) {
-      iconClass = "fa-square-root-variable";
-      badgeColor = "#DBEAFE";
-      textColor = "#1E40AF";
-    } else if (lowerTitle.includes("algebra") || lowerTitle.includes("master")) {
-      iconClass = "fa-graduation-cap";
-      badgeColor = "#FEF08A";
-      textColor = "#854D0E";
-    }
-
-    container.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px; background: ${badgeColor}; color: ${textColor}; padding: 10px 12px; border-radius: 8px; font-weight: 700; font-size: 0.82rem;">
-        <i class="fa-solid ${iconClass}" style="font-size: 1.1rem;"></i>
-        <span>${badgeTitle}</span>
-      </div>
-    `;
-  }
-
+    renderLearnerBadge();
+   
     // FIX 1: Robust stream check so Core Maths doesn't mistakenly default to Math Lit
     let initialStream = meta.subject || localStorage.getItem('4wm_stream') || "Mathematics";
     if (initialStream.toLowerCase().includes("lit")) {
@@ -2036,6 +1969,67 @@ const gr11Paper2FolderMap = {
     }
   }
 
+  async function renderLearnerBadge() {
+    const container = document.getElementById("learner-badge-container");
+    if (!container) return;
+
+    let badgeTitle = "Algebra Master"; // Default fallback
+
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session || !session.user) return;
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('badge')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+      if (!error && profile && profile.badge) {
+        badgeTitle = profile.badge;
+      } else if (session.user.user_metadata?.badge) {
+        badgeTitle = session.user.user_metadata.badge;
+      }
+    } catch (err) {
+      console.error("Error fetching learner badge:", err);
+    }
+
+    if (!badgeTitle || badgeTitle.trim() === "") {
+      container.innerHTML = `
+        <p style="font-size: 0.75rem; color: #64748B; line-height: 1.4;">
+          To earn a badge, login 7 days a week and master a topic.
+        </p>
+      `;
+      return;
+    }
+
+    let iconClass = "fa-medal";
+    let badgeColor = "#FEF08A";
+    let textColor = "#854D0E";
+
+    const lowerTitle = badgeTitle.toLowerCase();
+    if (lowerTitle.includes("streak") || lowerTitle.includes("warrior")) {
+      iconClass = "fa-fire";
+      badgeColor = "#FEE2E2";
+      textColor = "#DC2626";
+    } else if (lowerTitle.includes("trig") || lowerTitle.includes("titan") || lowerTitle.includes("geometry")) {
+      iconClass = "fa-square-root-variable";
+      badgeColor = "#DBEAFE";
+      textColor = "#1E40AF";
+    } else if (lowerTitle.includes("algebra") || lowerTitle.includes("master")) {
+      iconClass = "fa-graduation-cap";
+      badgeColor = "#FEF08A";
+      textColor = "#854D0E";
+    }
+
+    container.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px; background: ${badgeColor}; color: ${textColor}; padding: 10px 12px; border-radius: 8px; font-weight: 700; font-size: 0.82rem;">
+        <i class="fa-solid ${iconClass}" style="font-size: 1.1rem;"></i>
+        <span>${badgeTitle}</span>
+      </div>
+    `;
+  }
+  
   async function selectPaper(paperName) {
     currentActivePaper = paperName;
     const selectedGrade = document.getElementById("study-grade-select").value;
