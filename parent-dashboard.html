@@ -257,15 +257,6 @@
       currentUser = user;
       const userRole = currentUser.user_metadata?.role || "parent";
 
-      // 2. PORTAL GUARD CLAUSE: Only redirect if explicitly a student or admin
-      if (userRole === "student") {
-        window.location.href = "dashboard.html";
-        return;
-      } else if (userRole === "admin") {
-        window.location.href = "admin.html";
-        return;
-      }
-
       // 3. Populate Parent and Learner Names
       const parentName = currentUser.user_metadata?.parent_name || currentUser.user_metadata?.full_name || "Parent";
       const learnerName = currentUser.user_metadata?.learner_name || "Assigned Student";
