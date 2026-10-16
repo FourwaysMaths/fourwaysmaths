@@ -907,6 +907,16 @@
         <span class="badge-icon" id="display-subject-tag"> Mathematics</span>
       </div>
 
+      <!-- GAMIFIED BADGES CARD -->
+      <div class="dash-card" style="width: 100%; margin-top: 20px; padding: 15px; text-align: left; background: #FFF; border: 1px solid #E2E8F0; border-radius: 12px;">
+        <h4 style="font-size: 0.85rem; color: #0F172A; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-award" style="color: #EAB308;"></i> Achievement Badge
+        </h4>
+        <div id="learner-badge-container">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
       <!-- Upload File Box -->
       <div class="upload-card">
         <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -1717,6 +1727,51 @@ const gr11Paper2FolderMap = {
     document.getElementById("display-grade").textContent = userGrade;
     document.getElementById("display-subject-tag").textContent = ` ${selectedSubject}`;
 
+   function renderLearnerBadge() {
+    const container = document.getElementById("learner-badge-container");
+    if (!container) return;
+
+    // You can manage/change this badge title manually here or fetch it from user_metadata
+    // e.g., const badgeTitle = currentUser.user_metadata?.badge || "Algebra Master";
+    const badgeTitle = "Algebra Master"; // Change this manually whenever you want!
+
+    if (!badgeTitle || badgeTitle.trim() === "") {
+      container.innerHTML = `
+        <p style="font-size: 0.75rem; color: #64748B; line-height: 1.4;">
+          To earn a badge, login 7 days a week and master a topic.
+        </p>
+      `;
+      return;
+    }
+
+    // Automatically assign a relevant icon based on keywords in your badge title
+    let iconClass = "fa-medal";
+    let badgeColor = "#FEF08A";
+    let textColor = "#854D0E";
+
+    const lowerTitle = badgeTitle.toLowerCase();
+    if (lowerTitle.includes("streak") || lowerTitle.includes("warrior")) {
+      iconClass = "fa-fire";
+      badgeColor = "#FEE2E2";
+      textColor = "#DC2626";
+    } else if (lowerTitle.includes("trig") || lowerTitle.includes("titan")) {
+      iconClass = "fa-square-root-variable";
+      badgeColor = "#DBEAFE";
+      textColor = "#1E40AF";
+    } else if (lowerTitle.includes("algebra") || lowerTitle.includes("master")) {
+      iconClass = "fa-graduation-cap";
+      badgeColor = "#FEF08A";
+      textColor = "#854D0E";
+    }
+
+    container.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px; background: ${badgeColor}; color: ${textColor}; padding: 10px 12px; border-radius: 8px; font-weight: 700; font-size: 0.82rem;">
+        <i class="fa-solid ${iconClass}" style="font-size: 1.1rem;"></i>
+        <span>${badgeTitle}</span>
+      </div>
+    `;
+  }
+
     // FIX 1: Robust stream check so Core Maths doesn't mistakenly default to Math Lit
     let initialStream = meta.subject || localStorage.getItem('4wm_stream') || "Mathematics";
     if (initialStream.toLowerCase().includes("lit")) {
@@ -2144,12 +2199,8 @@ const gr11Paper2FolderMap = {
     let streamPrefix = selectedStream === "Mathematical Literacy" ? "MathsLit/" : "";
     let gradeFolder = getSupabaseGradeFolder(selectedGrade);
     
-    // Map categories to your exact Supabase subfolder names
-    let subfolderName = "Paper1_worksheets";
-    if (activePastPaperCategory === 'Paper 2') subfolderName = "Paper2_worksheets";
-    if (activePastPaperCategory === 'Topic Tests') subfolderName = "Topic_Tests";
-
-    let folderPath = `${streamPrefix}${gradeFolder}/${subfolderName}/Past papers`;
+    // Points directly to your Past papers folder as seen in Supabase
+    let folderPath = `${streamPrefix}${gradeFolder}/Paper1_worksheets/Past papers`;
 
     let allFiles = [];
     if (supabaseClient) {
@@ -2157,15 +2208,27 @@ const gr11Paper2FolderMap = {
       if (data) allFiles = data.filter(f => f.name.endsWith('.pdf'));
     }
 
+    // Dynamic Filename Sorting for Tabs
+    let categoryFiles = allFiles.filter(f => {
+      const lowerName = f.name.toLowerCase();
+      const isPaper1 = lowerName.includes('paper 1') || lowerName.includes('paper1');
+      const isPaper2 = lowerName.includes('paper 2') || lowerName.includes('paper2');
+
+      if (activePastPaperCategory === 'Paper 1') return isPaper1;
+      if (activePastPaperCategory === 'Paper 2') return isPaper2;
+      if (activePastPaperCategory === 'Topic Tests') return !isPaper1 && !isPaper2; // Everything else
+      return true;
+    });
+
     container.innerHTML = terms.map(term => {
-      let termFiles = allFiles.filter(f => 
+      let termFiles = categoryFiles.filter(f => 
         f.name.toLowerCase().includes(term.key.toLowerCase()) || 
         f.name.toLowerCase().includes(term.label.toLowerCase().split(' ')[0].toLowerCase())
       );
 
-      // Fallback: If no term keywords are in the filename, list all files under Term 1
-      if (termFiles.length === 0 && term.key === 'Term 1' && allFiles.length > 0) {
-        termFiles = allFiles;
+      // Fallback: If no term keywords are in the filename, list files under Term 1
+      if (termFiles.length === 0 && term.key === 'Term 1' && categoryFiles.length > 0) {
+        termFiles = categoryFiles;
       }
 
       const paperFiles = termFiles.filter(f => !f.name.toLowerCase().includes('memo') && !f.name.toLowerCase().includes('memorandum'));
@@ -2212,7 +2275,7 @@ const gr11Paper2FolderMap = {
       `;
     }).join('');
   }
-
+  
   function togglePaperComplete(checkboxId) {
     const chk = document.getElementById(checkboxId);
     if (chk) {
