@@ -1693,6 +1693,7 @@ const gr11Paper2FolderMap = {
   
  document.addEventListener("DOMContentLoaded", async () => {
     if (!supabaseClient) return;
+
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       window.location.href = "login.html";
@@ -1700,9 +1701,8 @@ const gr11Paper2FolderMap = {
     }
 
     currentUser = session.user;
-    const userRole = currentUser.user_metadata?.role || "student";
-    }
-    
+
+    const userRole = currentUser.user_metadata?.role || "student";   
     const meta = currentUser.user_metadata || {};
     const learnerName = meta.learner_name || meta.full_name || currentUser.email.split('@')[0];
     const userGrade = meta.grade || "Grade 8 & 9";
