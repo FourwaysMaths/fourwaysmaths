@@ -433,6 +433,22 @@
     if (e.key === "Enter") handleSendAdminMessage();
   });
 
+  async function loadStudentActivityLogs() {
+  const { data: logs, error } = await supabaseClient
+    .from('user_activity')
+    .select('*')
+    .order('login_time', { ascending: false });
+
+  if (error) {
+    console.error("Failed to load activity logs:", error);
+    return;
+  }
+
+  // Logs contain: student_email, login_date, login_time
+  console.log("Student Login Records:", logs);
+  // Render these into an admin table as needed!
+}
+  
   /* ----------------------------------------------------
       STUDENT FILE SUBMISSIONS (RECURSIVE / BUCKET SCAN)
   ---------------------------------------------------- */
