@@ -2063,26 +2063,36 @@ const gr11Paper2FolderMap = {
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
   }
 
- async function loadUpcomingClasses(studentId) {
+async function loadUpcomingClasses(studentId) {
     if (!supabaseClient) return;
 
     const dashboardContainer = document.getElementById("upcoming-classes-container");
     const calendarContainer = document.getElementById("calendar-classes-container");
 
+    console.log("Fetching schedules for user ID:", studentId);
+
     try {
+      // 1. Try querying by student_id
       let { data: schedules, error } = await supabaseClient
         .from("schedules")
         .select("*")
         .eq("student_id", studentId)
         .order("class_date", { ascending: true });
 
-      if (error || !schedules || schedules.length === 0) {
-        const altQuery = await supabaseClient
+      if (error) {
+        console.warn("Schedules query with student_id failed:", error.message);
+      }
+
+      // 2. If empty or error, try querying without filter or with user_id
+      if (!schedules || schedules.length === 0) {
+        console.log("Trying fallback query for schedules...");
+        let altQuery = await supabaseClient
           .from("schedules")
           .select("*")
-          .eq("student_id", studentId)
           .order("class_date", { ascending: true });
+        
         schedules = altQuery.data;
+        console.log("Fallback schedules returned:", schedules);
       }
 
       if (!schedules || schedules.length === 0) {
@@ -2107,8 +2117,9 @@ const gr11Paper2FolderMap = {
 
       if (dashboardContainer) dashboardContainer.innerHTML = htmlContent;
       if (calendarContainer) calendarContainer.innerHTML = htmlContent;
+
     } catch (err) {
-      console.error("Error loading upcoming classes:", err);
+      console.error("Critical error in loadUpcomingClasses:", err);
       const errMarkup = `<div class="class-item"><p style="color: #EF4444; font-size: 0.85rem;">Unable to load schedule.</p></div>`;
       if (dashboardContainer) dashboardContainer.innerHTML = errMarkup;
       if (calendarContainer) calendarContainer.innerHTML = errMarkup;
@@ -2214,11 +2225,13 @@ const gr11Paper2FolderMap = {
     window.location.href = "login.html";
   });
 
- async function loadStudentGrades(studentId) {
+async function loadStudentGrades(studentId) {
     if (!supabaseClient) return;
 
     const tbody = document.getElementById('grades-table-body');
     const statAvgBox = document.getElementById('stat-avg-box');
+
+    console.log("Fetching grades for user ID:", studentId);
 
     try {
       let { data: grades, error } = await supabaseClient
@@ -2227,18 +2240,24 @@ const gr11Paper2FolderMap = {
         .eq('student_id', studentId)
         .order('created_at', { ascending: true });
 
-      if (error || !grades || grades.length === 0) {
-        const altQuery = await supabaseClient
+      if (error) {
+        console.warn("Grades query with student_id failed:", error.message);
+      }
+
+      if (!grades || grades.length === 0) {
+        console.log("Trying fallback query for grades...");
+        let altQuery = await supabaseClient
           .from('grades')
           .select('*')
-          .eq('student_id', studentId)
           .order('created_at', { ascending: true });
+        
         grades = altQuery.data;
+        console.log("Fallback grades returned:", grades);
       }
 
       if (!grades || grades.length === 0) {
         if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#64748B;">No grades recorded yet.</td></tr>`;
-        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
+        if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>--%</strong>`;
         const dashAvgDisplay = document.getElementById('dash-avg-display');
         if (dashAvgDisplay) dashAvgDisplay.textContent = '--%';
         renderPerformanceChart(['No Data'], [0]);
@@ -2264,13 +2283,14 @@ const gr11Paper2FolderMap = {
       const scores = grades.map(g => Number(g.score !== undefined ? g.score : (g.score_percentage || 0)));
       const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
-      if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>Current Mark Average: <strong>${avg}%</strong>`;
+      if (statAvgBox) statAvgBox.innerHTML = `Current Mark Average: <strong>${avg}%</strong>`;
       const dashAvgDisplay = document.getElementById('dash-avg-display');
       if (dashAvgDisplay) dashAvgDisplay.textContent = `${avg}%`;
 
       renderPerformanceChart(grades.map(g => g.assessment_name || g.title || "Test"), scores);
+
     } catch (err) {
-      console.error("Error loading grades:", err);
+      console.error("Critical error in loadStudentGrades:", err);
       if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:#EF4444;">Error loading grades.</td></tr>`;
       renderPerformanceChart(['Error'], [0]);
     }
