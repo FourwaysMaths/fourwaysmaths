@@ -2088,6 +2088,12 @@ const gr11Paper2FolderMap = {
           } else if (paperName === 'Paper 2' && gr89Paper2FolderMap[topic.topic]) {
             storageFolderPath = `Gr8&9/Paper2_worksheets/${gr89Paper2FolderMap[topic.topic]}`;
           }
+        } else if (selectedGrade === 'Grade 10') {
+          if (paperName === 'Paper 1' && gr10Paper1FolderMap[topic.topic]) {
+            storageFolderPath = `Gr10/Paper1_worksheets/${gr10Paper1FolderMap[topic.topic]}`;
+          } else if (paperName === 'Paper 2' && gr10Paper2FolderMap[topic.topic]) {
+            storageFolderPath = `Gr10/Paper2_worksheets/${gr10Paper2FolderMap[topic.topic]}`;
+          }
         } else if (selectedGrade === 'Grade 11') {
           if (paperName === 'Paper 1' && gr11Paper1FolderMap[topic.topic]) {
             storageFolderPath = `Gr11/Paper1_worksheets/${gr11Paper1FolderMap[topic.topic]}`;
