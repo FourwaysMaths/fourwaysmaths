@@ -1987,7 +1987,7 @@ const gr11Paper2FolderMap = {
     const container = document.getElementById("learner-badge-container");
     if (!container) return;
 
-    let badgeTitle = "Algebra Master"; // Default fallback
+    let badgeTitle = "No Achievement Yet"; // Default fallback
 
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
